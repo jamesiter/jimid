@@ -1,0 +1,27 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+
+from enum import Enum
+
+
+__author__ = 'James Iter'
+__date__ = '15/12/16'
+__contact__ = 'james.iter.cn@gmail.com'
+__copyright__ = '(c) 2015 by James Iter.'
+
+
+class Rules(Enum):
+    ID = ('regex:\d{1,17}', 'id')
+    LOGIN_NAME = (basestring, 'login_name', (5, 30))
+    PASSWORD = (basestring, 'password', (1, 100))
+    CREATE_TIME = ((int, long), 'create_time', (0, 9223372036854775807))
+    MOBILE_PHONE = (basestring, 'mobile_phone', (0, 13))
+    EMAIL = (basestring, 'email', (0, 30))
+    # 邮件不区分大小写，地址部分起始必须为字母或数字，句点(.)和下划线(_)不可以组合及连续出现，邮件域部分遵循域名命名规则
+    EMAIL_PATTERN = ('regex:^[a-z0-9]{1,20}([._][a-z0-9]{1,20}){0,5}@'
+                     '[a-z0-9]{1,20}([-][a-z0-9]{1,20}){0,2}\.[a-z]{1,5}$', 'email')
+
+    MOBILE_PHONE_VERIFIED = (bool, 'mobile_phone_verified', [False, True])
+    EMAIL_VERIFIED = (bool, 'email_verified', [False, True])
+    ENABLED = (bool, 'enabled', [False, True])

@@ -1,0 +1,14 @@
+{
+  "db_name": "jimauth",
+  "db_host": "localhost",
+  "db_port": 3306,
+  "db_user": "root",
+  "db_password": "jimpswd.com",
+  "db_pool_size": 10,
+  "db_charset": "utf8",
+  "debug": true,
+  "log_cycle": "D",
+  "token_ttl": 604800,
+  "jwt_secret": "kcMsj4qj0EAvAvj3nlFlPZd2x7P9kBBQ$deae64883a03982913e6c5f0ba265c2c5dfd0cfx'",
+  "jwt_algorithm": "HS512"
+}
