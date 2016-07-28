@@ -26,6 +26,9 @@ add_rule(auth.blueprint, '', view_func='auth.r_get', methods=['GET'])
 # 更改用户密码
 add_rule(auth.blueprint, '/_change_password', view_func='auth.r_change_password', methods=['PATCH'])
 
+# ! 获取用户列表
+add_rule(auth.blueprint, '/_list', view_func='auth.r_get_list', methods=['GET'])
+
 # 管理接口
 # 通过用户名获取用户信息
 add_rule(mgmt.blueprint, '/_by_login_name/<login_name>', view_func='mgmt.r_get_by_login_name', methods=['GET'])

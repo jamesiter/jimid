@@ -163,3 +163,19 @@ class Auth(object):
 
         return False
 
+    @staticmethod
+    def get_list(offset=0, limit=50, order_by='id', order='asc'):
+        sql_stmt = ("SELECT * FROM auth ORDER BY %(order_by)s %(order)s LIMIT %(offset)s, %(limit)s")
+        sql_stmt_count = ("SELECT count(id) FROM auth")
+        cnx = db.cnxpool.get_connection()
+        cursor = cnx.cursor(dictionary=True, buffered=True)
+        try:
+            cursor.execute(sql_stmt, {'offset': offset, 'limit': limit, 'order_by': order_by, 'order': order})
+            rows = cursor.fetchall()
+            cursor.execute(sql_stmt_count)
+            count = cursor.fetchone()
+            return rows, count['count(id)']
+        finally:
+            cursor.close()
+            cnx.close()
+

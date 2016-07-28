@@ -3,7 +3,7 @@
 
 
 import json
-from flask import Blueprint
+from flask import Blueprint, request
 import jimit as ji
 
 from models import Utils, Rules, Auth
@@ -37,8 +37,8 @@ def r_get_by_login_name(login_name=None):
         auth.get_by_login_name()
         ret = dict()
         ret['state'] = ji.Common.exchange_state(20000)
-        ret['obj'] = auth.__dict__
-        del ret['obj']['password']
+        ret['data'] = auth.__dict__
+        del ret['data']['password']
         return ret
     except ji.PreviewingError, e:
         return json.loads(e.message)

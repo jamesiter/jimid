@@ -25,3 +25,10 @@ class Rules(Enum):
     MOBILE_PHONE_VERIFIED = (bool, 'mobile_phone_verified', [False, True])
     EMAIL_VERIFIED = (bool, 'email_verified', [False, True])
     ENABLED = (bool, 'enabled', [False, True])
+
+    OFFSET = ('regex:\d{1,17}', 'offset')
+    LIMIT = ('regex:\d{1,17}', 'limit')
+    PAGE = ('regex:\d{1,17}', 'page')
+    PAGE_SIZE = ('regex:\d{1,17}', 'page_size')
+    ORDER_BY = (basestring, 'order_by', (1, 30))
+    ORDER = (basestring, 'order', ['asc', 'desc'])

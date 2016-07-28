@@ -66,7 +66,7 @@ class TestAuth(unittest.TestCase):
         url = 'http://jimauth.dev.iit.im/auth'
         r = requests.get(url, cookies=TestAuth.cookies)
         j_r = json.loads(r.content)
-        TestAuth.uid = j_r['obj']['id']
+        TestAuth.uid = j_r['data']['id']
         print json.dumps(j_r, ensure_ascii=False)
         self.assertEqual('200', j_r['state']['code'])
 
@@ -110,7 +110,7 @@ class TestAuth(unittest.TestCase):
         url = 'http://jimauth.dev.iit.im/auth'
         r = requests.get(url, cookies=TestAuth.cookies)
         j_r = json.loads(r.content)
-        TestAuth.uid = j_r['obj']['id']
+        TestAuth.uid = j_r['data']['id']
         print json.dumps(j_r, ensure_ascii=False)
         self.assertEqual('200', j_r['state']['code'])
 
@@ -199,7 +199,7 @@ class TestAuth(unittest.TestCase):
         url = 'http://jimauth.dev.iit.im/auth'
         r = requests.get(url, cookies=TestAuth.cookies)
         j_r = json.loads(r.content)
-        TestAuth.uid = j_r['obj']['id']
+        TestAuth.uid = j_r['data']['id']
         print json.dumps(j_r, ensure_ascii=False)
         self.assertEqual('200', j_r['state']['code'])
 
