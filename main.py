@@ -77,8 +77,8 @@ def r_after_request(response):
         response.headers['Access-Control-Allow-Headers'] = 'X-Request-With, Content-Type'
         response.headers['Access-Control-Expose-Headers'] = 'Set-Cookie'
 
-        # token期限过半时,自动续期
-        if not is_not_need_to_auth(request.endpoint) and \
+        # 分两个if语句, 是因为即使r_before_request无法通过, 但还是会走r_after_request流程, 整个请求周期不会因为r_before_request的异常而跳过r_after_request
+        if not is_not_need_to_auth(request.endpoint) and hasattr(g, 'token') and \
                         g.token['exp'] < (ji.Common.ts() + (app.config['token_ttl'] / 2)):
             token = Utils.generate_token(g.token['uid'])
             response.set_cookie('token', token)
