@@ -28,6 +28,8 @@ add_rule(auth.blueprint, '/_change_password', view_func='auth.r_change_password'
 
 # ! 获取用户列表
 add_rule(auth.blueprint, '/_list', view_func='auth.r_get_list', methods=['GET'])
+# ! 更新用户信息
+add_rule(auth.blueprint, '/_update', view_func='auth.r_update', methods=['PUT'])
 
 # 管理接口
 # 通过用户名获取用户信息

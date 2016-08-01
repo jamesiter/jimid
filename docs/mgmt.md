@@ -51,7 +51,9 @@ GET https://$domain
     "paging": {
         "total": 20,
         "limit": 5,
-        "offset": 10
+        "offset": 10,
+        "page": 1,
+        "page_size": 10
     }
 }
 ```
@@ -61,6 +63,8 @@ GET https://$domain
 |total|Y|Long|用户总量|
 |offset|Y|Long|当前偏移量|
 |limit|Y|Long|返回条目数量|
+|page|Y|Long|透传客户端请求的该参数, 如果没有传递, 则返回默认值1|
+|page_size|Y|Long|透传客户端请求的该参数, 如果没有传递, 则返回默认值 50|
 
 用户信息字段描述参见 [获取用户信息](auth.md#获取用户信息)
 

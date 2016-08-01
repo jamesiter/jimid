@@ -203,9 +203,43 @@ def r_get_list():
         ret = dict()
         ret['state'] = ji.Common.exchange_state(20000)
         ret['data'] = list()
-        ret['paging'] = {'total': 0, 'offset': offset, 'limit': limit}
+        ret['paging'] = {'total': 0, 'offset': offset, 'limit': limit, 'page': page, 'page_size': page_size}
 
         ret['data'], ret['paging']['total'] = Auth.get_list(offset=offset, limit=limit, order_by=order_by, order=order)
         return ret
     except ji.PreviewingError, e:
         return json.loads(e.message)
+
+
+@Utils.dumps2response
+@Utils.superuser
+def r_update():
+
+    auth = Auth()
+
+    args_rules = [
+        Rules.ID.value,
+        Rules.LOGIN_NAME.value,
+        Rules.MOBILE_PHONE.value,
+        Rules.MOBILE_PHONE_VERIFIED.value,
+        Rules.EMAIL.value,
+        Rules.EMAIL_VERIFIED.value
+    ]
+
+    request.json['id'] = request.json.get('id', 0).__str__()
+    try:
+        ji.Check.previewing(args_rules, request.json)
+        auth.id = int(request.json.get('id'))
+        auth.get()
+
+        auth.login_name = request.json.get('login_name')
+        auth.mobile_phone = request.json.get('mobile_phone')
+        auth.mobile_phone_verified = request.json.get('mobile_phone_verified')
+        auth.email = request.json.get('email')
+        auth.email_verified = request.json.get('email_verified')
+
+        auth.update()
+    except ji.PreviewingError, e:
+        return json.loads(e.message)
+
+
