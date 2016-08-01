@@ -84,7 +84,6 @@ POST https://$domain
 ``` http
 GET https://$domain
   /auth/_sign_out
-  
 Header:
 Cookie='cookie'
 ```
@@ -106,7 +105,6 @@ Cookie='cookie'
 ``` http
 GET https://$domain
   /auth/_auth
-
 Header:
 Cookie='cookie'
 ```
@@ -128,7 +126,6 @@ Cookie='cookie'
 ``` http
 GET https://$domain
   /auth
-
 Header:
 # 用户标识在cookie里存放着
 Cookie='cookie'
