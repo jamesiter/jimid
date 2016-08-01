@@ -102,7 +102,7 @@ GET https://$domain
 
 ## 禁用用户账号
 ---
-> 禁用掉的账号将不允许登录, 且通过不了验证
+> 禁用掉的账号将不允许登录, 且通过不了验证. 管理员无法自我禁用.
 ``` http
 PATCH https://$domain
   /mgmt/_disable/{uid}
@@ -152,7 +152,7 @@ Cookie='cookie'
 
 ## 删除用户账号
 ---
-> 删除账号
+> 删除账号. 管理员无法自我删除.
 ``` http
 DELETE https://$domain
   /mgmt/{uid}
