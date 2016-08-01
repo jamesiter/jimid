@@ -1,5 +1,10 @@
 # jimauth
 
+> 默认数据交互格式 Content-Type: application/json
+## 状态码参考列表
+
+## [账号](docs/auth.md)
+
 ## 用户列表(支持分页,默认50个)
 ## 编辑特定用户
 ## 邮箱校验
