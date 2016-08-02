@@ -191,9 +191,9 @@ Cookie='cookie'
     "id": 768,
     "login_name": "new_login_name",
     "mobile_phone": "15601603670",
-    "mobile_phone_verified": True,
+    "mobile_phone_verified": true,
     "email": "jimit@qq.com",
-    "email_verified": True
+    "email_verified": true
 }
 ```
 
