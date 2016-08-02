@@ -211,6 +211,7 @@ def r_get_list():
         return json.loads(e.message)
 
 
+# 不支持用户自我更新, 用户更新各字段, 将有专门的接口
 @Utils.dumps2response
 @Utils.superuser
 def r_update():
@@ -218,13 +219,38 @@ def r_update():
     auth = Auth()
 
     args_rules = [
-        Rules.ID.value,
-        Rules.LOGIN_NAME.value,
-        Rules.MOBILE_PHONE.value,
-        Rules.MOBILE_PHONE_VERIFIED.value,
-        Rules.EMAIL.value,
-        Rules.EMAIL_VERIFIED.value
+        Rules.ID.value
     ]
+
+    if 'login_name' in request.json:
+        args_rules.append(
+            Rules.LOGIN_NAME.value
+        )
+
+    if 'mobile_phone' in request.json:
+        args_rules.append(
+            Rules.MOBILE_PHONE.value
+        )
+
+    if 'mobile_phone_verified' in request.json:
+        args_rules.append(
+            Rules.MOBILE_PHONE_VERIFIED.value
+        )
+
+    if 'email' in request.json:
+        args_rules.append(
+            Rules.EMAIL.value
+        )
+
+    if 'email_verified' in request.json:
+        args_rules.append(
+            Rules.EMAIL_VERIFIED.value
+        )
+
+    if args_rules.__len__() < 2:
+        ret = dict()
+        ret['state'] = ji.Common.exchange_state(20000)
+        return ret
 
     request.json['id'] = request.json.get('id', 0).__str__()
     try:
@@ -232,11 +258,11 @@ def r_update():
         auth.id = int(request.json.get('id'))
         auth.get()
 
-        auth.login_name = request.json.get('login_name')
-        auth.mobile_phone = request.json.get('mobile_phone')
-        auth.mobile_phone_verified = request.json.get('mobile_phone_verified')
-        auth.email = request.json.get('email')
-        auth.email_verified = request.json.get('email_verified')
+        auth.login_name = request.json.get('login_name', auth.login_name)
+        auth.mobile_phone = request.json.get('mobile_phone', auth.mobile_phone)
+        auth.mobile_phone_verified = request.json.get('mobile_phone_verified', auth.mobile_phone_verified)
+        auth.email = request.json.get('email', auth.email)
+        auth.email_verified = request.json.get('email_verified', auth.email_verified)
 
         auth.update()
     except ji.PreviewingError, e:

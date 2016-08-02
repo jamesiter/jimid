@@ -98,7 +98,21 @@ class TestMgmt(unittest.TestCase):
         self.assertEqual('200', j_r['state']['code'])
 
     # 超级用户获取用户列表
-    def test_35_get_list_via_page(self):
+    def test_35_update(self):
+        payload = {
+            "id": TestMgmt.uid_s[11],
+            "login_name": "new_login_name2",
+        }
+
+        url = 'http://jimauth.dev.iit.im/auth/_update'
+        headers = {'content-type': 'application/json'}
+        r = requests.put(url, cookies=TestMgmt.superuser_cookies, headers=headers, data=json.dumps(payload))
+        j_r = json.loads(r.content)
+        print json.dumps(j_r, ensure_ascii=False)
+        self.assertEqual('200', j_r['state']['code'])
+
+    # 超级用户获取用户列表
+    def test_36_get_list_via_page(self):
         url = 'http://jimauth.dev.iit.im/auth/_list?page=3&page_size=5'
         r = requests.get(url, cookies=TestMgmt.superuser_cookies)
         j_r = json.loads(r.content)

@@ -179,5 +179,39 @@ Cookie='cookie'
 }
 ```
 
+## 更新账号信息
+---
+> 更新账号. 不支持普通用户自我更新, 普通用户更新各字段, 将有专门的接口
+``` http
+PUT https://$domain
+  /auth/_update
+Header:
+Cookie='cookie'
+{
+    "id": 768,
+    "login_name": "new_login_name",
+    "mobile_phone": "15601603670",
+    "mobile_phone_verified": True,
+    "email": "jimit@qq.com",
+    "email_verified": True
+}
+```
+
+|参数名称|必须|类型|说明|
+|:--|:--:|:--:|:--|
+|id|Y|Number|将要更新的用户账号ID|
+其它字段都是可选, 详细描述参见 [获取用户信息](auth.md#获取用户信息)
+
+响应示例
+``` json
+{
+    "state": {
+        "en-us": "OK",
+        "zh-cn": "成功",
+        "code": "200"
+    }
+}
+```
+
 [返回上一级](../README.md)
 ===
