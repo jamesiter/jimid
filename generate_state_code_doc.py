@@ -5,6 +5,8 @@
 """
 
 
+from collections import OrderedDict
+
 import jimit as ji
 from state_code import *
 
@@ -23,7 +25,7 @@ print '## 干状态码'
 print '---'
 print '|CODE|zh-cn|en-us|'
 print '|:--:|:--:|:--:|'
-for k, v in ji.index_state['trunk'].items():
+for k, v in OrderedDict(sorted(ji.index_state['trunk'].items(), key=lambda t: t[0])).items():
     print '|' + '|'.join([v['code'], v['zh-cn'], v['en-us']]) + '|'
 
 print ''
@@ -31,7 +33,7 @@ print '## 枝状态码'
 print '---'
 print '|CODE|zh-cn|'
 print '|:--:|:--:|'
-for k, v in ji.index_state['branch'].items():
+for k, v in OrderedDict(sorted(ji.index_state['branch'].items(), key=lambda t: t[0])).items():
     print '|' + '|'.join([v['code'], v['zh-cn']]) + '|'
 
 print ''
