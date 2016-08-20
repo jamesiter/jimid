@@ -2,8 +2,7 @@
 
 > 默认数据交互格式 Content-Type: application/json
 
-## 状态码参考列表
-
+## [状态码参考列表](docs/state_code.md)
 ## [账号](docs/auth.md)
 ## [管理接口](docs/mgmt.md)
 
