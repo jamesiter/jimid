@@ -1,3 +1,4 @@
+Logo
 # jimauth
 
 > 默认数据交互格式 Content-Type: application/json
@@ -25,3 +26,10 @@
 ## 邮箱解绑
 ## 电话解绑
 ## 更改登录名
+
+项目成员
+姓名: E-Mail
+姓名: E-Mail
+姓名: E-Mail
+
+Demo
