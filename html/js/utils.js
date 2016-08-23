@@ -17,3 +17,7 @@ function insert_warning_window(element, content) {
         $('#warning_window_close_btn').click();
     }, 3000);
 }
+
+$.fn.hasAttr = function(name) {
+   return this.attr(name) !== undefined;
+};
