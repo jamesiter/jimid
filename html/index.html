@@ -61,10 +61,11 @@
             },
             success : function(result, status, xhr) {
                 $(result.data).each(function(index, ele) {
-                    var mobile_checkbox = Boolean(ele.mobile_phone_verified) ? '<input type="checkbox" checked>' : '<input type="checkbox">';
-                    var email_checkbox = Boolean(ele.email_verified) ? '<input type="checkbox" checked>' : '<input type="checkbox">';
-                    var enabled_checkbox = Boolean(ele.enabled) ? '<input type="checkbox" checked>' : '<input type="checkbox">';
-                    var trHTML = '<tr onclick="user_edit(this)" edit_mode=false>' +
+                    var mobile_checkbox = Boolean(ele.mobile_phone_verified) ? '<input type="checkbox" checked disabled>' : '<input type="checkbox" disabled>';
+                    var email_checkbox = Boolean(ele.email_verified) ? '<input type="checkbox" checked disabled>' : '<input type="checkbox" disabled>';
+                    var enabled_checkbox = Boolean(ele.enabled) ? '<input type="checkbox" checked disabled>' : '<input type="checkbox" disabled>';
+                    // var trHTML = '<tr onclick="user_edit(this)" edit_mode=false>' +
+                    var trHTML = '<tr edit_mode=false>' +
                             '<td>' + String(ele.id) + '</td>' +
                             '<td>' + ele.login_name + '</td>' +
                             '<td>' + ele.mobile_phone + '</td>' +
@@ -81,26 +82,25 @@
                 });
             }
         });
+
+        $("#table_users").delegate('#t_body td', 'click', function() {
+            if ($(this).parent().attr('edit_mode') == 'false') {
+                $(this).parent().attr('edit_mode', true);
+                $(this).parent().find('td:eq(1)').html('<input type="text" value="' + $(this).parent().find('td:eq(1)').html() + '" />');
+                $(this).parent().find('td:eq(2)').html('<input type="text" value="' + $(this).parent().find('td:eq(2)').html() + '" />');
+                $(this).parent().find('td:eq(4)').html('<input type="text" value="' + $(this).parent().find('td:eq(4)').html() + '" />');
+                $(this).parent().find('td:eq(8)').html('<button type="button" class="btn btn-info" onclick="user_update(this)">更新</button>');
+            }
+        });
     });
 
-    function user_edit(me) {
-        console.log($(me));
-        if (!me.hasAttribute('edit_mode') || $(me).attr('edit_mode') == 'false') {
-            $(me).attr('edit_mode', true);
-            $(me.cells[1]).html('<input type="text" value="' + me.cells[1].childNodes[0].nodeValue + '" />');
-            // $(me.cells[2]).html('<input type="text" value="' + me.cells[2].childNodes[0].nodeValue + '" />');
-            // $(me.cells[4]).html('<input type="text" value="' + me.cells[4].childNodes[0].nodeValue + '" />');
-        }
-    }
-
     function user_update(me) {
-        $(me).attr('edit_mode', false);
-        console.log('fffffffff');
-        var mobile_phone_verified = parseInt(me.cells[3].childNodes[0].checked);
-        var email_verified = parseInt(me.cells[5].childNodes[0].checked);
-        var user_enabled = parseInt(me.cells[6].childNodes[0].checked);
-        // '<button type="button" class="btn btn-info" onclick="user_update(this)">更新</button>' +
-        // ' | ' +
+        $(me).parent().parent().attr('edit_mode', false);
+        var mobile_phone_verified = parseInt($(me).parent().parent().find('input[type="checkbox"]')[0].checked);
+        var email_verified = parseInt($(me).parent().parent().find('input[type="checkbox"]')[1].checked);
+        var user_enabled = parseInt($(me).parent().parent().find('input[type="checkbox"]')[2].checked);
+        $(me).parent().html('<button type="button" class="btn btn-danger" onclick="user_delete(this)">删除</button>');
+        console.log('ffffffff');
     }
 
     function user_delete(me) {
