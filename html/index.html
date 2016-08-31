@@ -9,6 +9,7 @@
 
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -26,14 +27,12 @@
         <table id="table_users" class="table table-hover">
             <thead>
             <tr class="active" style="font-size: medium">
-                <td>#</td><td>登录名</td><td>手机号码</td><td>经校验手机号码</td><td>E-Mail</td><td>经校验的E-Mail</td><td>激活</td><td>创建时间</td><td>操作</td>
+                <td width="60px">#</td><td width="140px">登录名</td><td width="140px">手机号码</td><td width="140px">经校验手机号码</td>
+                <td width="140px">E-Mail</td><td width="140px">经校验的E-Mail</td><td width="60px">激活</td><td width="200px">创建时间</td>
+                <td width="100px">操作</td>
             </tr>
             </thead>
             <tbody id="t_body" style="font-size: large;">
-            <tr>
-                <td></td>
-                <td></td>
-            </tr>
             </tbody>
         </table>
     </div>
@@ -63,7 +62,7 @@
                 $(result.data).each(function(index, ele) {
                     var mobile_checkbox = Boolean(ele.mobile_phone_verified) ? '<input type="checkbox" checked disabled>' : '<input type="checkbox" disabled>';
                     var email_checkbox = Boolean(ele.email_verified) ? '<input type="checkbox" checked disabled>' : '<input type="checkbox" disabled>';
-                    var enabled_checkbox = Boolean(ele.enabled) ? '<input type="checkbox" checked disabled>' : '<input type="checkbox" disabled>';
+                    var enabled_checkbox = Boolean(ele.enabled) ? '<input type="checkbox" style="width: 60px;" checked disabled>' : '<input type="checkbox" style="width: 60px;;" disabled>';
                     // var trHTML = '<tr onclick="user_edit(this)" edit_mode=false>' +
                     var trHTML = '<tr edit_mode=false>' +
                             '<td>' + String(ele.id) + '</td>' +
@@ -99,8 +98,10 @@
         var mobile_phone_verified = parseInt($(me).parent().parent().find('input[type="checkbox"]')[0].checked);
         var email_verified = parseInt($(me).parent().parent().find('input[type="checkbox"]')[1].checked);
         var user_enabled = parseInt($(me).parent().parent().find('input[type="checkbox"]')[2].checked);
+        $(me).parent().parent().find('td:eq(1)').html($(me).parent().parent().find('td:eq(1) input').val());
+        $(me).parent().parent().find('td:eq(2)').html($(me).parent().parent().find('td:eq(2) input').val());
+        $(me).parent().parent().find('td:eq(4)').html($(me).parent().parent().find('td:eq(4) input').val());
         $(me).parent().html('<button type="button" class="btn btn-danger" onclick="user_delete(this)">删除</button>');
-        console.log('ffffffff');
     }
 
     function user_delete(me) {

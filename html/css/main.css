@@ -1,0 +1,10 @@
+/*!
+ * 全站自定义样式
+ */
+
+.table>tbody>tr>td>input {
+    width: 120px;
+    padding-left: 0;
+    padding-right: 0;
+}
+
