@@ -81,14 +81,16 @@
                 });
             }
         });
-
-        $("#table_users").delegate('#t_body td', 'click', function() {
+        $("#t_body").on('click', "td:gt(0):lt(6)", function() {
             if ($(this).parent().attr('edit_mode') == 'false') {
                 $(this).parent().attr('edit_mode', true);
                 $(this).parent().find('td:eq(1)').html('<input type="text" value="' + $(this).parent().find('td:eq(1)').html() + '" />');
                 $(this).parent().find('td:eq(2)').html('<input type="text" value="' + $(this).parent().find('td:eq(2)').html() + '" />');
                 $(this).parent().find('td:eq(4)').html('<input type="text" value="' + $(this).parent().find('td:eq(4)').html() + '" />');
                 $(this).parent().find('td:eq(8)').html('<button type="button" class="btn btn-info" onclick="user_update(this)">更新</button>');
+                $(this).parent().find('input[type="checkbox"]:eq(0)').removeAttr('disabled');
+                $(this).parent().find('input[type="checkbox"]:eq(1)').removeAttr('disabled');
+                $(this).parent().find('input[type="checkbox"]:eq(2)').removeAttr('disabled');
             }
         });
     });
@@ -98,9 +100,13 @@
         var mobile_phone_verified = parseInt($(me).parent().parent().find('input[type="checkbox"]')[0].checked);
         var email_verified = parseInt($(me).parent().parent().find('input[type="checkbox"]')[1].checked);
         var user_enabled = parseInt($(me).parent().parent().find('input[type="checkbox"]')[2].checked);
+
         $(me).parent().parent().find('td:eq(1)').html($(me).parent().parent().find('td:eq(1) input').val());
         $(me).parent().parent().find('td:eq(2)').html($(me).parent().parent().find('td:eq(2) input').val());
         $(me).parent().parent().find('td:eq(4)').html($(me).parent().parent().find('td:eq(4) input').val());
+        $(me).parent().parent().find('input[type="checkbox"]:eq(0)').attr('disabled', true);
+        $(me).parent().parent().find('input[type="checkbox"]:eq(1)').attr('disabled', true);
+        $(me).parent().parent().find('input[type="checkbox"]:eq(2)').attr('disabled', true);
         $(me).parent().html('<button type="button" class="btn btn-danger" onclick="user_delete(this)">删除</button>');
     }
 
