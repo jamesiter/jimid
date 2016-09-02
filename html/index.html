@@ -47,10 +47,12 @@
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="js/bootstrap.min.js"></script>
 <script src="js/date_format.js"></script>
+<script src="js/utils.js"></script>
 <script type="text/javascript">
     $(document).ready(function() {
         var page = 1;
         var page_size = 20;
+
         $.ajax({
             url : '/auth/_list?page=' + page + '&page_size=' + page_size,
             type : 'GET',
@@ -62,8 +64,8 @@
                 $(result.data).each(function(index, ele) {
                     var mobile_checkbox = Boolean(ele.mobile_phone_verified) ? '<input type="checkbox" checked disabled>' : '<input type="checkbox" disabled>';
                     var email_checkbox = Boolean(ele.email_verified) ? '<input type="checkbox" checked disabled>' : '<input type="checkbox" disabled>';
-                    var enabled_checkbox = Boolean(ele.enabled) ? '<input type="checkbox" style="width: 60px;" checked disabled>' : '<input type="checkbox" style="width: 60px;;" disabled>';
-                    // var trHTML = '<tr onclick="user_edit(this)" edit_mode=false>' +
+                    var enabled_checkbox = Boolean(ele.enabled) ? '<input type="checkbox" class="enabled_checkbox" style="width: 60px;" checked>' :
+                            '<input type="checkbox" class="enabled_checkbox" style="width: 60px;">';
                     var trHTML = '<tr edit_mode=false>' +
                             '<td>' + String(ele.id) + '</td>' +
                             '<td>' + ele.login_name + '</td>' +
@@ -81,7 +83,8 @@
                 });
             }
         });
-        $("#t_body").on('click', "td:gt(0):lt(6)", function() {
+
+        $("#t_body").on('click', "td:gt(0):lt(5)", function() {
             if ($(this).parent().attr('edit_mode') == 'false') {
                 $(this).parent().attr('edit_mode', true);
                 $(this).parent().attr('j_login_name', $(this).parent().find('td:eq(1)').html());
@@ -98,27 +101,78 @@
                         '<button type="button" class="btn btn-default" onclick="user_cancel(this)">取消</button>');
                 $(this).parent().find('input[type="checkbox"]:eq(0)').removeAttr('disabled');
                 $(this).parent().find('input[type="checkbox"]:eq(1)').removeAttr('disabled');
-                $(this).parent().find('input[type="checkbox"]:eq(2)').removeAttr('disabled');
             }
+        });
+
+        $("#t_body").on('click', ".enabled_checkbox", function() {
+            var id = $(this).parent().parent().find('td:eq(0) input').val();
+            var action_url = '/mgmt/_enable/';
+
+            if ($(this)[0].checked) {
+                action_url = '/mgmt/_disable/';
+            }
+            $.ajax({
+                url : action_url + id,
+                type : 'PATCH',
+                error : function() {
+                    insert_warning_window($('#header'), '<strong>更改账户状态失败, 请联系管理员! </strong>');
+                },
+                success : function() {
+                    window.location.href="/";
+                }
+            });
         });
     });
 
     function user_update(me) {
         $(me).parent().parent().attr('edit_mode', false);
-        var mobile_phone_verified = parseInt($(me).parent().parent().find('input[type="checkbox"]')[0].checked);
-        var email_verified = parseInt($(me).parent().parent().find('input[type="checkbox"]')[1].checked);
-        var user_enabled = parseInt($(me).parent().parent().find('input[type="checkbox"]')[2].checked);
+        var id = $(me).parent().parent().find('td:eq(0)').text();
+        var login_name = $(me).parent().parent().find('td:eq(1) input').val();
+        var mobile_phone = $(me).parent().parent().find('td:eq(2) input').val();
+        var email = $(me).parent().parent().find('td:eq(4) input').val();
+        var mobile_phone_verified = $(me).parent().parent().find('input[type="checkbox"]')[0].checked;
+        var email_verified = $(me).parent().parent().find('input[type="checkbox"]')[1].checked;
 
         $(me).parent().parent().find('td:eq(1)').html($(me).parent().parent().find('td:eq(1) input').val());
         $(me).parent().parent().find('td:eq(2)').html($(me).parent().parent().find('td:eq(2) input').val());
         $(me).parent().parent().find('td:eq(4)').html($(me).parent().parent().find('td:eq(4) input').val());
         $(me).parent().parent().find('input[type="checkbox"]:eq(0)').attr('disabled', true);
         $(me).parent().parent().find('input[type="checkbox"]:eq(1)').attr('disabled', true);
-        $(me).parent().parent().find('input[type="checkbox"]:eq(2)').attr('disabled', true);
         $(me).parent().html('<button type="button" class="btn btn-danger" onclick="user_delete(this)">删除</button>');
+
+        $.ajax({
+            url : '/auth/_update',
+            type : 'PUT',
+            contentType: "application/json; charset=utf-8",
+            data : JSON.stringify({
+                id: id,
+                login_name: login_name,
+                mobile_phone: mobile_phone,
+                mobile_phone_verified: mobile_phone_verified,
+                email: email,
+                email_verified: email_verified
+            }),
+            error : function() {
+                insert_warning_window($('#footer'), '<strong>更新用户信失败, 请联系管理员! </strong>');
+            },
+            success : function() {
+                window.location.href="/";
+            }
+        });
     }
 
     function user_delete(me) {
+        var id = $(me).parent().parent().find('td:eq(0) input').val();
+        $.ajax({
+            url : '/mgmt/' + id,
+            type : 'DELETE',
+            error : function() {
+                insert_warning_window($('#footer'), '<strong>删除用户信失败, 请联系管理员! </strong>');
+            },
+            success : function() {
+                window.location.href="/";
+            }
+        });
     }
 
     function user_cancel(me) {
@@ -139,15 +193,8 @@
             $(me).parent().parent().find('input[type="checkbox"]:eq(1)').prop('checked', true);
         }
 
-        if ($(me).parent().parent().attr('j_enabled_checkbox') == 'false') {
-            $(me).parent().parent().find('input[type="checkbox"]:eq(2)').prop('checked', false);
-        } else {
-            $(me).parent().parent().find('input[type="checkbox"]:eq(2)').prop('checked', true);
-        }
-
         $(me).parent().parent().find('input[type="checkbox"]:eq(0)').attr('disabled', true);
         $(me).parent().parent().find('input[type="checkbox"]:eq(1)').attr('disabled', true);
-        $(me).parent().parent().find('input[type="checkbox"]:eq(2)').attr('disabled', true);
         $(me).parent().html('<button type="button" class="btn btn-danger" onclick="user_delete(this)">删除</button>');
     }
 </script>
