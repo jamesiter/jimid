@@ -29,7 +29,7 @@
             <tr class="active" style="font-size: medium">
                 <td width="60px">#</td><td width="140px">登录名</td><td width="140px">手机号码</td><td width="140px">经校验手机号码</td>
                 <td width="140px">E-Mail</td><td width="140px">经校验的E-Mail</td><td width="60px">激活</td><td width="200px">创建时间</td>
-                <td width="100px">操作</td>
+                <td width="160px">操作</td>
             </tr>
             </thead>
             <tbody id="t_body" style="font-size: large;">
@@ -84,10 +84,18 @@
         $("#t_body").on('click', "td:gt(0):lt(6)", function() {
             if ($(this).parent().attr('edit_mode') == 'false') {
                 $(this).parent().attr('edit_mode', true);
+                $(this).parent().attr('j_login_name', $(this).parent().find('td:eq(1)').html());
+                $(this).parent().attr('j_mobile_phone', $(this).parent().find('td:eq(2)').html());
+                $(this).parent().attr('j_email', $(this).parent().find('td:eq(4)').html());
+                $(this).parent().attr('j_mobile_checkbox', $(this).parent().find('input[type="checkbox"]:eq(0)').is(':checked'));
+                $(this).parent().attr('j_email_checkbox', $(this).parent().find('input[type="checkbox"]:eq(1)').is(':checked'));
+                $(this).parent().attr('j_enabled_checkbox', $(this).parent().find('input[type="checkbox"]:eq(2)').is(':checked'));
+
                 $(this).parent().find('td:eq(1)').html('<input type="text" value="' + $(this).parent().find('td:eq(1)').html() + '" />');
                 $(this).parent().find('td:eq(2)').html('<input type="text" value="' + $(this).parent().find('td:eq(2)').html() + '" />');
                 $(this).parent().find('td:eq(4)').html('<input type="text" value="' + $(this).parent().find('td:eq(4)').html() + '" />');
-                $(this).parent().find('td:eq(8)').html('<button type="button" class="btn btn-info" onclick="user_update(this)">更新</button>');
+                $(this).parent().find('td:eq(8)').html('<button type="button" class="btn btn-info" onclick="user_update(this)">更新</button> | ' +
+                        '<button type="button" class="btn btn-default" onclick="user_cancel(this)">取消</button>');
                 $(this).parent().find('input[type="checkbox"]:eq(0)').removeAttr('disabled');
                 $(this).parent().find('input[type="checkbox"]:eq(1)').removeAttr('disabled');
                 $(this).parent().find('input[type="checkbox"]:eq(2)').removeAttr('disabled');
@@ -111,6 +119,36 @@
     }
 
     function user_delete(me) {
+    }
+
+    function user_cancel(me) {
+        $(me).parent().parent().attr('edit_mode', false);
+        $(me).parent().parent().find('td:eq(1)').html($(me).parent().parent().attr('j_login_name'));
+        $(me).parent().parent().find('td:eq(2)').html($(me).parent().parent().attr('j_mobile_phone'));
+        $(me).parent().parent().find('td:eq(4)').html($(me).parent().parent().attr('j_email'));
+
+        if ($(me).parent().parent().attr('j_mobile_checkbox') == 'false') {
+            $(me).parent().parent().find('input[type="checkbox"]:eq(0)').prop('checked', false);
+        } else {
+            $(me).parent().parent().find('input[type="checkbox"]:eq(0)').prop('checked', true);
+        }
+
+        if ($(me).parent().parent().attr('j_email_checkbox') == 'false') {
+            $(me).parent().parent().find('input[type="checkbox"]:eq(1)').prop('checked', false);
+        } else {
+            $(me).parent().parent().find('input[type="checkbox"]:eq(1)').prop('checked', true);
+        }
+
+        if ($(me).parent().parent().attr('j_enabled_checkbox') == 'false') {
+            $(me).parent().parent().find('input[type="checkbox"]:eq(2)').prop('checked', false);
+        } else {
+            $(me).parent().parent().find('input[type="checkbox"]:eq(2)').prop('checked', true);
+        }
+
+        $(me).parent().parent().find('input[type="checkbox"]:eq(0)').attr('disabled', true);
+        $(me).parent().parent().find('input[type="checkbox"]:eq(1)').attr('disabled', true);
+        $(me).parent().parent().find('input[type="checkbox"]:eq(2)').attr('disabled', true);
+        $(me).parent().html('<button type="button" class="btn btn-danger" onclick="user_delete(this)">删除</button>');
     }
 </script>
 </body>
