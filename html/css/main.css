@@ -8,3 +8,10 @@
     padding-right: 0;
 }
 
+#header {
+    padding: 0px;
+}
+
+#navbar {
+    margin: 0px;
+}
