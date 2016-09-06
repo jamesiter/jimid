@@ -18,6 +18,21 @@ function insert_warning_window(element, content) {
     }, 3000);
 }
 
+function insert_success_window(element, content) {
+    // 展出成功提示框
+    element.before(
+        '<div class="alert alert-success alert-dismissible fade in" role="alert">' +
+        '<button id="success_window_close_btn" type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+        '<span aria-hidden="true">&times;</span>' +
+        '</button>' +
+        content +
+        '</div>');
+    // 3秒后自动关闭
+    setTimeout(function() {
+        $('#success_window_close_btn').click();
+    }, 3000);
+}
+
 $.fn.hasAttr = function(name) {
    return this.attr(name) !== undefined;
 };
