@@ -206,6 +206,10 @@ def r_get_list():
         ret['paging'] = {'total': 0, 'offset': offset, 'limit': limit, 'page': page, 'page_size': page_size}
 
         ret['data'], ret['paging']['total'] = Auth.get_list(offset=offset, limit=limit, order_by=order_by, order=order)
+
+        for i in range(ret['data'].__len__()):
+            del ret['data'][i]['password']
+
         return ret
     except ji.PreviewingError, e:
         return json.loads(e.message)
