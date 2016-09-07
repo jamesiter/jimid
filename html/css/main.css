@@ -15,3 +15,7 @@
 #navbar {
     margin: 0px;
 }
+
+.table>tbody>tr>td>input[type=checkbox] {
+    width: 20px;
+}
