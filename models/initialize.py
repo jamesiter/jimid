@@ -8,6 +8,7 @@ from logging.handlers import TimedRotatingFileHandler
 import json
 import os
 import sys
+import re
 
 import jimit as ji
 from state_code import *
@@ -58,6 +59,10 @@ class Init(object):
         fh.setFormatter(formatter)
         _logger.addHandler(fh)
         return _logger
+
+
+# 预编译效率更高
+regex_sql_str = re.compile('\\\+"')
 
 
 Init.init_config()

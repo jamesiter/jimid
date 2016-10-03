@@ -22,6 +22,11 @@ from user import (
     User
 )
 
+from filter import (
+    FilterFieldType,
+    Filter
+)
+
 
 __author__ = 'James Iter'
 __date__ = '16/6/8'
@@ -30,5 +35,5 @@ __copyright__ = '(c) 2016 by James Iter.'
 
 
 __all__ = [
-    'Rules', 'Utils', 'Init', 'Database', 'User'
+    'Rules', 'Utils', 'Init', 'Database', 'User', 'FilterFieldType', 'Filter'
 ]

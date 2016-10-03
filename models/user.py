@@ -7,6 +7,7 @@ import jimit as ji
 from mysql.connector import errorcode, errors
 
 from database import Database as db
+from filter import FilterFieldType
 
 
 __author__ = 'James Iter'
@@ -179,3 +180,18 @@ class User(object):
             cursor.close()
             cnx.close()
 
+    @staticmethod
+    def get_filter_keywords():
+        # 指定参与过滤的关键字及其数据库对应字段类型
+        keywords = {
+            'id': FilterFieldType.INT.value,
+            'login_name': FilterFieldType.STR.value,
+            'create_time': FilterFieldType.INT.value,
+            'mobile_phone': FilterFieldType.STR.value,
+            'email': FilterFieldType.STR.value,
+            'mobile_phone_verified': FilterFieldType.BOOL.value,
+            'email_verified': FilterFieldType.BOOL.value,
+            'enabled': FilterFieldType.BOOL.value
+        }
+
+        return keywords
