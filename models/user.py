@@ -15,7 +15,7 @@ __contact__ = 'james.iter.cn@gmail.com'
 __copyright__ = '(c) 2016 by James Iter.'
 
 
-class Auth(object):
+class User(object):
     def __init__(self, **kwargs):
         self.id = 0
         self.login_name = kwargs.get('login_name', None)
@@ -28,7 +28,7 @@ class Auth(object):
         self.enabled = True
 
     def create(self):
-        sql_stmt = ("INSERT INTO auth (login_name, password, create_time, mobile_phone, email,"
+        sql_stmt = ("INSERT INTO user (login_name, password, create_time, mobile_phone, email,"
                     "mobile_phone_verified, email_verified, enabled) VALUES (%(login_name)s, %(password)s,"
                     "%(create_time)s, %(mobile_phone)s, %(email)s, %(mobile_phone_verified)s,"
                     "%(email_verified)s, %(enabled)s)")
@@ -56,7 +56,7 @@ class Auth(object):
             ret['state']['sub']['zh-cn'] = ''.join([ret['state']['sub']['zh-cn'], ': ', self.id.__str__()])
             raise ji.PreviewingError(json.dumps(ret, ensure_ascii=False))
 
-        sql_stmt = ("UPDATE auth SET login_name = %(login_name)s, password = %(password)s,"
+        sql_stmt = ("UPDATE user SET login_name = %(login_name)s, password = %(password)s,"
                     "create_time = %(create_time)s, mobile_phone = %(mobile_phone)s, email = %(email)s,"
                     "mobile_phone_verified = %(mobile_phone_verified)s, email_verified = %(email_verified)s,"
                     "enabled = %(enabled)s WHERE id = %(id)s")
@@ -77,7 +77,7 @@ class Auth(object):
             ret['state']['sub']['zh-cn'] = ''.join([ret['state']['sub']['zh-cn'], ': ', self.id.__str__()])
             raise ji.PreviewingError(json.dumps(ret, ensure_ascii=False))
 
-        sql_stmt = ("DELETE FROM auth WHERE id = %(id)s")
+        sql_stmt = ("DELETE FROM user WHERE id = %(id)s")
 
         cnx = db.cnxpool.get_connection()
         cursor = cnx.cursor(dictionary=True, buffered=True)
@@ -89,7 +89,7 @@ class Auth(object):
             cnx.close()
 
     def get(self):
-        sql_stmt = ("SELECT " + ', '.join(self.__dict__.keys()) + " FROM auth WHERE id = %(id)s LIMIT 1")
+        sql_stmt = ("SELECT " + ', '.join(self.__dict__.keys()) + " FROM user WHERE id = %(id)s LIMIT 1")
 
         cnx = db.cnxpool.get_connection()
         cursor = cnx.cursor(dictionary=True, buffered=True)
@@ -109,7 +109,7 @@ class Auth(object):
             raise ji.PreviewingError(json.dumps(ret, ensure_ascii=False))
 
     def exist(self):
-        sql_stmt = ("SELECT id FROM auth WHERE id = %(id)s LIMIT 1")
+        sql_stmt = ("SELECT id FROM user WHERE id = %(id)s LIMIT 1")
 
         cnx = db.cnxpool.get_connection()
         cursor = cnx.cursor(dictionary=True, buffered=True)
@@ -127,7 +127,7 @@ class Auth(object):
 
     def get_by_login_name(self):
         sql_stmt = ("SELECT " + ', '.join(self.__dict__.keys()) +
-                    " FROM auth WHERE login_name = %(login_name)s LIMIT 1")
+                    " FROM user WHERE login_name = %(login_name)s LIMIT 1")
 
         cnx = db.cnxpool.get_connection()
         cursor = cnx.cursor(dictionary=True, buffered=True)
@@ -147,7 +147,7 @@ class Auth(object):
             raise ji.PreviewingError(json.dumps(ret, ensure_ascii=False))
 
     def exist_by_login_name(self):
-        sql_stmt = ("SELECT id FROM auth WHERE login_name = %(login_name)s LIMIT 1")
+        sql_stmt = ("SELECT id FROM user WHERE login_name = %(login_name)s LIMIT 1")
 
         cnx = db.cnxpool.get_connection()
         cursor = cnx.cursor(dictionary=True, buffered=True)
@@ -165,8 +165,8 @@ class Auth(object):
 
     @staticmethod
     def get_list(offset=0, limit=50, order_by='id', order='asc'):
-        sql_stmt = ("SELECT * FROM auth ORDER BY %(order_by)s %(order)s LIMIT %(offset)s, %(limit)s")
-        sql_stmt_count = ("SELECT count(id) FROM auth")
+        sql_stmt = ("SELECT * FROM user ORDER BY %(order_by)s %(order)s LIMIT %(offset)s, %(limit)s")
+        sql_stmt_count = ("SELECT count(id) FROM user")
         cnx = db.cnxpool.get_connection()
         cursor = cnx.cursor(dictionary=True, buffered=True)
         try:

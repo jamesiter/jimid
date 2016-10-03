@@ -3,7 +3,7 @@
 
 
 from models.utils import add_rule
-from views import auth, mgmt
+from views import user, mgmt
 
 
 __author__ = 'James Iter'
@@ -14,22 +14,22 @@ __copyright__ = '(c) 2016 by James Iter.'
 
 # 普通用户接口
 # 注册
-add_rule(auth.blueprint, '/_sign_up', view_func='auth.r_sign_up', methods=['POST'])
+add_rule(user.blueprint, '/_sign_up', view_func='user.r_sign_up', methods=['POST'])
 # 登录
-add_rule(auth.blueprint, '/_sign_in', view_func='auth.r_sign_in', methods=['POST'])
+add_rule(user.blueprint, '/_sign_in', view_func='user.r_sign_in', methods=['POST'])
 # 登出
-add_rule(auth.blueprint, '/_sign_out', view_func='auth.r_sign_out', methods=['GET'])
+add_rule(user.blueprint, '/_sign_out', view_func='user.r_sign_out', methods=['GET'])
 # 验证
-add_rule(auth.blueprint, '/_auth', view_func='auth.r_auth', methods=['GET'])
+add_rule(user.blueprint, '/_auth', view_func='user.r_auth', methods=['GET'])
 # 获取用户信息
-add_rule(auth.blueprint, '', view_func='auth.r_get', methods=['GET'])
+add_rule(user.blueprint, '', view_func='user.r_get', methods=['GET'])
 # 更改用户密码
-add_rule(auth.blueprint, '/_change_password', view_func='auth.r_change_password', methods=['PATCH'])
+add_rule(user.blueprint, '/_change_password', view_func='user.r_change_password', methods=['PATCH'])
 
 # 管理员获取用户列表
-add_rule(auth.blueprint, '/_list', view_func='auth.r_get_list', methods=['GET'])
+add_rule(user.blueprint, '/_list', view_func='user.r_get_list', methods=['GET'])
 # 管理员更新用户信息
-add_rule(auth.blueprint, '/_update', view_func='auth.r_update', methods=['PUT'])
+add_rule(user.blueprint, '/_update', view_func='user.r_update', methods=['PUT'])
 
 # 管理接口
 # 通过用户名获取用户信息

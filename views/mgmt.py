@@ -6,7 +6,7 @@ import json
 from flask import Blueprint, request
 import jimit as ji
 
-from models import Utils, Rules, Auth
+from models import Utils, Rules, User
 
 
 __author__ = 'James Iter'
@@ -25,19 +25,19 @@ blueprint = Blueprint(
 @Utils.dumps2response
 @Utils.superuser
 def r_get_by_login_name(login_name=None):
-    auth = Auth()
+    user = User()
 
     args_rules = [
         Rules.LOGIN_NAME.value
     ]
-    auth.login_name = login_name
+    user.login_name = login_name
 
     try:
-        ji.Check.previewing(args_rules, auth.__dict__)
-        auth.get_by_login_name()
+        ji.Check.previewing(args_rules, user.__dict__)
+        user.get_by_login_name()
         ret = dict()
         ret['state'] = ji.Common.exchange_state(20000)
-        ret['data'] = auth.__dict__
+        ret['data'] = user.__dict__
         del ret['data']['password']
         return ret
     except ji.PreviewingError, e:
@@ -48,32 +48,32 @@ def r_get_by_login_name(login_name=None):
 @Utils.superuser
 def r_enable(_id):
 
-    auth = Auth()
+    user = User()
 
     args_rules = [
         Rules.ID.value
     ]
-    auth.id = _id
+    user.id = _id
 
     try:
-        ji.Check.previewing(args_rules, auth.__dict__)
-        auth.id = long(auth.id)
-        if auth.id == 1:
+        ji.Check.previewing(args_rules, user.__dict__)
+        user.id = long(user.id)
+        if user.id == 1:
             ret = dict()
             ret['state'] = ji.Common.exchange_state(40301)
             raise ji.PreviewingError(json.dumps(ret, ensure_ascii=False))
-        auth.get()
+        user.get()
     except ji.PreviewingError, e:
         return json.loads(e.message)
 
     args_rules = [
         Rules.ENABLED.value
     ]
-    auth.enabled = True
+    user.enabled = True
 
     try:
-        ji.Check.previewing(args_rules, auth.__dict__)
-        auth.update()
+        ji.Check.previewing(args_rules, user.__dict__)
+        user.update()
     except ji.PreviewingError, e:
         return json.loads(e.message)
 
@@ -82,32 +82,32 @@ def r_enable(_id):
 @Utils.superuser
 def r_disable(_id):
 
-    auth = Auth()
+    user = User()
 
     args_rules = [
         Rules.ID.value
     ]
-    auth.id = _id
+    user.id = _id
 
     try:
-        ji.Check.previewing(args_rules, auth.__dict__)
-        auth.id = long(auth.id)
-        if auth.id == 1:
+        ji.Check.previewing(args_rules, user.__dict__)
+        user.id = long(user.id)
+        if user.id == 1:
             ret = dict()
             ret['state'] = ji.Common.exchange_state(40301)
             raise ji.PreviewingError(json.dumps(ret, ensure_ascii=False))
-        auth.get()
+        user.get()
     except ji.PreviewingError, e:
         return json.loads(e.message)
 
     args_rules = [
         Rules.ENABLED.value
     ]
-    auth.enabled = False
+    user.enabled = False
 
     try:
-        ji.Check.previewing(args_rules, auth.__dict__)
-        auth.update()
+        ji.Check.previewing(args_rules, user.__dict__)
+        user.update()
     except ji.PreviewingError, e:
         return json.loads(e.message)
 
@@ -115,22 +115,22 @@ def r_disable(_id):
 @Utils.dumps2response
 @Utils.superuser
 def r_delete(_id):
-    auth = Auth()
+    user = User()
 
     args_rules = [
         Rules.ID.value
     ]
-    auth.id = _id
+    user.id = _id
 
     try:
-        ji.Check.previewing(args_rules, auth.__dict__)
-        auth.id = long(auth.id)
-        if auth.id == 1:
+        ji.Check.previewing(args_rules, user.__dict__)
+        user.id = long(user.id)
+        if user.id == 1:
             ret = dict()
             ret['state'] = ji.Common.exchange_state(40301)
             raise ji.PreviewingError(json.dumps(ret, ensure_ascii=False))
 
-        auth.delete()
+        user.delete()
     except ji.PreviewingError, e:
         return json.loads(e.message)
 

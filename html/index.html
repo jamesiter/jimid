@@ -124,7 +124,7 @@
         var page_size = 20;
 
         $.ajax({
-            url : '/auth/_list?page=' + page + '&page_size=' + page_size,
+            url : '/user/_list?page=' + page + '&page_size=' + page_size,
             type : 'GET',
             dataType: 'json',
             error : function(xhr, status, error) {
@@ -181,11 +181,11 @@
         });
 
         $("#t_body").on('click', ".enabled_checkbox", function() {
-            var id = $(this).parent().parent().find('td:eq(0) input').val();
-            var action_url = '/mgmt/_enable/';
+            var id = $(this).parent().parent().find('td:eq(0)').html();
+            var action_url = '/mgmt/_disable/';
 
             if ($(this)[0].checked) {
-                action_url = '/mgmt/_disable/';
+                action_url = '/mgmt/_enable/';
             }
             $.ajax({
                 url : action_url + id,
@@ -217,7 +217,7 @@
         $(me).parent().html('<button type="button" class="btn btn-danger" onclick="user_delete(this)">删除</button>');
 
         $.ajax({
-            url : '/auth/_update',
+            url : '/user/_update',
             type : 'PUT',
             contentType: "application/json; charset=utf-8",
             data : JSON.stringify({
@@ -282,7 +282,7 @@
 
     function create_user() {
         $.ajax({
-            url : '/auth/_sign_up',
+            url : '/user/_sign_up',
             type : 'POST',
             contentType: "application/json; charset=utf-8",
             data : JSON.stringify({
@@ -300,7 +300,7 @@
 
     function sign_out() {
         $.ajax({
-            url : '/auth/_sign_out',
+            url : '/user/_sign_out',
             type : 'GET',
             contentType: "application/json; charset=utf-8",
             error : function() {

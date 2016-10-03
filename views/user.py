@@ -6,7 +6,7 @@ import json
 from flask import Blueprint, request, g, make_response
 import jimit as ji
 
-from models import Utils, Rules, Auth
+from models import Utils, Rules, User
 
 
 __author__ = 'James Iter'
@@ -16,32 +16,32 @@ __copyright__ = '(c) 2016 by James Iter.'
 
 
 blueprint = Blueprint(
-    'auth',
+    'user',
     __name__,
-    url_prefix='/auth'
+    url_prefix='/user'
 )
 
 
 @Utils.dumps2response
 def r_sign_up():
 
-    auth = Auth()
+    user = User()
 
     args_rules = [
         Rules.LOGIN_NAME.value,
         Rules.PASSWORD.value
     ]
-    auth.login_name = request.json.get('login_name')
-    auth.password = request.json.get('password')
+    user.login_name = request.json.get('login_name')
+    user.password = request.json.get('password')
 
     try:
-        ji.Check.previewing(args_rules, auth.__dict__)
-        auth.password = ji.Security.ji_pbkdf2(auth.password)
-        auth.create()
-        auth.get_by_login_name()
+        ji.Check.previewing(args_rules, user.__dict__)
+        user.password = ji.Security.ji_pbkdf2(user.password)
+        user.create()
+        user.get_by_login_name()
         ret = dict()
         ret['state'] = ji.Common.exchange_state(20000)
-        ret['data'] = auth.__dict__
+        ret['data'] = user.__dict__
         del ret['data']['password']
         return ret
     except ji.PreviewingError, e:
@@ -51,27 +51,27 @@ def r_sign_up():
 @Utils.dumps2response
 def r_sign_in():
 
-    auth = Auth()
+    user = User()
 
     args_rules = [
         Rules.LOGIN_NAME.value,
         Rules.PASSWORD.value
     ]
-    auth.login_name = request.json.get('login_name')
-    auth.password = request.json.get('password')
+    user.login_name = request.json.get('login_name')
+    user.password = request.json.get('password')
 
     try:
-        ji.Check.previewing(args_rules, auth.__dict__)
-        plain_password = auth.password
-        auth.get_by_login_name()
+        ji.Check.previewing(args_rules, user.__dict__)
+        plain_password = user.password
+        user.get_by_login_name()
 
-        if not ji.Security.ji_pbkdf2_check(password=plain_password, password_hash=auth.password):
+        if not ji.Security.ji_pbkdf2_check(password=plain_password, password_hash=user.password):
             ret = dict()
             ret['state'] = ji.Common.exchange_state(40101)
             ret['state']['sub']['zh-cn'] = ''.join([ret['state']['sub']['zh-cn'], u': 鉴权失败'])
             raise ji.PreviewingError(json.dumps(ret, ensure_ascii=False))
 
-        token = Utils.generate_token(auth.id)
+        token = Utils.generate_token(user.id)
         rep = make_response()
         rep.set_cookie('token', token)
         rep.data = json.dumps({'state': ji.Common.exchange_state(20000)}, ensure_ascii=False)
@@ -90,20 +90,20 @@ def r_sign_out():
 
 @Utils.dumps2response
 def r_get():
-    auth = Auth()
+    user = User()
 
     args_rules = [
         Rules.ID.value
     ]
-    auth.id = g.token.get('uid', 0).__str__()
+    user.id = g.token.get('uid', 0).__str__()
 
     try:
-        ji.Check.previewing(args_rules, auth.__dict__)
-        auth.id = long(auth.id)
-        auth.get()
+        ji.Check.previewing(args_rules, user.__dict__)
+        user.id = long(user.id)
+        user.get()
         ret = dict()
         ret['state'] = ji.Common.exchange_state(20000)
-        ret['data'] = auth.__dict__
+        ret['data'] = user.__dict__
         del ret['data']['password']
         return ret
     except ji.PreviewingError, e:
@@ -113,46 +113,46 @@ def r_get():
 @Utils.dumps2response
 def r_change_password():
 
-    auth = Auth()
+    user = User()
 
     args_rules = [
         Rules.ID.value
     ]
-    auth.id = g.token.get('uid', 0).__str__()
+    user.id = g.token.get('uid', 0).__str__()
 
     try:
-        ji.Check.previewing(args_rules, auth.__dict__)
-        auth.get()
+        ji.Check.previewing(args_rules, user.__dict__)
+        user.get()
     except ji.PreviewingError, e:
         return json.loads(e.message)
 
     args_rules = [
         Rules.PASSWORD.value
     ]
-    auth.password = request.json.get('password')
+    user.password = request.json.get('password')
 
     try:
-        ji.Check.previewing(args_rules, auth.__dict__)
-        auth.password = ji.Security.ji_pbkdf2(auth.password)
-        auth.update()
+        ji.Check.previewing(args_rules, user.__dict__)
+        user.password = ji.Security.ji_pbkdf2(user.password)
+        user.update()
     except ji.PreviewingError, e:
         return json.loads(e.message)
 
 
 @Utils.dumps2response
 def r_auth():
-    auth = Auth()
+    user = User()
 
     args_rules = [
         Rules.ID.value
     ]
-    auth.id = g.token.get('uid', 0).__str__()
+    user.id = g.token.get('uid', 0).__str__()
 
     try:
-        ji.Check.previewing(args_rules, auth.__dict__)
-        auth.id = long(auth.id)
-        auth.get()
-        if not auth.enabled:
+        ji.Check.previewing(args_rules, user.__dict__)
+        user.id = long(user.id)
+        user.get()
+        if not user.enabled:
             ret = dict()
             ret['state'] = ji.Common.exchange_state(40301)
             raise ji.PreviewingError(json.dumps(ret, ensure_ascii=False))
@@ -205,7 +205,7 @@ def r_get_list():
         ret['data'] = list()
         ret['paging'] = {'total': 0, 'offset': offset, 'limit': limit, 'page': page, 'page_size': page_size}
 
-        ret['data'], ret['paging']['total'] = Auth.get_list(offset=offset, limit=limit, order_by=order_by, order=order)
+        ret['data'], ret['paging']['total'] = User.get_list(offset=offset, limit=limit, order_by=order_by, order=order)
 
         for i in range(ret['data'].__len__()):
             del ret['data'][i]['password']
@@ -220,7 +220,7 @@ def r_get_list():
 @Utils.superuser
 def r_update():
 
-    auth = Auth()
+    user = User()
 
     args_rules = [
         Rules.ID.value
@@ -259,16 +259,16 @@ def r_update():
     request.json['id'] = request.json.get('id', 0).__str__()
     try:
         ji.Check.previewing(args_rules, request.json)
-        auth.id = int(request.json.get('id'))
-        auth.get()
+        user.id = int(request.json.get('id'))
+        user.get()
 
-        auth.login_name = request.json.get('login_name', auth.login_name)
-        auth.mobile_phone = request.json.get('mobile_phone', auth.mobile_phone)
-        auth.mobile_phone_verified = request.json.get('mobile_phone_verified', auth.mobile_phone_verified)
-        auth.email = request.json.get('email', auth.email)
-        auth.email_verified = request.json.get('email_verified', auth.email_verified)
+        user.login_name = request.json.get('login_name', user.login_name)
+        user.mobile_phone = request.json.get('mobile_phone', user.mobile_phone)
+        user.mobile_phone_verified = request.json.get('mobile_phone_verified', user.mobile_phone_verified)
+        user.email = request.json.get('email', user.email)
+        user.email_verified = request.json.get('email_verified', user.email_verified)
 
-        auth.update()
+        user.update()
     except ji.PreviewingError, e:
         return json.loads(e.message)
 

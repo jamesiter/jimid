@@ -12,8 +12,8 @@ from models.initialize import app, logger
 import route_table
 from models import Database as db
 from models import Utils
-from models import Auth
-from views.auth import blueprint as auth_blueprint
+from models import User
+from views.user import blueprint as auth_blueprint
 from views.mgmt import blueprint as mgmt_blueprint
 
 
@@ -25,8 +25,8 @@ __copyright__ = '(c) 2016 by James Iter.'
 
 def is_not_need_to_auth(endpoint):
     not_auth_table = [
-        'auth.r_sign_up',
-        'auth.r_sign_in'
+        'user.r_sign_up',
+        'user.r_sign_in'
     ]
     if endpoint in not_auth_table:
         return True
@@ -44,7 +44,7 @@ def r_before_request():
             if g.token['uid'] == 1:
                 g.superuser = True
 
-            auth = Auth()
+            auth = User()
             auth.id = g.token['uid']
 
             try:

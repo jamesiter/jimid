@@ -39,7 +39,7 @@ class TestMgmt(unittest.TestCase):
                 "password": TestMgmt.password
             }
 
-            url = 'http://jimauth.dev.iit.im/auth/_sign_up'
+            url = 'http://jimauth.dev.iit.im/user/_sign_up'
             headers = {'content-type': 'application/json'}
             r = requests.post(url, data=json.dumps(payload), headers=headers)
             j_r = json.loads(r.content)
@@ -55,7 +55,7 @@ class TestMgmt(unittest.TestCase):
             "password": TestMgmt.superuser_password
         }
 
-        url = 'http://jimauth.dev.iit.im/auth/_sign_in'
+        url = 'http://jimauth.dev.iit.im/user/_sign_in'
         headers = {'content-type': 'application/json'}
         r = requests.post(url, data=json.dumps(payload), headers=headers)
         j_r = json.loads(r.content)
@@ -65,7 +65,7 @@ class TestMgmt(unittest.TestCase):
 
     # 超级用户获取用户列表
     def test_32_get_list(self):
-        url = 'http://jimauth.dev.iit.im/auth/_list?offset=10&limit=5'
+        url = 'http://jimauth.dev.iit.im/user/_list?offset=10&limit=5'
         r = requests.get(url, cookies=TestMgmt.superuser_cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
@@ -73,7 +73,7 @@ class TestMgmt(unittest.TestCase):
 
     # 超级用户获取用户列表
     def test_33_get_list_via_page(self):
-        url = 'http://jimauth.dev.iit.im/auth/_list?page=2&page_size=5'
+        url = 'http://jimauth.dev.iit.im/user/_list?page=2&page_size=5'
         r = requests.get(url, cookies=TestMgmt.superuser_cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
@@ -90,7 +90,7 @@ class TestMgmt(unittest.TestCase):
             "email_verified": True
         }
 
-        url = 'http://jimauth.dev.iit.im/auth/_update'
+        url = 'http://jimauth.dev.iit.im/user/_update'
         headers = {'content-type': 'application/json'}
         r = requests.put(url, cookies=TestMgmt.superuser_cookies, headers=headers, data=json.dumps(payload))
         j_r = json.loads(r.content)
@@ -104,7 +104,7 @@ class TestMgmt(unittest.TestCase):
             "login_name": "new_login_name2",
         }
 
-        url = 'http://jimauth.dev.iit.im/auth/_update'
+        url = 'http://jimauth.dev.iit.im/user/_update'
         headers = {'content-type': 'application/json'}
         r = requests.put(url, cookies=TestMgmt.superuser_cookies, headers=headers, data=json.dumps(payload))
         j_r = json.loads(r.content)
@@ -113,7 +113,7 @@ class TestMgmt(unittest.TestCase):
 
     # 超级用户获取用户列表
     def test_36_get_list_via_page(self):
-        url = 'http://jimauth.dev.iit.im/auth/_list?page=3&page_size=5'
+        url = 'http://jimauth.dev.iit.im/user/_list?page=3&page_size=5'
         r = requests.get(url, cookies=TestMgmt.superuser_cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)

@@ -33,3 +33,15 @@ Logo
 姓名: E-Mail
 
 Demo
+过滤器操作符原语
+
+min_id=1
+max_id=10
+min+max组成range
+
+in_id=1
+in_id=1,2,5
+notin_id=1,2,5
+
+in包含'等于'及'或等于'的意思
+not in包含'不等于'及'且不等于'的意思

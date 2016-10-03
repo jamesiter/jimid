@@ -73,7 +73,7 @@
 
             if (fill_ok) {
                 $.ajax({
-                    url : '/auth/_sign_in',
+                    url : '/user/_sign_in',
                     type : 'POST',
                     contentType: "application/json; charset=utf-8",
                     data : JSON.stringify({login_name: $('#login_name').val(), password: $('#password').val()}),

@@ -18,8 +18,8 @@ from database import (
     Database
 )
 
-from auth import (
-    Auth
+from user import (
+    User
 )
 
 
@@ -30,5 +30,5 @@ __copyright__ = '(c) 2016 by James Iter.'
 
 
 __all__ = [
-    'Rules', 'Utils', 'Init', 'Database', 'Auth'
+    'Rules', 'Utils', 'Init', 'Database', 'User'
 ]
