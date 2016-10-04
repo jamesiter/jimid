@@ -4,7 +4,7 @@
 
 from enum import Enum
 
-from initialize import regex_sql_str
+from initialize import regex_sql_str, regex_dsl_str
 
 
 __author__ = 'James Iter'
@@ -33,6 +33,8 @@ class Filter(object):
     @staticmethod
     def get_fit_statement(field_type=None, value=''):
         if field_type == FilterFieldType.INT.value:
+            if not value.isdigit():
+                raise TypeError(''.join(['Value: ', str(value), ' should be digit']))
             return value
         elif field_type == FilterFieldType.STR.value:
             _s = regex_sql_str.sub('"', str(value)).strip('"')
@@ -44,29 +46,31 @@ class Filter(object):
 
     @classmethod
     def dsl_to_sql(cls, allow_keywords=None, dsl=''):
-        keyword, operator, value = dsl.split(':')
-
         sql_stmt = ''
+
+        if regex_dsl_str.match(dsl) is None:
+            return sql_stmt
+
+        keyword, operator, value = dsl.split(':')
 
         if keyword not in allow_keywords.keys():
             return sql_stmt
         field_type = allow_keywords[keyword]
 
-        if operator not in cls.operator.keys():
-            return sql_stmt
-
         if operator in ['eq', 'gt', 'lt', 'ne']:
             sql_stmt = keyword + cls.operator[operator] + cls.get_fit_statement(field_type=field_type, value=value)
-            return sql_stmt
 
-        if operator == 'in':
-            _sql_stmt = map(cls.get_fit_statement, field_type, value.split(','))
+        elif operator == 'in':
+            # from itertools import repeat
+            # _sql_stmt = map(cls.get_fit_statement, repeat(field_type, len(value.split(','))), value.split(','))
+            # 上面为通过map实现的方式
+            _sql_stmt = [cls.get_fit_statement(field_type=field_type, value=v) for v in value.split(',')]
             sql_stmt = keyword + ' in (' + ','.join(_sql_stmt) + ')'
-            return sql_stmt
 
-        if operator == 'like':
+        elif operator == 'like':
             sql_stmt = keyword + ' like %' + cls.get_fit_statement(field_type=field_type, value=value) + '%'
-            return sql_stmt
+
+        return sql_stmt
 
     @classmethod
     def filter_str_to_sql(cls, allow_keywords=None, filter_str=''):

@@ -7,7 +7,7 @@ import jimit as ji
 from mysql.connector import errorcode, errors
 
 from database import Database as db
-from filter import FilterFieldType
+from filter import FilterFieldType, Filter
 
 
 __author__ = 'James Iter'
@@ -195,3 +195,26 @@ class User(object):
         }
 
         return keywords
+
+    @classmethod
+    def get_by_filter(cls, offset=0, limit=50, order_by='id', order='asc', filter_str=''):
+        sql_stmt = ("SELECT * FROM user ORDER BY " + order_by + " " + order + " LIMIT %(offset)s, %(limit)s")
+        sql_stmt_count = ("SELECT count(id) FROM user")
+        where_str = Filter.filter_str_to_sql(allow_keywords=cls.get_filter_keywords(), filter_str=filter_str)
+        if where_str != '':
+            sql_stmt = ("SELECT * FROM user WHERE " + where_str + " ORDER BY " + order_by + " " + order +
+                        " LIMIT %(offset)s, %(limit)s")
+            sql_stmt_count = ("SELECT count(id) FROM user WHERE " + where_str)
+
+        cnx = db.cnxpool.get_connection()
+        cursor = cnx.cursor(dictionary=True, buffered=True)
+        try:
+            cursor.execute(sql_stmt, {'offset': offset, 'limit': limit})
+            rows = cursor.fetchall()
+            cursor.execute(sql_stmt_count)
+            count = cursor.fetchone()
+            return rows, count['count(id)']
+        finally:
+            cursor.close()
+            cnx.close()
+

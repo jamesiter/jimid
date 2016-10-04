@@ -188,6 +188,7 @@ def r_get_list():
 
     order_by = request.args.get('order_by', 'id')
     order = request.args.get('order', 'asc')
+    filter_str = request.args.get('filter', '')
 
     args_rules = [
         Rules.OFFSET.value,
@@ -205,7 +206,10 @@ def r_get_list():
         ret['data'] = list()
         ret['paging'] = {'total': 0, 'offset': offset, 'limit': limit, 'page': page, 'page_size': page_size}
 
-        ret['data'], ret['paging']['total'] = User.get_list(offset=offset, limit=limit, order_by=order_by, order=order)
+        # ret['data'], ret['paging']['total'] = User.get_list(offset=offset, limit=limit, order_by=order_by,
+        #                                                        order=order)
+        ret['data'], ret['paging']['total'] = User.get_by_filter(offset=offset, limit=limit, order_by=order_by,
+                                                                 order=order, filter_str=filter_str)
 
         for i in range(ret['data'].__len__()):
             del ret['data'][i]['password']
