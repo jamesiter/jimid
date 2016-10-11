@@ -218,3 +218,36 @@ class User(object):
             cursor.close()
             cnx.close()
 
+    @classmethod
+    def update_by_filter(cls, obj, filter_str=''):
+
+        # 关于对象更新的元素, 如果是在巨量环境中, 这里的obj参数可以换成与更新的具体字段与值。此处之所以传递obj对象,
+        # 是因为该项目的假设使用环境数据量不会超过100w, 并发量也少于10, 所以用obj完全是图个方便。
+        where_str = Filter.filter_str_to_sql(allow_keywords=cls.get_filter_keywords(), filter_str=filter_str)
+        sql_stmt = ("UPDATE user SET login_name = %(login_name)s, password = %(password)s,"
+                    "create_time = %(create_time)s, mobile_phone = %(mobile_phone)s, email = %(email)s,"
+                    "mobile_phone_verified = %(mobile_phone_verified)s, email_verified = %(email_verified)s,"
+                    "enabled = %(enabled)s WHERE " + where_str)
+
+        cnx = db.cnxpool.get_connection()
+        cursor = cnx.cursor(dictionary=True, buffered=True)
+        try:
+            cursor.execute(sql_stmt, obj.__dict__)
+            cnx.commit()
+        finally:
+            cursor.close()
+            cnx.close()
+
+    @classmethod
+    def delete_by_filter(cls, filter_str=''):
+        where_str = Filter.filter_str_to_sql(allow_keywords=cls.get_filter_keywords(), filter_str=filter_str)
+        sql_stmt = ("DELETE FROM user WHERE " + where_str)
+
+        cnx = db.cnxpool.get_connection()
+        cursor = cnx.cursor(dictionary=True, buffered=True)
+        try:
+            cursor.execute(sql_stmt)
+            cnx.commit()
+        finally:
+            cursor.close()
+            cnx.close()
