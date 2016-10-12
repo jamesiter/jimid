@@ -27,9 +27,9 @@ add_rule(user.blueprint, '', view_func='user.r_get', methods=['GET'])
 add_rule(user.blueprint, '/_change_password', view_func='user.r_change_password', methods=['PATCH'])
 
 # 管理员获取用户列表
-add_rule(user.blueprint, '/_list', view_func='user.r_get_list', methods=['GET'])
+add_rule(mgmt.blueprint, '/_list', view_func='mgmt.r_get_list', methods=['GET'])
 # 管理员更新用户信息
-add_rule(user.blueprint, '/_update', view_func='user.r_update', methods=['PUT'])
+add_rule(mgmt.blueprint, '/_update', view_func='mgmt.r_update', methods=['PUT'])
 
 # 管理接口
 # 通过用户名获取用户信息

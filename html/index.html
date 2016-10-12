@@ -124,7 +124,7 @@
         var page_size = 20;
 
         $.ajax({
-            url : '/user/_list?page=' + page + '&page_size=' + page_size,
+            url : '/mgmt/_list?page=' + page + '&page_size=' + page_size,
             type : 'GET',
             dataType: 'json',
             error : function(xhr, status, error) {
@@ -217,7 +217,7 @@
         $(me).parent().html('<button type="button" class="btn btn-danger" onclick="user_delete(this)">删除</button>');
 
         $.ajax({
-            url : '/user/_update',
+            url : '/mgmt/_update',
             type : 'PUT',
             contentType: "application/json; charset=utf-8",
             data : JSON.stringify({

@@ -165,22 +165,6 @@ class User(object):
         return False
 
     @staticmethod
-    def get_list(offset=0, limit=50, order_by='id', order='asc'):
-        sql_stmt = ("SELECT * FROM user ORDER BY %(order_by)s %(order)s LIMIT %(offset)s, %(limit)s")
-        sql_stmt_count = ("SELECT count(id) FROM user")
-        cnx = db.cnxpool.get_connection()
-        cursor = cnx.cursor(dictionary=True, buffered=True)
-        try:
-            cursor.execute(sql_stmt, {'offset': offset, 'limit': limit, 'order_by': order_by, 'order': order})
-            rows = cursor.fetchall()
-            cursor.execute(sql_stmt_count)
-            count = cursor.fetchone()
-            return rows, count['count(id)']
-        finally:
-            cursor.close()
-            cnx.close()
-
-    @staticmethod
     def get_filter_keywords():
         # 指定参与过滤的关键字及其数据库对应字段类型
         keywords = {
