@@ -26,11 +26,6 @@ add_rule(user.blueprint, '', view_func='user.r_get', methods=['GET'])
 # 更改用户密码
 add_rule(user.blueprint, '/_change_password', view_func='user.r_change_password', methods=['PATCH'])
 
-# 管理员获取用户列表
-add_rule(mgmt.blueprint, '/_list', view_func='mgmt.r_get_list', methods=['GET'])
-# 管理员更新用户信息
-add_rule(mgmt.blueprint, '/_update', view_func='mgmt.r_update', methods=['PUT'])
-
 # 管理接口
 # 通过用户名获取用户信息
 add_rule(mgmt.blueprint, '/_by_login_name/<login_name>', view_func='mgmt.r_get_by_login_name', methods=['GET'])
@@ -40,3 +35,8 @@ add_rule(mgmt.blueprint, '/<_id>', view_func='mgmt.r_delete', methods=['DELETE']
 add_rule(mgmt.blueprint, '/_disable/<_id>', view_func='mgmt.r_disable', methods=['PATCH'])
 # 解禁用户(用户不可以解禁自身,只能超级用户解禁普通用户,且超级用户不能解禁自己)
 add_rule(mgmt.blueprint, '/_enable/<_id>', view_func='mgmt.r_enable', methods=['PATCH'])
+# 管理员获取用户列表
+add_rule(mgmt.blueprint, '/_list', view_func='mgmt.r_get_list', methods=['GET'])
+# 管理员更新用户信息
+add_rule(mgmt.blueprint, '/_update', view_func='mgmt.r_update', methods=['PUT'])
+
