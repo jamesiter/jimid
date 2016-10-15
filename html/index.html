@@ -51,9 +51,9 @@
             &nbsp;
             &nbsp;
             <div class="btn-group">
-                <button type="button" class="btn btn-default">激活</button>
-                <button type="button" class="btn btn-default">禁用</button>
-                <button type="button" class="btn btn-default">删除</button>
+                <button type="button" class="btn btn-default" onclick="batch_enable()">激活</button>
+                <button type="button" class="btn btn-default" onclick="batch_disable()">禁用</button>
+                <button type="button" class="btn btn-default" onclick="batch_delete()">删除</button>
             </div>
             <div class="form-group pull-right">
                 <input type="search" class="form-control" size="30" placeholder="快速搜索">
@@ -62,9 +62,9 @@
     </div>
     <div class="row" style="margin-top: 0px; border-radius: 4px;">
         <table id="table_users" class="table table-hover">
-            <thead>
+            <thead id="t_head">
             <tr class="active" style="font-size: medium;">
-                <td><input type="checkbox"></td>
+                <td><input type="checkbox" id="all_selector"></td>
                 <td width="60px">#</td><td width="140px">登录名</td><td width="140px">手机号码</td><td width="140px">经校验手机号码</td>
                 <td width="160px">E-Mail</td><td width="140px">经校验的E-Mail</td><td width="60px">激活</td><td width="180px">创建时间</td>
                 <td width="160px">操作</td>
@@ -200,6 +200,14 @@
                 }
             });
         });
+
+        $("#t_head").on('click', "#all_selector", function() {
+            if ($("#all_selector").is(':checked')) {
+                $("#t_body tr").find('td input[type="checkbox"]:eq(0)').prop('checked', true);
+            } else {
+                $("#t_body tr").find('td input[type="checkbox"]:eq(0)').prop('checked', false);
+            }
+        });
     });
 
     function user_update(me) {
@@ -320,6 +328,80 @@
                 }, 3000);
             }
         });
+    }
+
+    function batch_enable() {
+        var ids = new Array();
+        $("#t_body tr").find('td input[type="checkbox"]:eq(0):checked').parent().next().each(function(i, ele) {
+            ids.push($(ele).text());
+        });
+        if (ids.length > 0) {
+            $.ajax({
+                url : '/mgmts',
+                type : 'PATCH',
+                contentType: "application/json; charset=utf-8",
+                data : JSON.stringify({
+                    ids: ids.join(','),
+                    enabled: true
+                }),
+                error : function() {
+                    insert_warning_window($('#header'), '<strong>批量激活失败, 请联系管理员! </strong>');
+                },
+                success : function() {
+                    insert_success_window($('#header'), '<strong>批量激活成功! </strong>');
+                    window.location.href="/";
+                }
+            });
+        }
+    }
+
+    function batch_disable() {
+        var ids = new Array();
+        $("#t_body tr").find('td input[type="checkbox"]:eq(0):checked').parent().next().each(function(i, ele) {
+            ids.push($(ele).text());
+        });
+        if (ids.length > 0) {
+            $.ajax({
+                url : '/mgmts',
+                type : 'PATCH',
+                contentType: "application/json; charset=utf-8",
+                data : JSON.stringify({
+                    ids: ids.join(','),
+                    enabled: false
+                }),
+                error : function() {
+                    insert_warning_window($('#header'), '<strong>批量禁用失败, 请联系管理员! </strong>');
+                },
+                success : function() {
+                    insert_success_window($('#header'), '<strong>批量禁用成功! </strong>');
+                    window.location.href="/";
+                }
+            });
+        }
+    }
+
+    function batch_delete() {
+        var ids = new Array();
+        $("#t_body tr").find('td input[type="checkbox"]:eq(0):checked').parent().next().each(function(i, ele) {
+            ids.push($(ele).text());
+        });
+        if (ids.length > 0) {
+            $.ajax({
+                url : '/mgmts',
+                type : 'DELETE',
+                contentType: "application/json; charset=utf-8",
+                data : JSON.stringify({
+                    ids: ids.join(',')
+                }),
+                error : function() {
+                    insert_warning_window($('#header'), '<strong>批量删除失败, 请联系管理员! </strong>');
+                },
+                success : function() {
+                    insert_success_window($('#header'), '<strong>批量删除成功! </strong>');
+                    window.location.href="/";
+                }
+            });
+        }
     }
 </script>
 </body>

@@ -266,9 +266,9 @@ def r_update_by_uid_s():
             Rules.MOBILE_PHONE_VERIFIED.value
         )
 
-    if 'email' in request.json:
+    if 'enabled' in request.json:
         args_rules.append(
-            Rules.EMAIL.value
+            Rules.ENABLED.value
         )
 
     if 'email_verified' in request.json:
