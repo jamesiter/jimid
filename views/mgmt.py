@@ -143,6 +143,63 @@ def r_delete(_id):
 
 @Utils.dumps2response
 @Utils.superuser
+def r_update():
+
+    user = User()
+
+    args_rules = [
+        Rules.ID.value
+    ]
+
+    if 'login_name' in request.json:
+        args_rules.append(
+            Rules.LOGIN_NAME.value
+        )
+
+    if 'mobile_phone' in request.json:
+        args_rules.append(
+            Rules.MOBILE_PHONE.value
+        )
+
+    if 'mobile_phone_verified' in request.json:
+        args_rules.append(
+            Rules.MOBILE_PHONE_VERIFIED.value
+        )
+
+    if 'email' in request.json:
+        args_rules.append(
+            Rules.EMAIL.value
+        )
+
+    if 'email_verified' in request.json:
+        args_rules.append(
+            Rules.EMAIL_VERIFIED.value
+        )
+
+    if args_rules.__len__() < 2:
+        ret = dict()
+        ret['state'] = ji.Common.exchange_state(20000)
+        return ret
+
+    request.json['id'] = request.json.get('id', 0).__str__()
+    try:
+        ji.Check.previewing(args_rules, request.json)
+        user.id = int(request.json.get('id'))
+        user.get()
+
+        user.login_name = request.json.get('login_name', user.login_name)
+        user.mobile_phone = request.json.get('mobile_phone', user.mobile_phone)
+        user.mobile_phone_verified = request.json.get('mobile_phone_verified', user.mobile_phone_verified)
+        user.email = request.json.get('email', user.email)
+        user.email_verified = request.json.get('email_verified', user.email_verified)
+
+        user.update()
+    except ji.PreviewingError, e:
+        return json.loads(e.message)
+
+
+@Utils.dumps2response
+@Utils.superuser
 def r_get_by_filter():
     page = str(request.args.get('page', 1))
     page_size = str(request.args.get('page_size', 50))
@@ -199,23 +256,10 @@ def r_get_by_filter():
 
 @Utils.dumps2response
 @Utils.superuser
-def r_update():
-
-    user = User()
-
+def r_update_by_uid_s():
     args_rules = [
-        Rules.ID.value
+        Rules.IDS.value
     ]
-
-    if 'login_name' in request.json:
-        args_rules.append(
-            Rules.LOGIN_NAME.value
-        )
-
-    if 'mobile_phone' in request.json:
-        args_rules.append(
-            Rules.MOBILE_PHONE.value
-        )
 
     if 'mobile_phone_verified' in request.json:
         args_rules.append(
@@ -237,20 +281,31 @@ def r_update():
         ret['state'] = ji.Common.exchange_state(20000)
         return ret
 
-    request.json['id'] = request.json.get('id', 0).__str__()
     try:
         ji.Check.previewing(args_rules, request.json)
-        user.id = int(request.json.get('id'))
-        user.get()
-
-        user.login_name = request.json.get('login_name', user.login_name)
-        user.mobile_phone = request.json.get('mobile_phone', user.mobile_phone)
-        user.mobile_phone_verified = request.json.get('mobile_phone_verified', user.mobile_phone_verified)
-        user.email = request.json.get('email', user.email)
-        user.email_verified = request.json.get('email_verified', user.email_verified)
-
-        user.update()
+        filter_str = 'id:IN:' + request.json.get('ids')
+        User.update_by_filter(kv=request.json, filter_str=filter_str)
     except ji.PreviewingError, e:
         return json.loads(e.message)
 
+
+@Utils.dumps2response
+@Utils.superuser
+def r_delete_by_uid_s():
+    args_rules = [
+        Rules.IDS.value
+    ]
+
+    try:
+        ji.Check.previewing(args_rules, request.json)
+        uid_s = request.json.get('ids')
+        if '1' in uid_s.split(','):
+            ret = dict()
+            ret['state'] = ji.Common.exchange_state(40301)
+            raise ji.PreviewingError(json.dumps(ret, ensure_ascii=False))
+
+        filter_str = 'id:IN:' + request.json.get('ids')
+        User.delete_by_filter(filter_str=filter_str)
+    except ji.PreviewingError, e:
+        return json.loads(e.message)
 

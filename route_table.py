@@ -36,8 +36,10 @@ add_rule(mgmt.blueprint, '/_disable/<_id>', view_func='mgmt.r_disable', methods=
 # 解禁用户(用户不可以解禁自身,只能超级用户解禁普通用户,且超级用户不能解禁自己)
 add_rule(mgmt.blueprint, '/_enable/<_id>', view_func='mgmt.r_enable', methods=['PATCH'])
 # 管理员更新用户信息
-add_rule(mgmt.blueprint, '/_update', view_func='mgmt.r_update', methods=['PUT'])
+add_rule(mgmt.blueprint, '', view_func='mgmt.r_update', methods=['PATCH'])
 
 # 管理员获取用户列表
 add_rule(mgmt.blueprints, '', view_func='mgmt.r_get_by_filter', methods=['GET'])
+add_rule(mgmt.blueprints, '', view_func='mgmt.r_update_by_uid_s', methods=['PATCH'])
+add_rule(mgmt.blueprints, '', view_func='mgmt.r_delete_by_uid_s', methods=['DELETE'])
 

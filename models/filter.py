@@ -52,6 +52,7 @@ class Filter(object):
             return sql_stmt
 
         keyword, operator, value = dsl.split(':')
+        operator = operator.lower()
 
         if keyword not in allow_keywords.keys():
             return sql_stmt

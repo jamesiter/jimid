@@ -217,8 +217,8 @@
         $(me).parent().html('<button type="button" class="btn btn-danger" onclick="user_delete(this)">删除</button>');
 
         $.ajax({
-            url : '/mgmt/_update',
-            type : 'PUT',
+            url : '/mgmt',
+            type : 'PATCH',
             contentType: "application/json; charset=utf-8",
             data : JSON.stringify({
                 id: id,
@@ -238,7 +238,7 @@
     }
 
     function user_delete(me) {
-        var id = $(me).parent().parent().find('td:eq(0) input').val();
+        var id = $(me).parent().parent().find('td:eq(0)').text();
         $.ajax({
             url : '/mgmt/' + id,
             type : 'DELETE',

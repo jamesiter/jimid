@@ -79,7 +79,7 @@ class TestMgmt(unittest.TestCase):
         print json.dumps(j_r, ensure_ascii=False)
         self.assertEqual('200', j_r['state']['code'])
 
-    # 超级用户获取用户列表
+    # 超级用户更新用户字段
     def test_34_update(self):
         payload = {
             "id": TestMgmt.uid_s[10],
@@ -90,29 +90,29 @@ class TestMgmt(unittest.TestCase):
             "email_verified": True
         }
 
-        url = 'http://jimauth.dev.iit.im/mgmt/_update'
+        url = 'http://jimauth.dev.iit.im/mgmt'
         headers = {'content-type': 'application/json'}
-        r = requests.put(url, cookies=TestMgmt.superuser_cookies, headers=headers, data=json.dumps(payload))
+        r = requests.patch(url, cookies=TestMgmt.superuser_cookies, headers=headers, data=json.dumps(payload))
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
         self.assertEqual('200', j_r['state']['code'])
 
-    # 超级用户获取用户列表
+    # 超级用户更新用户字段
     def test_35_update(self):
         payload = {
             "id": TestMgmt.uid_s[11],
             "login_name": "new_login_name2",
         }
 
-        url = 'http://jimauth.dev.iit.im/mgmt/_update'
+        url = 'http://jimauth.dev.iit.im/mgmt'
         headers = {'content-type': 'application/json'}
-        r = requests.put(url, cookies=TestMgmt.superuser_cookies, headers=headers, data=json.dumps(payload))
+        r = requests.patch(url, cookies=TestMgmt.superuser_cookies, headers=headers, data=json.dumps(payload))
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
         self.assertEqual('200', j_r['state']['code'])
 
     # 超级用户获取用户列表
-    def test_36_get_list_via_page(self):
+    def test_37_get_list_via_page(self):
         url = 'http://jimauth.dev.iit.im/mgmts?page=3&page_size=5'
         r = requests.get(url, cookies=TestMgmt.superuser_cookies)
         j_r = json.loads(r.content)
@@ -127,6 +127,53 @@ class TestMgmt(unittest.TestCase):
             j_r = json.loads(r.content)
             print json.dumps(j_r, ensure_ascii=False)
             self.assertEqual('200', j_r['state']['code'])
+
+    # ------------------------------------------------普通用户---------------------------------------------------------
+    # 注册普通用户
+    def test_41_sign_up(self):
+        TestMgmt.uid_s = list()
+        for i in range(1, 4):
+            payload = {
+                "login_name": TestMgmt.login_name + i.__str__(),
+                "password": TestMgmt.password
+            }
+
+            url = 'http://jimauth.dev.iit.im/user/_sign_up'
+            headers = {'content-type': 'application/json'}
+            r = requests.post(url, data=json.dumps(payload), headers=headers)
+            j_r = json.loads(r.content)
+            print json.dumps(j_r, ensure_ascii=False)
+            TestMgmt.uid_s.append(j_r['data']['id'])
+            self.assertEqual('200', j_r['state']['code'])
+
+    # 超级用户更新用户字段
+    def test_42_update_by_uid_s(self):
+        payload = {
+            "ids": ','.join([str(TestMgmt.uid_s[0]), str(TestMgmt.uid_s[1]), str(TestMgmt.uid_s[2])]),
+            "login_name": "new_login_name2",
+            "email_verified": True,
+            "mobile_phone_verified": True,
+        }
+
+        url = 'http://jimauth.dev.iit.im/mgmts'
+        headers = {'content-type': 'application/json'}
+        r = requests.patch(url, cookies=TestMgmt.superuser_cookies, headers=headers, data=json.dumps(payload))
+        j_r = json.loads(r.content)
+        print json.dumps(j_r, ensure_ascii=False)
+        self.assertEqual('200', j_r['state']['code'])
+
+    # # 超级用户更新用户字段
+    def test_43_delete_by_uid_s(self):
+        payload = {
+            "ids": ','.join([str(TestMgmt.uid_s[0]), str(TestMgmt.uid_s[1]), str(TestMgmt.uid_s[2])]),
+        }
+
+        url = 'http://jimauth.dev.iit.im/mgmts'
+        headers = {'content-type': 'application/json'}
+        r = requests.delete(url, cookies=TestMgmt.superuser_cookies, headers=headers, data=json.dumps(payload))
+        j_r = json.loads(r.content)
+        print json.dumps(j_r, ensure_ascii=False)
+        self.assertEqual('200', j_r['state']['code'])
 
 
 if __name__ == '__main__':

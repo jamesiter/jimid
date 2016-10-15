@@ -12,7 +12,8 @@ __copyright__ = '(c) 2015 by James Iter.'
 
 
 class Rules(Enum):
-    ID = ('regex:\d{1,17}', 'id')
+    ID = ('regex:^\d{1,17}$', 'id')
+    IDS = ('regex:^(\d{1,17}(,)?)+$', 'ids')
     LOGIN_NAME = (basestring, 'login_name', (5, 30))
     PASSWORD = (basestring, 'password', (1, 100))
     CREATE_TIME = ((int, long), 'create_time', (0, 9223372036854775807))
@@ -26,10 +27,10 @@ class Rules(Enum):
     EMAIL_VERIFIED = (bool, 'email_verified', [False, True])
     ENABLED = (bool, 'enabled', [False, True])
 
-    OFFSET = ('regex:\d{1,17}', 'offset')
-    LIMIT = ('regex:\d{1,17}', 'limit')
-    PAGE = ('regex:\d{1,17}', 'page')
-    PAGE_SIZE = ('regex:\d{1,17}', 'page_size')
+    OFFSET = ('regex:^\d{1,17}$', 'offset')
+    LIMIT = ('regex:^\d{1,17}$', 'limit')
+    PAGE = ('regex:^\d{1,17}$', 'page')
+    PAGE_SIZE = ('regex:^\d{1,17}$', 'page_size')
     ORDER_BY = (basestring, 'order_by', (1, 30))
     ORDER = (basestring, 'order', ['asc', 'desc'])
     # TODO: 加入filter正则表达式
