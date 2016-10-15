@@ -64,6 +64,7 @@
         <table id="table_users" class="table table-hover">
             <thead>
             <tr class="active" style="font-size: medium;">
+                <td><input type="checkbox"></td>
                 <td width="60px">#</td><td width="140px">登录名</td><td width="140px">手机号码</td><td width="140px">经校验手机号码</td>
                 <td width="160px">E-Mail</td><td width="140px">经校验的E-Mail</td><td width="60px">激活</td><td width="180px">创建时间</td>
                 <td width="160px">操作</td>
@@ -143,6 +144,7 @@
                     var s_login_name = ele.login_name.length > label_length ? ele.login_name.substring(0, label_length - suffix.length) + suffix : ele.login_name;
                     var s_email = ele.email.length > label_length ? ele.email.substring(0, label_length - suffix.length) + suffix : ele.email;
                     var trHTML = '<tr edit_mode=false>' +
+                            '<td><input type="checkbox"></td>' +
                             '<td>' + String(ele.id) + '</td>' +
                             '<td class="click_edit" real_value="' + ele.login_name + '">' + s_login_name + '</td>' +
                             '<td class="click_edit">' + ele.mobile_phone + '</td>' +
@@ -163,25 +165,25 @@
         $("#t_body").on('click', ".click_edit", function() {
             if ($(this).parent().attr('edit_mode') == 'false') {
                 $(this).parent().attr('edit_mode', true);
-                $(this).parent().attr('j_login_name', $(this).parent().find('td:eq(1)').attr('real_value'));
-                $(this).parent().attr('j_mobile_phone', $(this).parent().find('td:eq(2)').html());
-                $(this).parent().attr('j_email', $(this).parent().find('td:eq(4)').attr('real_value'));
-                $(this).parent().attr('j_mobile_checkbox', $(this).parent().find('input[type="checkbox"]:eq(0)').is(':checked'));
-                $(this).parent().attr('j_email_checkbox', $(this).parent().find('input[type="checkbox"]:eq(1)').is(':checked'));
-                $(this).parent().attr('j_enabled_checkbox', $(this).parent().find('input[type="checkbox"]:eq(2)').is(':checked'));
+                $(this).parent().attr('j_login_name', $(this).parent().find('td:eq(2)').attr('real_value'));
+                $(this).parent().attr('j_mobile_phone', $(this).parent().find('td:eq(3)').html());
+                $(this).parent().attr('j_email', $(this).parent().find('td:eq(5)').attr('real_value'));
+                $(this).parent().attr('j_mobile_checkbox', $(this).parent().find('input[type="checkbox"]:eq(1)').is(':checked'));
+                $(this).parent().attr('j_email_checkbox', $(this).parent().find('input[type="checkbox"]:eq(2)').is(':checked'));
+                $(this).parent().attr('j_enabled_checkbox', $(this).parent().find('input[type="checkbox"]:eq(3)').is(':checked'));
 
-                $(this).parent().find('td:eq(1)').html('<input type="text" value="' + $(this).parent().find('td:eq(1)').attr('real_value') + '" />');
-                $(this).parent().find('td:eq(2)').html('<input type="text" value="' + $(this).parent().find('td:eq(2)').html() + '" />');
-                $(this).parent().find('td:eq(4)').html('<input type="text" value="' + $(this).parent().find('td:eq(4)').attr('real_value') + '" />');
-                $(this).parent().find('td:eq(8)').html('<button type="button" class="btn btn-info" onclick="user_update(this)">更新</button> | ' +
+                $(this).parent().find('td:eq(2)').html('<input type="text" value="' + $(this).parent().find('td:eq(2)').attr('real_value') + '" />');
+                $(this).parent().find('td:eq(3)').html('<input type="text" value="' + $(this).parent().find('td:eq(3)').html() + '" />');
+                $(this).parent().find('td:eq(5)').html('<input type="text" value="' + $(this).parent().find('td:eq(5)').attr('real_value') + '" />');
+                $(this).parent().find('td:eq(9)').html('<button type="button" class="btn btn-info" onclick="user_update(this)">更新</button> | ' +
                         '<button type="button" class="btn btn-default" onclick="user_cancel(this)">取消</button>');
-                $(this).parent().find('input[type="checkbox"]:eq(0)').removeAttr('disabled');
                 $(this).parent().find('input[type="checkbox"]:eq(1)').removeAttr('disabled');
+                $(this).parent().find('input[type="checkbox"]:eq(2)').removeAttr('disabled');
             }
         });
 
         $("#t_body").on('click', ".enabled_checkbox", function() {
-            var id = $(this).parent().parent().find('td:eq(0)').html();
+            var id = $(this).parent().parent().find('td:eq(1)').html();
             var action_url = '/mgmt/_disable/';
 
             if ($(this)[0].checked) {
@@ -202,18 +204,18 @@
 
     function user_update(me) {
         $(me).parent().parent().attr('edit_mode', false);
-        var id = $(me).parent().parent().find('td:eq(0)').text();
-        var login_name = $(me).parent().parent().find('td:eq(1) input').val();
-        var mobile_phone = $(me).parent().parent().find('td:eq(2) input').val();
-        var email = $(me).parent().parent().find('td:eq(4) input').val();
-        var mobile_phone_verified = $(me).parent().parent().find('input[type="checkbox"]')[0].checked;
-        var email_verified = $(me).parent().parent().find('input[type="checkbox"]')[1].checked;
+        var id = $(me).parent().parent().find('td:eq(1)').text();
+        var login_name = $(me).parent().parent().find('td:eq(2) input').val();
+        var mobile_phone = $(me).parent().parent().find('td:eq(3) input').val();
+        var email = $(me).parent().parent().find('td:eq(5) input').val();
+        var mobile_phone_verified = $(me).parent().parent().find('input[type="checkbox"]')[1].checked;
+        var email_verified = $(me).parent().parent().find('input[type="checkbox"]')[2].checked;
 
-        $(me).parent().parent().find('td:eq(1)').html($(me).parent().parent().find('td:eq(1) input').val());
         $(me).parent().parent().find('td:eq(2)').html($(me).parent().parent().find('td:eq(2) input').val());
-        $(me).parent().parent().find('td:eq(4)').html($(me).parent().parent().find('td:eq(4) input').val());
-        $(me).parent().parent().find('input[type="checkbox"]:eq(0)').attr('disabled', true);
+        $(me).parent().parent().find('td:eq(3)').html($(me).parent().parent().find('td:eq(3) input').val());
+        $(me).parent().parent().find('td:eq(5)').html($(me).parent().parent().find('td:eq(5) input').val());
         $(me).parent().parent().find('input[type="checkbox"]:eq(1)').attr('disabled', true);
+        $(me).parent().parent().find('input[type="checkbox"]:eq(2)').attr('disabled', true);
         $(me).parent().html('<button type="button" class="btn btn-danger" onclick="user_delete(this)">删除</button>');
 
         $.ajax({
@@ -238,7 +240,7 @@
     }
 
     function user_delete(me) {
-        var id = $(me).parent().parent().find('td:eq(0)').text();
+        var id = $(me).parent().parent().find('td:eq(1)').text();
         $.ajax({
             url : '/mgmt/' + id,
             type : 'DELETE',
@@ -258,25 +260,25 @@
         var s_login_name = j_login_name.length > label_length ? j_login_name.substring(0, label_length - suffix.length) + suffix : j_login_name;
         var s_email = j_email.length > label_length ? j_email.substring(0, label_length - suffix.length) + suffix : j_email;
 
-        $(me).parent().parent().find('td:eq(1)').html(s_login_name);
-        $(me).parent().parent().find('td:eq(2)').html($(me).parent().parent().attr('j_mobile_phone'));
-        $(me).parent().parent().find('td:eq(4)').html(s_email);
+        $(me).parent().parent().find('td:eq(2)').html(s_login_name);
+        $(me).parent().parent().find('td:eq(3)').html($(me).parent().parent().attr('j_mobile_phone'));
+        $(me).parent().parent().find('td:eq(5)').html(s_email);
 
 
         if ($(me).parent().parent().attr('j_mobile_checkbox') == 'false') {
-            $(me).parent().parent().find('input[type="checkbox"]:eq(0)').prop('checked', false);
-        } else {
-            $(me).parent().parent().find('input[type="checkbox"]:eq(0)').prop('checked', true);
-        }
-
-        if ($(me).parent().parent().attr('j_email_checkbox') == 'false') {
             $(me).parent().parent().find('input[type="checkbox"]:eq(1)').prop('checked', false);
         } else {
             $(me).parent().parent().find('input[type="checkbox"]:eq(1)').prop('checked', true);
         }
 
-        $(me).parent().parent().find('input[type="checkbox"]:eq(0)').attr('disabled', true);
+        if ($(me).parent().parent().attr('j_email_checkbox') == 'false') {
+            $(me).parent().parent().find('input[type="checkbox"]:eq(2)').prop('checked', false);
+        } else {
+            $(me).parent().parent().find('input[type="checkbox"]:eq(2)').prop('checked', true);
+        }
+
         $(me).parent().parent().find('input[type="checkbox"]:eq(1)').attr('disabled', true);
+        $(me).parent().parent().find('input[type="checkbox"]:eq(2)').attr('disabled', true);
         $(me).parent().html('<button type="button" class="btn btn-danger" onclick="user_delete(this)">删除</button>');
     }
 
