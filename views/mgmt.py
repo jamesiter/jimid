@@ -21,6 +21,12 @@ blueprint = Blueprint(
     url_prefix='/mgmt'
 )
 
+blueprints = Blueprint(
+    'mgmts',
+    __name__,
+    url_prefix='/mgmts'
+)
+
 
 @Utils.dumps2response
 @Utils.superuser
@@ -137,7 +143,7 @@ def r_delete(_id):
 
 @Utils.dumps2response
 @Utils.superuser
-def r_get_list():
+def r_get_by_filter():
     page = str(request.args.get('page', 1))
     page_size = str(request.args.get('page_size', 50))
 
@@ -180,8 +186,6 @@ def r_get_list():
         ret['data'] = list()
         ret['paging'] = {'total': 0, 'offset': offset, 'limit': limit, 'page': page, 'page_size': page_size}
 
-        # ret['data'], ret['paging']['total'] = User.get_list(offset=offset, limit=limit, order_by=order_by,
-        #                                                        order=order)
         ret['data'], ret['paging']['total'] = User.get_by_filter(offset=offset, limit=limit, order_by=order_by,
                                                                  order=order, filter_str=filter_str)
 
@@ -193,7 +197,6 @@ def r_get_list():
         return json.loads(e.message)
 
 
-# 不支持用户自我更新, 用户更新各字段, 将有专门的接口
 @Utils.dumps2response
 @Utils.superuser
 def r_update():

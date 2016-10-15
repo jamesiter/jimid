@@ -124,7 +124,7 @@
         var page_size = 20;
 
         $.ajax({
-            url : '/mgmt/_list?page=' + page + '&page_size=' + page_size,
+            url : '/mgmts?page=' + page + '&page_size=' + page_size,
             type : 'GET',
             dataType: 'json',
             error : function(xhr, status, error) {

@@ -65,7 +65,7 @@ class TestMgmt(unittest.TestCase):
 
     # 超级用户获取用户列表
     def test_32_get_list(self):
-        url = 'http://jimauth.dev.iit.im/mgmt/_list?offset=10&limit=5'
+        url = 'http://jimauth.dev.iit.im/mgmts?offset=10&limit=5'
         r = requests.get(url, cookies=TestMgmt.superuser_cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
@@ -73,7 +73,7 @@ class TestMgmt(unittest.TestCase):
 
     # 超级用户获取用户列表
     def test_33_get_list_via_page(self):
-        url = 'http://jimauth.dev.iit.im/mgmt/_list?page=2&page_size=5'
+        url = 'http://jimauth.dev.iit.im/mgmts?page=2&page_size=5'
         r = requests.get(url, cookies=TestMgmt.superuser_cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
@@ -113,7 +113,7 @@ class TestMgmt(unittest.TestCase):
 
     # 超级用户获取用户列表
     def test_36_get_list_via_page(self):
-        url = 'http://jimauth.dev.iit.im/mgmt/_list?page=3&page_size=5'
+        url = 'http://jimauth.dev.iit.im/mgmts?page=3&page_size=5'
         r = requests.get(url, cookies=TestMgmt.superuser_cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)

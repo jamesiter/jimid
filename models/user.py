@@ -203,20 +203,28 @@ class User(object):
             cnx.close()
 
     @classmethod
-    def update_by_filter(cls, obj, filter_str=''):
+    def update_by_filter(cls, kv, filter_str=''):
+        allow_field = ['mobile_phone_verified', 'email_verified', 'enabled']
 
-        # 关于对象更新的元素, 如果是在巨量环境中, 这里的obj参数可以换成与更新的具体字段与值。此处之所以传递obj对象,
-        # 是因为该项目的假设使用环境数据量不会超过100w, 并发量也少于10, 所以用obj完全是图个方便。
+        # 过滤掉不予支持批量更新的字段
+        _kv = {}
+        for k, v in kv.iteritems():
+            if k in allow_field:
+                _kv[k] = v
+
+        if _kv.__len__() < 1:
+            return
+
+        # set_str = ', '.join(map(lambda x: x + ' = %(' + x + ')s', _kv.keys()))
+        # 上面为通过map实现的方式
+        set_str = ', '.join([x + ' = %(' + x + ')s' for x in _kv.keys()])
         where_str = Filter.filter_str_to_sql(allow_keywords=cls.get_filter_keywords(), filter_str=filter_str)
-        sql_stmt = ("UPDATE user SET login_name = %(login_name)s, password = %(password)s,"
-                    "create_time = %(create_time)s, mobile_phone = %(mobile_phone)s, email = %(email)s,"
-                    "mobile_phone_verified = %(mobile_phone_verified)s, email_verified = %(email_verified)s,"
-                    "enabled = %(enabled)s WHERE " + where_str)
+        sql_stmt = ("UPDATE user SET " + set_str + " WHERE " + where_str)
 
         cnx = db.cnxpool.get_connection()
         cursor = cnx.cursor(dictionary=True, buffered=True)
         try:
-            cursor.execute(sql_stmt, obj.__dict__)
+            cursor.execute(sql_stmt, _kv)
             cnx.commit()
         finally:
             cursor.close()

@@ -15,6 +15,7 @@ from models import Utils
 from models import User
 from views.user import blueprint as auth_blueprint
 from views.mgmt import blueprint as mgmt_blueprint
+from views.mgmt import blueprints as mgmts_blueprint
 
 
 __author__ = 'James Iter'
@@ -94,6 +95,7 @@ try:
 
     app.register_blueprint(auth_blueprint)
     app.register_blueprint(mgmt_blueprint)
+    app.register_blueprint(mgmts_blueprint)
 except:
     logger.error(traceback.format_exc())
 
