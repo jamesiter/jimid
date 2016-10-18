@@ -217,7 +217,7 @@ class User(object):
 
         # set_str = ', '.join(map(lambda x: x + ' = %(' + x + ')s', _kv.keys()))
         # 上面为通过map实现的方式
-        set_str = ', '.join([x + ' = %(' + x + ')s' for x in _kv.keys()])
+        set_str = ', '.join([k + ' = %(' + k + ')s' for k in _kv.keys()])
         where_str = Filter.filter_str_to_sql(allow_keywords=cls.get_filter_keywords(), filter_str=filter_str)
         sql_stmt = ("UPDATE user SET " + set_str + " WHERE " + where_str)
 
@@ -240,6 +240,28 @@ class User(object):
         try:
             cursor.execute(sql_stmt)
             cnx.commit()
+        finally:
+            cursor.close()
+            cnx.close()
+
+    @classmethod
+    def content_search(cls, offset=0, limit=50, order_by='id', order='asc', keyword=''):
+        allow_field = ['login_name', 'mobile_phone', 'email']
+        _kv = dict()
+        _kv = _kv.fromkeys(allow_field, '%' + keyword + '%')
+        where_str = ' OR '.join([k + ' LIKE %(' + k + ')s' for k in _kv.keys()])
+        sql_stmt = ("SELECT * FROM user WHERE " + where_str + " ORDER BY " + order_by + " " + order +
+                    " LIMIT %(offset)s, %(limit)s")
+        sql_stmt_count = ("SELECT count(id) FROM user WHERE " + where_str)
+
+        cnx = db.cnxpool.get_connection()
+        cursor = cnx.cursor(dictionary=True, buffered=True)
+        try:
+            cursor.execute(sql_stmt, _kv.update({'offset': offset, 'limit': limit}))
+            rows = cursor.fetchall()
+            cursor.execute(sql_stmt_count)
+            count = cursor.fetchone()
+            return rows, count['count(id)']
         finally:
             cursor.close()
             cnx.close()
