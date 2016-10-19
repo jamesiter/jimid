@@ -56,7 +56,7 @@
                 <button type="button" class="btn btn-default" onclick="batch_delete()">删除</button>
             </div>
             <div class="form-group pull-right">
-                <input type="search" class="form-control" size="30" placeholder="快速搜索">
+                <input id="content_search" type="search" class="form-control" size="30" placeholder="快速搜索">
             </div>
         </form>
     </div>
@@ -207,6 +207,58 @@
             } else {
                 $("#t_body tr").find('td input[type="checkbox"]:eq(0)').prop('checked', false);
             }
+        });
+
+        var last_ready = null;
+        $('#content_search').keydown(function() {
+            if (last_ready != null) {
+                clearTimeout(last_ready);
+            }
+            last_ready = setTimeout(function() {
+                var keyword = $('#content_search').val();
+                var url = '/mgmts?page=' + page + '&page_size=' + page_size;
+                if (keyword.length > 0) {
+                    url = '/mgmts/_search?page=' + page + '&page_size=' + page_size + '&keyword=' + keyword;
+                }
+                $.ajax({
+                    url : url,
+                    type : 'GET',
+                    dataType: 'json',
+                    error : function(xhr, status, error) {
+                        insert_warning_window($('#header'), '<strong>获取用户列表失败, 请联系管理员! </strong>');
+                        // 3秒后自动跳转到
+                        setTimeout(function() {
+                            window.location.href="/login.html";
+                        }, 3000);
+                    },
+                    success : function(result, status, xhr) {
+                        $('#t_body').children().remove();
+                        $(result.data).each(function(index, ele) {
+                            var mobile_checkbox = Boolean(ele.mobile_phone_verified) ? '<input type="checkbox" checked disabled>' : '<input type="checkbox" disabled>';
+                            var email_checkbox = Boolean(ele.email_verified) ? '<input type="checkbox" checked disabled>' : '<input type="checkbox" disabled>';
+                            var enabled_checkbox = Boolean(ele.enabled) ? '<input type="checkbox" class="enabled_checkbox" checked>' :
+                                    '<input type="checkbox" class="enabled_checkbox">';
+                            var s_login_name = ele.login_name.length > label_length ? ele.login_name.substring(0, label_length - suffix.length) + suffix : ele.login_name;
+                            var s_email = ele.email.length > label_length ? ele.email.substring(0, label_length - suffix.length) + suffix : ele.email;
+                            var trHTML = '<tr edit_mode=false>' +
+                                    '<td><input type="checkbox"></td>' +
+                                    '<td>' + String(ele.id) + '</td>' +
+                                    '<td class="click_edit" real_value="' + ele.login_name + '">' + s_login_name + '</td>' +
+                                    '<td class="click_edit">' + ele.mobile_phone + '</td>' +
+                                    '<td class="click_edit">' + mobile_checkbox + '</td>' +
+                                    '<td class="click_edit" real_value="' + ele.email + '">' + s_email + '</td>' +
+                                    '<td class="click_edit">' + email_checkbox + '</td>' +
+                                    '<td>' + enabled_checkbox + '</td>' +
+                                    '<td>' + new Date(parseInt(ele.create_time) / 1000).format("yyyy-mm-dd HH:MM") + '</td>' +
+                                    '<td>' +
+                                    '<button type="button" class="btn btn-danger" onclick="user_delete(this)">删除</button>' +
+                                    '</td>' +
+                                    '</tr>';
+                            $('#t_body').append(trHTML);
+                        });
+                    }
+                });
+            }, 1500);
         });
     });
 
