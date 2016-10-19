@@ -119,6 +119,14 @@ class TestMgmt(unittest.TestCase):
         print json.dumps(j_r, ensure_ascii=False)
         self.assertEqual('200', j_r['state']['code'])
 
+    # 超级用户全文检索
+    def test_37_get_list_via_content_search(self):
+        url = 'http://jimauth.dev.iit.im/mgmts/_search?page=1&page_size=5&keyword=a'
+        r = requests.get(url, cookies=TestMgmt.superuser_cookies)
+        j_r = json.loads(r.content)
+        print json.dumps(j_r, ensure_ascii=False)
+        self.assertEqual('200', j_r['state']['code'])
+
     # 超级用户删除普通用户
     def test_38_delete_via_superuser(self):
         for uid in TestMgmt.uid_s:

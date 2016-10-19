@@ -254,12 +254,13 @@ class User(object):
                     " LIMIT %(offset)s, %(limit)s")
         sql_stmt_count = ("SELECT count(id) FROM user WHERE " + where_str)
 
+        _kv.update({'offset': offset, 'limit': limit})
         cnx = db.cnxpool.get_connection()
         cursor = cnx.cursor(dictionary=True, buffered=True)
         try:
-            cursor.execute(sql_stmt, _kv.update({'offset': offset, 'limit': limit}))
+            cursor.execute(sql_stmt, _kv)
             rows = cursor.fetchall()
-            cursor.execute(sql_stmt_count)
+            cursor.execute(sql_stmt_count, _kv)
             count = cursor.fetchone()
             return rows, count['count(id)']
         finally:

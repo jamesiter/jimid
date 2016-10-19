@@ -309,3 +309,60 @@ def r_delete_by_uid_s():
     except ji.PreviewingError, e:
         return json.loads(e.message)
 
+
+@Utils.dumps2response
+@Utils.superuser
+def r_content_search():
+    page = str(request.args.get('page', 1))
+    page_size = str(request.args.get('page_size', 50))
+
+    args_rules = [
+        Rules.PAGE.value,
+        Rules.PAGE_SIZE.value
+    ]
+
+    try:
+        ji.Check.previewing(args_rules, {'page': page, 'page_size': page_size})
+    except ji.PreviewingError, e:
+        return json.loads(e.message)
+
+    page = int(page)
+    page_size = int(page_size)
+
+    # 把page和page_size换算成offset和limit
+    offset = (page - 1) * page_size
+    # offset, limit将覆盖page及page_size的影响
+    offset = str(request.args.get('offset', offset))
+    limit = str(request.args.get('limit', page_size))
+
+    order_by = request.args.get('order_by', 'id')
+    order = request.args.get('order', 'asc')
+    keyword = request.args.get('keyword', '')
+
+    args_rules = [
+        Rules.OFFSET.value,
+        Rules.LIMIT.value,
+        Rules.ORDER_BY.value,
+        Rules.ORDER.value,
+        Rules.KEYWORD.value
+    ]
+
+    try:
+        ji.Check.previewing(args_rules, {'offset': offset, 'limit': limit, 'order_by': order_by, 'order': order,
+                                         'keyword': keyword})
+        offset = int(offset)
+        limit = int(limit)
+        ret = dict()
+        ret['state'] = ji.Common.exchange_state(20000)
+        ret['data'] = list()
+        ret['paging'] = {'total': 0, 'offset': offset, 'limit': limit, 'page': page, 'page_size': page_size}
+
+        ret['data'], ret['paging']['total'] = User.content_search(offset=offset, limit=limit, order_by=order_by,
+                                                                  order=order, keyword=keyword)
+
+        for i in range(ret['data'].__len__()):
+            del ret['data'][i]['password']
+
+        return ret
+    except ji.PreviewingError, e:
+        return json.loads(e.message)
