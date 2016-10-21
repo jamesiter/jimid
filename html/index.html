@@ -74,9 +74,15 @@
             </tbody>
         </table>
     </div>
-    <div class="row" style="margin-top: 200px; margin-bottom: 50px;">
+    <div class="row">
+        <nav style="text-align: center;">
+            <ul class="pagination" style="margin: 0px;" id="pagination">
+            </ul>
+        </nav>
+    </div>
+    <div class="row" style="margin-top: 60px; margin-bottom: 50px;">
         <div id="footer" class="col-md-12" style="text-align: center;">
-            ©2016 JimAuth
+            ©2016 JimID
         </div>
     </div>
 </div>
@@ -117,7 +123,7 @@
 <script src="js/date_format.js"></script>
 <script src="js/utils.js"></script>
 <script type="text/javascript">
-    var label_length = 20;
+    var label_length = 16;
     var suffix = '...';
     var cur_url = '';
 
@@ -148,7 +154,7 @@
                             '<td class="click_edit" real_value="' + ele.login_name + '">' + s_login_name + '</td>' +
                             '<td class="click_edit">' + ele.mobile_phone + '</td>' +
                             '<td class="click_edit">' + mobile_checkbox + '</td>' +
-                            '<td class="click_edit" real_value="' + ele.email + '">' + s_email + '</td>' +
+                            '<td class="click_edit" real_value="' + ele.email + '" title="' + ele.email + '">' + s_email + '</td>' +
                             '<td class="click_edit">' + email_checkbox + '</td>' +
                             '<td>' + enabled_checkbox + '</td>' +
                             '<td>' + new Date(parseInt(ele.create_time) / 1000).format("yyyy-mm-dd HH:MM") + '</td>' +
@@ -158,13 +164,56 @@
                             '</tr>';
                     $('#t_body').append(trHTML);
                 });
+                rerender_pagination(url, result.paging['page'], result.paging['page_size'], result.paging['total']);
             }
         });
     }
 
+    function rerender_pagination(base_url, page, page_size, total) {
+        var last_pagination = Math.ceil(total / page_size);
+        var start_pagination = 1;
+        var end_pagination = last_pagination;
+        $('#pagination').children().remove();
+        if (page > 6) {
+            $('#pagination').append('<li><a href="#" onclick="rerender(\'' + base_url.replace(/page=\d+/i, "page=1") + '\')">首页</a></li>');
+            start_pagination = page - 5;
+        }
+        if (page > 1) {
+            $('#pagination').append('<li><a href="#" onclick="rerender(\'' + base_url.replace(/page=\d+/i, "page=" + (page - 1)) + '\')">上一页</a></li>');
+        }
+        if (page < last_pagination - 4) {
+            if (page < 6) {
+                end_pagination = 10;
+            } else {
+                end_pagination = page + 4;
+            }
+        } else {
+            if (last_pagination > 10 && (end_pagination - start_pagination) < 10) {
+                start_pagination = last_pagination - 9;
+            }
+        }
+        for (var i = start_pagination; i <= end_pagination; i++) {
+            var pagination = i;
+            if (i == end_pagination && end_pagination != last_pagination) {
+                pagination = '...';
+            }
+            if (i != page) {
+                $('#pagination').append('<li><a href="#" onclick="rerender(\'' + base_url.replace(/page=\d+/i, "page=" + i) + '\')">' + pagination + '</a></li>');
+            } else {
+                $('#pagination').append('<li class="active"><a href="#" onclick="rerender(\'' + base_url.replace(/page=\d+/i, "page=" + i) + '\')">' + pagination + '</a></li>');
+            }
+        }
+        if (page < last_pagination) {
+            $('#pagination').append('<li><a href="#" onclick="rerender(\'' + base_url.replace(/page=\d+/i, "page=" + (page + 1)) + '\')">下一页</a></li>');
+        }
+        if (page < last_pagination - 5) {
+            $('#pagination').append('<li><a href="#" onclick="rerender(\'' + base_url.replace(/page=\d+/i, "page=" + last_pagination) + '\')">尾页</a></li>');
+        }
+    }
+
     $(document).ready(function() {
         var page = 1;
-        var page_size = 20;
+        var page_size = 10;
 
         cur_url = '/mgmts?page=' + page + '&page_size=' + page_size;
         rerender(cur_url);
