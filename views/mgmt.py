@@ -241,10 +241,32 @@ def r_get_by_filter():
         ret = dict()
         ret['state'] = ji.Common.exchange_state(20000)
         ret['data'] = list()
-        ret['paging'] = {'total': 0, 'offset': offset, 'limit': limit, 'page': page, 'page_size': page_size}
+        ret['paging'] = {'total': 0, 'offset': offset, 'limit': limit, 'page': page, 'page_size': page_size,
+                         'next': '', 'prev': '', 'first': '', 'last': ''}
 
         ret['data'], ret['paging']['total'] = User.get_by_filter(offset=offset, limit=limit, order_by=order_by,
                                                                  order=order, filter_str=filter_str)
+
+        host_url = request.host_url.rstrip('/')
+        other_str = '&filter=' + filter_str + '&order=' + order + '&order_by=' + order_by
+        last_pagination = (ret['paging']['total'] + page_size - 1) / page_size
+
+        if page <= 1:
+            ret['paging']['prev'] = host_url + '/mgmts?page=1&page_size=' + page_size.__str__() + other_str
+        else:
+            ret['paging']['prev'] = host_url + '/mgmts?page=' + str(page-1) + '&page_size=' + page_size.__str__() + \
+                                    other_str
+
+        if page >= last_pagination:
+            ret['paging']['next'] = host_url + '/mgmts?page=' + last_pagination.__str__() + '&page_size=' + \
+                                    page_size.__str__() + other_str
+        else:
+            ret['paging']['next'] = host_url + '/mgmts?page=' + str(page+1) + '&page_size=' + page_size.__str__() + \
+                                    other_str
+
+        ret['paging']['first'] = host_url + '/mgmts?page=1&page_size=' + page_size.__str__() + other_str
+        ret['paging']['last'] = \
+            host_url + '/mgmts?page=' + last_pagination.__str__() + '&page_size=' + page_size.__str__() + other_str
 
         for i in range(ret['data'].__len__()):
             del ret['data'][i]['password']
