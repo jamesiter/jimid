@@ -38,7 +38,7 @@ def r_sign_up():
         ji.Check.previewing(args_rules, user.__dict__)
         user.password = ji.Security.ji_pbkdf2(user.password)
         user.create()
-        user.get_by_login_name()
+        user.get_by('login_name')
         ret = dict()
         ret['state'] = ji.Common.exchange_state(20000)
         ret['data'] = user.__dict__
@@ -63,7 +63,7 @@ def r_sign_in():
     try:
         ji.Check.previewing(args_rules, user.__dict__)
         plain_password = user.password
-        user.get_by_login_name()
+        user.get_by('login_name')
 
         if not ji.Security.ji_pbkdf2_check(password=plain_password, password_hash=user.password):
             ret = dict()

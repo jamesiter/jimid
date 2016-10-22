@@ -132,9 +132,10 @@ class User(object):
 
         return False
 
-    def get_by_login_name(self):
+    def get_by(self, field):
+        sql_field = field + ' = %(' + field + ')s'
         sql_stmt = ("SELECT " + ', '.join(self.__dict__.keys()) +
-                    " FROM user WHERE login_name = %(login_name)s LIMIT 1")
+                    " FROM user WHERE " + sql_field + " LIMIT 1")
 
         cnx = db.cnxpool.get_connection()
         cursor = cnx.cursor(dictionary=True, buffered=True)
@@ -153,8 +154,9 @@ class User(object):
             ret['state']['sub']['zh-cn'] = ''.join([ret['state']['sub']['zh-cn'], ': ', self.id.__str__()])
             raise ji.PreviewingError(json.dumps(ret, ensure_ascii=False))
 
-    def exist_by_login_name(self):
-        sql_stmt = ("SELECT id FROM user WHERE login_name = %(login_name)s LIMIT 1")
+    def exist_by(self, field):
+        sql_field = field + ' = %(' + field + ')s'
+        sql_stmt = ("SELECT id FROM user WHERE " + sql_field + " LIMIT 1")
 
         cnx = db.cnxpool.get_connection()
         cursor = cnx.cursor(dictionary=True, buffered=True)

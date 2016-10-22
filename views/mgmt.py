@@ -40,7 +40,7 @@ def r_get_by_login_name(login_name=None):
 
     try:
         ji.Check.previewing(args_rules, user.__dict__)
-        user.get_by_login_name()
+        user.get_by('login_name')
         ret = dict()
         ret['state'] = ji.Common.exchange_state(20000)
         ret['data'] = user.__dict__
