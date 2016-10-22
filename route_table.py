@@ -15,6 +15,10 @@ __copyright__ = '(c) 2016 by James Iter.'
 # 普通用户接口
 # 注册
 add_rule(user.blueprint, '/_sign_up', view_func='user.r_sign_up', methods=['POST'])
+# 通过手机号码注册
+add_rule(user.blueprint, '/_sign_up_by_mobile_phone', view_func='user.r_sign_up_by_mobile_phone', methods=['POST'])
+# 通过email注册
+add_rule(user.blueprint, '/_sign_up_by_email', view_func='user.r_sign_up_by_email', methods=['POST'])
 # 登录
 add_rule(user.blueprint, '/_sign_in', view_func='user.r_sign_in', methods=['POST'])
 # 登出

@@ -49,6 +49,74 @@ def r_sign_up():
 
 
 @Utils.dumps2response
+def r_sign_up_by_mobile_phone():
+
+    user = User()
+
+    args_rules = [
+        Rules.MOBILE_PHONE.value,
+        Rules.PASSWORD.value
+    ]
+    user.mobile_phone = request.json.get('mobile_phone')
+    user.password = request.json.get('password')
+    user.login_name = ji.Common.generate_random_code(length=10, letter_form='lower')
+
+    try:
+        ji.Check.previewing(args_rules, user.__dict__)
+
+        ret = dict()
+        ret['state'] = ji.Common.exchange_state(20000)
+
+        if user.exist_by('mobile_phone'):
+            ret['state'] = ji.Common.exchange_state(40901)
+            ret['state']['sub']['zh-cn'] = ''.join([ret['state']['sub']['zh-cn'], ': ', user.mobile_phone])
+            return ret
+
+        user.password = ji.Security.ji_pbkdf2(user.password)
+        user.create()
+        user.get_by('login_name')
+        ret['data'] = user.__dict__
+        del ret['data']['password']
+        return ret
+    except ji.PreviewingError, e:
+        return json.loads(e.message)
+
+
+@Utils.dumps2response
+def r_sign_up_by_email():
+
+    user = User()
+
+    args_rules = [
+        Rules.EMAIL.value,
+        Rules.PASSWORD.value
+    ]
+    user.email = request.json.get('email')
+    user.password = request.json.get('password')
+    user.login_name = ji.Common.generate_random_code(length=10, letter_form='lower')
+
+    try:
+        ji.Check.previewing(args_rules, user.__dict__)
+
+        ret = dict()
+        ret['state'] = ji.Common.exchange_state(20000)
+
+        if user.exist_by('email'):
+            ret['state'] = ji.Common.exchange_state(40901)
+            ret['state']['sub']['zh-cn'] = ''.join([ret['state']['sub']['zh-cn'], ': ', user.email])
+            return ret
+
+        user.password = ji.Security.ji_pbkdf2(user.password)
+        user.create()
+        user.get_by('login_name')
+        ret['data'] = user.__dict__
+        del ret['data']['password']
+        return ret
+    except ji.PreviewingError, e:
+        return json.loads(e.message)
+
+
+@Utils.dumps2response
 def r_sign_in():
 
     user = User()
