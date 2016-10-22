@@ -164,7 +164,7 @@
                             '</tr>';
                     $('#t_body').append(trHTML);
                 });
-                rerender_pagination(url, result.paging['page'], result.paging['page_size'], result.paging['total']);
+                rerender_pagination(url, result.paging['page'], result.paging['page_size'], result.paging['total'], 20);
             }
         });
     }
@@ -179,30 +179,33 @@
         }
     }
 
-    function rerender_pagination(base_url, page, page_size, total) {
+    function rerender_pagination(base_url, page, page_size, total, width) {
+        // 设置页宽默认值
+        width = width || 10;
+        var balance_of_power = Math.floor(width / 2) + 1;
         var last_pagination = Math.ceil(total / page_size);
         var start_pagination = 1;
         var end_pagination = last_pagination;
         var on_click = '';
         $('#pagination').children().remove();
-        if (page > 6) {
+        if (page > balance_of_power) {
             on_click = 'rerender(\'' + base_url.replace(/page=\d+/i, "page=1") + '\')';
             append_pagination($('#pagination'), on_click, '首页');
-            start_pagination = page - 5;
+            start_pagination = page - Math.floor(width / 2);
         }
         if (page > 1) {
             on_click = 'rerender(\'' + base_url.replace(/page=\d+/i, "page=" + (page - 1)) + '\')';
             append_pagination($('#pagination'), on_click, '上一页');
         }
-        if (page < last_pagination - 4) {
-            if (page < 6) {
-                end_pagination = 10;
+        if (page < last_pagination - (width - balance_of_power)) {
+            if (page < balance_of_power) {
+                end_pagination = width;
             } else {
-                end_pagination = page + 4;
+                end_pagination = page + (width - balance_of_power);
             }
         } else {
-            if (last_pagination > 10 && (end_pagination - start_pagination) < 10) {
-                start_pagination = last_pagination - 9;
+            if (last_pagination > width && (end_pagination - start_pagination) < width) {
+                start_pagination = last_pagination - (width - 1);
             }
         }
         for (var i = start_pagination; i <= end_pagination; i++) {
