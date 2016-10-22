@@ -43,7 +43,7 @@ class User(object):
             if e.errno == errorcode.ER_DUP_ENTRY:
                 ret = dict()
                 ret['state'] = ji.Common.exchange_state(40901)
-                ret['state']['sub']['zh-cn'] = ''.join([ret['state']['sub']['zh-cn'], ': ', self.login_name])
+                ret['state']['sub']['zh-cn'] = ''.join([ret['state']['sub']['zh-cn'], ': ', e.msg])
                 raise ji.PreviewingError(json.dumps(ret, ensure_ascii=False))
         finally:
             cursor.close()
@@ -67,6 +67,12 @@ class User(object):
         try:
             cursor.execute(sql_stmt, self.__dict__)
             cnx.commit()
+        except errors.IntegrityError, e:
+            if e.errno == errorcode.ER_DUP_ENTRY:
+                ret = dict()
+                ret['state'] = ji.Common.exchange_state(40901)
+                ret['state']['sub']['zh-cn'] = ''.join([ret['state']['sub']['zh-cn'], ': ', e.msg])
+                raise ji.PreviewingError(json.dumps(ret, ensure_ascii=False))
         finally:
             cursor.close()
             cnx.close()
