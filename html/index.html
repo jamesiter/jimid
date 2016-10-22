@@ -123,7 +123,7 @@
 <script src="js/date_format.js"></script>
 <script src="js/utils.js"></script>
 <script type="text/javascript">
-    var label_length = 16;
+    var label_length = 12;
     var suffix = '...';
     var cur_url = '';
 
@@ -151,7 +151,7 @@
                     var trHTML = '<tr edit_mode=false>' +
                             '<td><input type="checkbox"></td>' +
                             '<td>' + String(ele.id) + '</td>' +
-                            '<td class="click_edit" real_value="' + ele.login_name + '">' + s_login_name + '</td>' +
+                            '<td class="click_edit" real_value="' + ele.login_name + '" title="' + ele.login_name + '">' + s_login_name + '</td>' +
                             '<td class="click_edit">' + ele.mobile_phone + '</td>' +
                             '<td class="click_edit">' + mobile_checkbox + '</td>' +
                             '<td class="click_edit" real_value="' + ele.email + '" title="' + ele.email + '">' + s_email + '</td>' +
@@ -169,17 +169,30 @@
         });
     }
 
+    function append_pagination(ul_component, on_click, label, active) {
+        // 设置active默认值
+        active = active || false;
+        if (!active) {
+            ul_component.append('<li><span style="cursor:pointer" onclick="' + on_click + '">' + label + '</span></li>');
+        } else {
+            ul_component.append('<li class="active"><span style="cursor:pointer" onclick="' + on_click + '">' + label + '</span></li>');
+        }
+    }
+
     function rerender_pagination(base_url, page, page_size, total) {
         var last_pagination = Math.ceil(total / page_size);
         var start_pagination = 1;
         var end_pagination = last_pagination;
+        var on_click = '';
         $('#pagination').children().remove();
         if (page > 6) {
-            $('#pagination').append('<li><a href="#" onclick="rerender(\'' + base_url.replace(/page=\d+/i, "page=1") + '\')">首页</a></li>');
+            on_click = 'rerender(\'' + base_url.replace(/page=\d+/i, "page=1") + '\')';
+            append_pagination($('#pagination'), on_click, '首页');
             start_pagination = page - 5;
         }
         if (page > 1) {
-            $('#pagination').append('<li><a href="#" onclick="rerender(\'' + base_url.replace(/page=\d+/i, "page=" + (page - 1)) + '\')">上一页</a></li>');
+            on_click = 'rerender(\'' + base_url.replace(/page=\d+/i, "page=" + (page - 1)) + '\')';
+            append_pagination($('#pagination'), on_click, '上一页');
         }
         if (page < last_pagination - 4) {
             if (page < 6) {
@@ -197,17 +210,20 @@
             if (i == end_pagination && end_pagination != last_pagination) {
                 pagination = '...';
             }
+            on_click = 'rerender(\'' + base_url.replace(/page=\d+/i, "page=" + i) + '\')';
             if (i != page) {
-                $('#pagination').append('<li><a href="#" onclick="rerender(\'' + base_url.replace(/page=\d+/i, "page=" + i) + '\')">' + pagination + '</a></li>');
+                append_pagination($('#pagination'), on_click, pagination);
             } else {
-                $('#pagination').append('<li class="active"><a href="#" onclick="rerender(\'' + base_url.replace(/page=\d+/i, "page=" + i) + '\')">' + pagination + '</a></li>');
+                append_pagination($('#pagination'), on_click, pagination, true);
             }
         }
         if (page < last_pagination) {
-            $('#pagination').append('<li><a href="#" onclick="rerender(\'' + base_url.replace(/page=\d+/i, "page=" + (page + 1)) + '\')">下一页</a></li>');
+            on_click = 'rerender(\'' + base_url.replace(/page=\d+/i, "page=" + (page + 1)) + '\')';
+            append_pagination($('#pagination'), on_click, '下一页');
         }
         if (page < last_pagination - 5) {
-            $('#pagination').append('<li><a href="#" onclick="rerender(\'' + base_url.replace(/page=\d+/i, "page=" + last_pagination) + '\')">尾页</a></li>');
+            on_click = 'rerender(\'' + base_url.replace(/page=\d+/i, "page=" + last_pagination) + '\')';
+            append_pagination($('#pagination'), on_click, '尾页');
         }
     }
 

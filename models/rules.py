@@ -33,5 +33,5 @@ class Rules(Enum):
     PAGE_SIZE = ('regex:^\d{1,17}$', 'page_size')
     ORDER_BY = (basestring, 'order_by', (1, 30))
     ORDER = (basestring, 'order', ['asc', 'desc'])
-    KEYWORD = ('regex:^\w+$', 'keyword')
+    KEYWORD = (basestring, 'keyword')
     # TODO: 加入filter正则表达式
