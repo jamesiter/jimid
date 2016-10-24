@@ -21,6 +21,8 @@ add_rule(user.blueprint, '/_sign_up_by_mobile_phone', view_func='user.r_sign_up_
 add_rule(user.blueprint, '/_sign_up_by_email', view_func='user.r_sign_up_by_email', methods=['POST'])
 # 登录
 add_rule(user.blueprint, '/_sign_in', view_func='user.r_sign_in', methods=['POST'])
+add_rule(user.blueprint, '/_sign_in_by_mobile_phone', view_func='user.r_sign_in_by_mobile_phone', methods=['POST'])
+add_rule(user.blueprint, '/_sign_in_by_email', view_func='user.r_sign_in_by_email', methods=['POST'])
 # 登出
 add_rule(user.blueprint, '/_sign_out', view_func='user.r_sign_out', methods=['GET'])
 # 验证

@@ -27,7 +27,11 @@ __copyright__ = '(c) 2016 by James Iter.'
 def is_not_need_to_auth(endpoint):
     not_auth_table = [
         'user.r_sign_up',
-        'user.r_sign_in'
+        'user.r_sign_up_by_mobile_phone',
+        'user.r_sign_up_by_email',
+        'user.r_sign_in',
+        'user.r_sign_in_by_mobile_phone',
+        'user.r_sign_in_by_email'
     ]
     if endpoint in not_auth_table:
         return True

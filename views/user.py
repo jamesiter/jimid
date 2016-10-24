@@ -150,6 +150,72 @@ def r_sign_in():
 
 
 @Utils.dumps2response
+def r_sign_in_by_mobile_phone():
+
+    user = User()
+
+    args_rules = [
+        Rules.MOBILE_PHONE.value,
+        Rules.PASSWORD.value
+    ]
+    user.mobile_phone = request.json.get('mobile_phone')
+    user.password = request.json.get('password')
+
+    try:
+        ji.Check.previewing(args_rules, user.__dict__)
+        plain_password = user.password
+        user.get_by('mobile_phone')
+
+        if not ji.Security.ji_pbkdf2_check(password=plain_password, password_hash=user.password):
+            ret = dict()
+            ret['state'] = ji.Common.exchange_state(40101)
+            ret['state']['sub']['zh-cn'] = ''.join([ret['state']['sub']['zh-cn'], u': 鉴权失败'])
+            raise ji.PreviewingError(json.dumps(ret, ensure_ascii=False))
+
+        token = Utils.generate_token(user.id)
+        rep = make_response()
+        rep.set_cookie('token', token)
+        rep.data = json.dumps({'state': ji.Common.exchange_state(20000)}, ensure_ascii=False)
+        return rep
+
+    except ji.PreviewingError, e:
+        return json.loads(e.message)
+
+
+@Utils.dumps2response
+def r_sign_in_by_email():
+
+    user = User()
+
+    args_rules = [
+        Rules.EMAIL.value,
+        Rules.PASSWORD.value
+    ]
+    user.email = request.json.get('email')
+    user.password = request.json.get('password')
+
+    try:
+        ji.Check.previewing(args_rules, user.__dict__)
+        plain_password = user.password
+        user.get_by('email')
+
+        if not ji.Security.ji_pbkdf2_check(password=plain_password, password_hash=user.password):
+            ret = dict()
+            ret['state'] = ji.Common.exchange_state(40101)
+            ret['state']['sub']['zh-cn'] = ''.join([ret['state']['sub']['zh-cn'], u': 鉴权失败'])
+            raise ji.PreviewingError(json.dumps(ret, ensure_ascii=False))
+
+        token = Utils.generate_token(user.id)
+        rep = make_response()
+        rep.set_cookie('token', token)
+        rep.data = json.dumps({'state': ji.Common.exchange_state(20000)}, ensure_ascii=False)
+        return rep
+
+    except ji.PreviewingError, e:
+        return json.loads(e.message)
+
+
+@Utils.dumps2response
 def r_sign_out():
     rep = make_response()
     rep.delete_cookie('token')
