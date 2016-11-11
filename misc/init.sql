@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS user(
     email VARCHAR(30) NOT NULL DEFAULT '',
     mobile_phone_verified BOOLEAN NOT NULL DEFAULT FALSE,
     email_verified BOOLEAN NOT NULL DEFAULT FALSE,
+    manager BOOLEAN NOT NULL DEFAULT FALSE,
     enabled BOOLEAN NOT NULL DEFAULT TRUE,
     PRIMARY KEY (id))
     ENGINE=InnoDB;
@@ -18,14 +19,15 @@ CREATE TABLE IF NOT EXISTS user(
 ALTER TABLE user ADD INDEX (login_name);
 ALTER TABLE user ADD INDEX (mobile_phone);
 ALTER TABLE user ADD INDEX (email);
-INSERT INTO user (login_name, password, create_time) VALUES
-    ('admin', 'ji_pbkdf2$sha1$1000$Ji98s57956JcVrpwvnXKhC5kiJXZScv6$0e046371e16b913a78181f502c0b05fbadab6df5', UNIX_TIMESTAMP(NOW()) * 1000000);
+INSERT INTO user (login_name, password, create_time, manager) VALUES
+    ('admin', 'ji_pbkdf2$sha1$1000$Ji98s57956JcVrpwvnXKhC5kiJXZScv6$0e046371e16b913a78181f502c0b05fbadab6df5', UNIX_TIMESTAMP(NOW()) * 1000000, TRUE);
 
 
 CREATE TABLE IF NOT EXISTS app_key(
-  id CHAR(30) NOT NULL,
-  secret CHAR(30) NOT NULL,
+  id CHAR(16) NOT NULL,
+  secret CHAR(32) NOT NULL,
   create_time BIGINT UNSIGNED NOT NULL,
+  remark VARCHAR(1024) NOT NULL DEFAULT '',
   PRIMARY KEY (id))
   ENGINE=InnoDB;
 

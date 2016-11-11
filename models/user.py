@@ -26,13 +26,14 @@ class User(object):
         self.email = ''
         self.mobile_phone_verified = False
         self.email_verified = False
+        self.manager = False
         self.enabled = True
 
     def create(self):
         sql_stmt = ("INSERT INTO user (login_name, password, create_time, mobile_phone, email,"
-                    "mobile_phone_verified, email_verified, enabled) VALUES (%(login_name)s, %(password)s,"
+                    "mobile_phone_verified, email_verified, manager, enabled) VALUES (%(login_name)s, %(password)s,"
                     "%(create_time)s, %(mobile_phone)s, %(email)s, %(mobile_phone_verified)s,"
-                    "%(email_verified)s, %(enabled)s)")
+                    "%(email_verified)s, %(manager)s, %(enabled)s)")
 
         cnx = db.cnxpool.get_connection()
         cursor = cnx.cursor(dictionary=True, buffered=True)
@@ -60,7 +61,7 @@ class User(object):
         sql_stmt = ("UPDATE user SET login_name = %(login_name)s, password = %(password)s,"
                     "create_time = %(create_time)s, mobile_phone = %(mobile_phone)s, email = %(email)s,"
                     "mobile_phone_verified = %(mobile_phone_verified)s, email_verified = %(email_verified)s,"
-                    "enabled = %(enabled)s WHERE id = %(id)s")
+                    "manager = %(manager)s, enabled = %(enabled)s WHERE id = %(id)s")
 
         cnx = db.cnxpool.get_connection()
         cursor = cnx.cursor(dictionary=True, buffered=True)
@@ -183,6 +184,7 @@ class User(object):
             'email': FilterFieldType.STR.value,
             'mobile_phone_verified': FilterFieldType.BOOL.value,
             'email_verified': FilterFieldType.BOOL.value,
+            'manager': FilterFieldType.BOOL.value,
             'enabled': FilterFieldType.BOOL.value
         }
 

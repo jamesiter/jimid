@@ -142,7 +142,7 @@ def r_sign_in():
         token = Utils.generate_token(user.id)
         rep = make_response()
         rep.set_cookie('token', token)
-        rep.data = json.dumps({'state': ji.Common.exchange_state(20000)}, ensure_ascii=False)
+        rep.data = json.dumps({'state': ji.Common.exchange_state(20000), 'manager': user.manager}, ensure_ascii=False)
         return rep
 
     except ji.PreviewingError, e:
@@ -175,7 +175,7 @@ def r_sign_in_by_mobile_phone():
         token = Utils.generate_token(user.id)
         rep = make_response()
         rep.set_cookie('token', token)
-        rep.data = json.dumps({'state': ji.Common.exchange_state(20000)}, ensure_ascii=False)
+        rep.data = json.dumps({'state': ji.Common.exchange_state(20000), 'manager': user.manager}, ensure_ascii=False)
         return rep
 
     except ji.PreviewingError, e:
@@ -208,7 +208,7 @@ def r_sign_in_by_email():
         token = Utils.generate_token(user.id)
         rep = make_response()
         rep.set_cookie('token', token)
-        rep.data = json.dumps({'state': ji.Common.exchange_state(20000)}, ensure_ascii=False)
+        rep.data = json.dumps({'state': ji.Common.exchange_state(20000), 'manager': user.manager}, ensure_ascii=False)
         return rep
 
     except ji.PreviewingError, e:
