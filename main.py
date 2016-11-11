@@ -42,7 +42,7 @@ def is_not_need_to_auth(endpoint):
 @Utils.dumps2response
 def r_before_request():
     try:
-        if not is_not_need_to_auth(request.endpoint) and request.method != 'OPTIONS':
+        if not is_not_need_to_auth(request.endpoint) and request.blueprint is not None and request.method != 'OPTIONS':
             token = request.cookies.get('token', '')
             g.token = Utils.verify_token(token)
             g.superuser = False
@@ -68,7 +68,16 @@ def r_before_request():
                 return response
 
     except ji.JITError, e:
-        return json.loads(e.message)
+        ret = json.loads(e.message)
+        if ret['state']['sub']['code'] in ['41208']:
+            ret['redirect'] = {
+                # 非官方的,专为解决jquery ajax 302跳转问题,由民间开发者普遍认可的一个代替码。
+                # 参考链接: http://hunterford.me/how-to-handle-http-redirects-with-jquery-and-django/
+                'code': '278',
+                'location': request.host_url + 'login.html'
+            }
+
+        return ret
 
 
 @app.after_request
@@ -82,7 +91,7 @@ def r_after_request(response):
         response.headers['Access-Control-Allow-Headers'] = 'X-Request-With, Content-Type'
         response.headers['Access-Control-Expose-Headers'] = 'Set-Cookie'
 
-        # 分两个if语句, 是因为即使r_before_request无法通过, 但还是会走r_after_request流程, 整个请求周期不会因为r_before_request的异常而跳过r_after_request
+        # 少于token生命周期一半时,自动对其续期
         if not is_not_need_to_auth(request.endpoint) and hasattr(g, 'token') and \
                         g.token['exp'] < (ji.Common.ts() + (app.config['token_ttl'] / 2)):
             token = Utils.generate_token(g.token['uid'])

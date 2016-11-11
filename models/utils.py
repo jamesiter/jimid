@@ -3,7 +3,7 @@
 
 from functools import wraps
 
-from flask import make_response, g
+from flask import make_response, g, request
 from flask.wrappers import Response
 from werkzeug.utils import import_string, cached_property
 import jwt
@@ -37,6 +37,9 @@ class Utils(object):
                 response = make_response()
                 response.data = json.dumps(ret, ensure_ascii=False)
                 response.status_code = int(ret['state']['code'])
+                if 'redirect' in ret and request.args.get('auto_redirect', 'True') == 'True':
+                    response.status_code = int(ret['redirect'].get('code', ret['state']['code']))
+                    response.location = ret['redirect'].get('location', request.host_url)
                 return response
 
             if isinstance(ret, Response):
