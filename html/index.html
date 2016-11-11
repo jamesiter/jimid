@@ -126,20 +126,25 @@
     var label_length = 12;
     var suffix = '...';
     var cur_url = '';
-
+    
     function rerender(url) {
         $.ajax({
             url : url,
             type : 'GET',
             dataType: 'json',
+            async: false,
             error : function(xhr, status, error) {
                 insert_warning_window($('#header'), '<strong>获取用户列表失败, 请联系管理员! </strong>');
                 // 3秒后自动跳转到
-                setTimeout(function() {
-                    window.location.href="/login.html";
-                }, 3000);
+                // setTimeout(function() {
+                //     window.location.href="/login.html";
+                // }, 3000);
             },
             success : function(result, status, xhr) {
+                if (xhr.status == 278) {
+                    window.location.href = xhr.getResponseHeader("Location").replace(/\?.*$/, "?next="+window.location.pathname);
+                    return;
+                }
                 $('#t_body').children().remove();
                 $(result.data).each(function(index, ele) {
                     var mobile_checkbox = Boolean(ele.mobile_phone_verified) ? '<input type="checkbox" checked disabled>' : '<input type="checkbox" disabled>';
@@ -406,9 +411,9 @@
             error : function() {
                 insert_warning_window($('#header'), '<strong>注销失败, 请联系管理员! </strong>');
                 // 3秒后自动跳转到
-                setTimeout(function() {
-                    window.location.href="/login.html";
-                }, 3000);
+                // setTimeout(function() {
+                //     window.location.href="/login.html";
+                // }, 3000);
             },
             success : function() {
                 insert_success_window($('#header'), '<strong>成功注销, 3秒后自动跳转到登陆页面! </strong>');
