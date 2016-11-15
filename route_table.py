@@ -3,7 +3,7 @@
 
 
 from models.utils import add_rule
-from views import user, mgmt
+from views import user, mgmt, openid
 
 
 __author__ = 'James Iter'
@@ -49,4 +49,9 @@ add_rule(mgmt.blueprints, '', view_func='mgmt.r_get_by_filter', methods=['GET'])
 add_rule(mgmt.blueprints, '', view_func='mgmt.r_update_by_uid_s', methods=['PATCH'])
 add_rule(mgmt.blueprints, '', view_func='mgmt.r_delete_by_uid_s', methods=['DELETE'])
 add_rule(mgmt.blueprints, '/_search', view_func='mgmt.r_content_search', methods=['GET'])
+
+# openid注册、绑定、解绑接口
+add_rule(openid.blueprint, '/_sign_up', view_func='openid.r_sign_up', methods=['GET'])
+add_rule(openid.blueprint, '/_bind', view_func='openid.r_bind', methods=['GET'])
+add_rule(openid.blueprint, '/_unbind', view_func='openid.r_unbind', methods=['GET'])
 
