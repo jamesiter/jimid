@@ -187,7 +187,6 @@ def r_unbind():
     # 在必须参数没有得到满足的情况下,直接把结果抛给请求的客户端。
     args_rules = [
         Rules.APP_ID.value,
-        Rules.OPENID.value,
         Rules.TS.value,
         Rules.SIGN.value,
         Rules.REDIRECT_URL.value
@@ -213,7 +212,7 @@ def r_unbind():
 
     # 通过secret校验签名
     # TODO: 加入判断时间戳的逻辑,时间范围由配置文件指定
-    needs = ['appid', 'openid', 'ts', 'redirect_url']
+    needs = ['appid', 'ts', 'redirect_url']
     args = dict()
     for k in needs:
         args[k] = urllib.quote_plus(request.args[k])
