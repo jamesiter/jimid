@@ -62,7 +62,6 @@ def r_sign_up():
     # 在必须参数没有得到满足的情况下,直接把结果抛给请求的客户端。
     args_rules = [
         Rules.APP_ID.value,
-        Rules.OPENID.value,
         Rules.TS.value,
         Rules.SIGN.value,
         Rules.REDIRECT_URL.value
@@ -84,7 +83,7 @@ def r_sign_up():
     if app_key.exist():
         app_key.get()
     else:
-        return exchange_302(41250)
+        return exchange_302(40450)
 
     # 通过secret校验签名
     # TODO: 加入判断时间戳的逻辑,时间范围由配置文件指定
@@ -116,58 +115,124 @@ def r_sign_up():
 
 
 @Utils.dumps2response
-@Utils.superuser
-def r_bind(_id):
+def r_bind():
     """
     接受资源服务器主动提供的openid
     """
-    app_key = UidOpenidMapping()
 
+    # 所有必须参数得到满足,才去认真对待该请求。即,当所有必须参数满足后,才把返回结果通过302重定向传给资源服务器。
+    # 在必须参数没有得到满足的情况下,直接把结果抛给请求的客户端。
     args_rules = [
-        Rules.APP_ID.value
+        Rules.APP_ID.value,
+        Rules.OPENID.value,
+        Rules.TS.value,
+        Rules.SIGN.value,
+        Rules.REDIRECT_URL.value
     ]
-    app_key.id = _id
 
     try:
-        ji.Check.previewing(args_rules, app_key.__dict__)
-        app_key.delete()
+        ji.Check.previewing(args_rules, request.args)
+    except ji.PreviewingError, e:
+        return json.loads(e.message)
+
+    # TODO: 校验重定向的资源服务器地址,是否是合法、有效、备案过的地址(域名或IP).避免被用作让客户端去攻击其它服务器;
+
+    app_key = AppKey()
+    openid = UidOpenidMapping()
+
+    # 校验appid及获取appid对应的secret
+    app_key.id = request.args['appid']
+
+    if app_key.exist():
+        app_key.get()
+    else:
+        return exchange_302(40450)
+
+    # 通过secret校验签名
+    # TODO: 加入判断时间戳的逻辑,时间范围由配置文件指定
+    needs = ['appid', 'openid', 'ts', 'redirect_url']
+    args = dict()
+    for k in needs:
+        args[k] = urllib.quote_plus(request.args[k])
+
+    sign = ji.Security.ji_hash_sign(algorithm='sha1', secret=app_key.secret, content=args)
+
+    if sign != request.args['sign']:
+        return exchange_302(41250)
+
+    # 判断该用户是否已经在该appid下绑定过openid
+    openid.uid = g.token.get('uid', 0).__str__()
+    openid.appid = app_key.id
+
+    try:
+        if openid.exist():
+            openid.get()
+            return exchange_302(40901, {'data': {'openid': openid.openid}})
+        else:
+            openid.openid = request.args['openid']
+            openid.create()
+            openid.get()
+            return exchange_302(20000, {'data': {'openid': openid.openid}})
     except ji.PreviewingError, e:
         return json.loads(e.message)
 
 
 @Utils.dumps2response
-@Utils.superuser
 def r_unbind():
+    """
+    解除已绑定的openid
+    """
 
+    # 所有必须参数得到满足,才去认真对待该请求。即,当所有必须参数满足后,才把返回结果通过302重定向传给资源服务器。
+    # 在必须参数没有得到满足的情况下,直接把结果抛给请求的客户端。
     args_rules = [
-        Rules.APP_ID.value
+        Rules.APP_ID.value,
+        Rules.OPENID.value,
+        Rules.TS.value,
+        Rules.SIGN.value,
+        Rules.REDIRECT_URL.value
     ]
 
-    if 'secret' in request.json:
-        args_rules.append(
-            Rules.APP_SECRET.value
-        )
+    try:
+        ji.Check.previewing(args_rules, request.args)
+    except ji.PreviewingError, e:
+        return json.loads(e.message)
 
-    if 'remark' in request.json:
-        args_rules.append(
-            Rules.APP_REMARK.value
-        )
+    # TODO: 校验重定向的资源服务器地址,是否是合法、有效、备案过的地址(域名或IP).避免被用作让客户端去攻击其它服务器;
 
-    if args_rules.__len__() < 2:
-        ret = dict()
-        ret['state'] = ji.Common.exchange_state(20000)
-        return ret
+    app_key = AppKey()
+    openid = UidOpenidMapping()
+
+    # 校验appid及获取appid对应的secret
+    app_key.id = request.args['appid']
+
+    if app_key.exist():
+        app_key.get()
+    else:
+        return exchange_302(40450)
+
+    # 通过secret校验签名
+    # TODO: 加入判断时间戳的逻辑,时间范围由配置文件指定
+    needs = ['appid', 'openid', 'ts', 'redirect_url']
+    args = dict()
+    for k in needs:
+        args[k] = urllib.quote_plus(request.args[k])
+
+    sign = ji.Security.ji_hash_sign(algorithm='sha1', secret=app_key.secret, content=args)
+
+    if sign != request.args['sign']:
+        return exchange_302(41250)
+
+    # 判断该用户是否已经在该appid下绑定过openid
+    openid.uid = g.token.get('uid', 0).__str__()
+    openid.appid = app_key.id
 
     try:
-        ji.Check.previewing(args_rules, request.json)
-        app_key = UidOpenidMapping()
-        app_key.id = request.json.get('id')
-        app_key.get()
-
-        app_key.secret = request.json.get('secret', app_key.secret)
-        app_key.remark = request.json.get('remark', app_key.remark)
-
-        app_key.update()
+        if openid.exist():
+            openid.delete()
+            return exchange_302(20000, {'data': {'openid': openid.openid}})
+        else:
+            return exchange_302(40401)
     except ji.PreviewingError, e:
         return json.loads(e.message)
 
