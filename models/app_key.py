@@ -25,7 +25,7 @@ class AppKey(object):
 
     def create(self):
         sql_stmt = ("INSERT INTO app_key (id, secret, create_time, remark) VALUES (%(id)s, %(secret)s,"
-                    "%(create_time)s, %(remark)s")
+                    "%(create_time)s, %(remark)s)")
 
         cnx = db.cnxpool.get_connection()
         cursor = cnx.cursor(dictionary=True, buffered=True)
