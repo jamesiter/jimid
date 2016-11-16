@@ -22,6 +22,14 @@ from user import (
     User
 )
 
+from app_key import (
+    AppKey
+)
+
+from uid_openid_mapping import (
+    UidOpenidMapping
+)
+
 from filter import (
     FilterFieldType,
     Filter
@@ -35,5 +43,5 @@ __copyright__ = '(c) 2016 by James Iter.'
 
 
 __all__ = [
-    'Rules', 'Utils', 'Init', 'Database', 'User', 'FilterFieldType', 'Filter'
+    'Rules', 'Utils', 'Init', 'Database', 'User', 'AppKey', 'UidOpenidMapping', 'FilterFieldType', 'Filter'
 ]

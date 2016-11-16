@@ -16,6 +16,10 @@ from models import User
 from views.user import blueprint as auth_blueprint
 from views.mgmt import blueprint as mgmt_blueprint
 from views.mgmt import blueprints as mgmts_blueprint
+from views.app_key import blueprint as app_key_blueprint
+from views.app_key import blueprints as app_keys_blueprint
+from views.openid import blueprint as openid_blueprint
+from views.openid import blueprints as openids_blueprint
 
 
 __author__ = 'James Iter'
@@ -109,6 +113,10 @@ try:
     app.register_blueprint(auth_blueprint)
     app.register_blueprint(mgmt_blueprint)
     app.register_blueprint(mgmts_blueprint)
+    app.register_blueprint(app_key_blueprint)
+    app.register_blueprint(app_keys_blueprint)
+    app.register_blueprint(openid_blueprint)
+    app.register_blueprint(openids_blueprint)
 except:
     logger.error(traceback.format_exc())
 

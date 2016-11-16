@@ -21,10 +21,11 @@ class AppKey(object):
         self.id = kwargs.get('id', None)
         self.secret = kwargs.get('secret', None)
         self.create_time = ji.Common.tus()
+        self.remark = kwargs.get('remark', '')
 
     def create(self):
-        sql_stmt = ("INSERT INTO app_key (id, secret, create_time) VALUES (%(id)s, %(secret)s,"
-                    "%(create_time)s")
+        sql_stmt = ("INSERT INTO app_key (id, secret, create_time, remark) VALUES (%(id)s, %(secret)s,"
+                    "%(create_time)s, %(remark)s")
 
         cnx = db.cnxpool.get_connection()
         cursor = cnx.cursor(dictionary=True, buffered=True)
@@ -50,7 +51,7 @@ class AppKey(object):
             raise ji.PreviewingError(json.dumps(ret, ensure_ascii=False))
 
         sql_stmt = ("UPDATE app_key SET id = %(id)s, secret = %(secret)s,"
-                    "create_time = %(create_time)s WHERE id = %(id)s")
+                    "create_time = %(create_time)s, remark = %(remark)s WHERE id = %(id)s")
 
         cnx = db.cnxpool.get_connection()
         cursor = cnx.cursor(dictionary=True, buffered=True)

@@ -25,6 +25,7 @@ class Rules(Enum):
 
     MOBILE_PHONE_VERIFIED = (bool, 'mobile_phone_verified', [False, True])
     EMAIL_VERIFIED = (bool, 'email_verified', [False, True])
+    MANAGER = (bool, 'manager', [False, True])
     ENABLED = (bool, 'enabled', [False, True])
 
     OFFSET = ('regex:^\d{1,17}$', 'offset')
@@ -35,3 +36,11 @@ class Rules(Enum):
     ORDER = (basestring, 'order', ['asc', 'desc'])
     KEYWORD = (basestring, 'keyword')
     # TODO: 加入filter正则表达式
+    APP_ID = (basestring, 'id', (16, 16))
+    APP_SECRET = (basestring, 'secret', (32, 32))
+    APP_REMARK = (basestring, 'remark', (0, 1024))
+    OPENID = (basestring, 'openid', (0, 30))
+    # 9999999999 @ Sat, 20 Nov 2286 17:46:39 GMT, 10个9能记录到2286年
+    TS = ('regex:^\d{1,10}$', 'ts')
+    SIGN = (basestring, 'sign')
+    REDIRECT_URL = (basestring, 'redirect_url')
