@@ -57,7 +57,7 @@ def r_enable(_id):
     user = User()
 
     args_rules = [
-        Rules.ID.value
+        Rules.UID.value
     ]
     user.id = _id
 
@@ -91,7 +91,7 @@ def r_disable(_id):
     user = User()
 
     args_rules = [
-        Rules.ID.value
+        Rules.UID.value
     ]
     user.id = _id
 
@@ -124,7 +124,7 @@ def r_delete(_id):
     user = User()
 
     args_rules = [
-        Rules.ID.value
+        Rules.UID.value
     ]
     user.id = _id
 
@@ -148,7 +148,7 @@ def r_update():
     user = User()
 
     args_rules = [
-        Rules.ID.value
+        Rules.UID.value
     ]
 
     if 'login_name' in request.json:
@@ -280,7 +280,7 @@ def r_get_by_filter():
 @Utils.superuser
 def r_update_by_uid_s():
     args_rules = [
-        Rules.IDS.value
+        Rules.UIDS.value
     ]
 
     if 'mobile_phone_verified' in request.json:
@@ -315,7 +315,7 @@ def r_update_by_uid_s():
 @Utils.superuser
 def r_delete_by_uid_s():
     args_rules = [
-        Rules.IDS.value
+        Rules.UIDS.value
     ]
 
     try:

@@ -39,7 +39,11 @@ class Utils(object):
                 response.status_code = int(ret['state']['code'])
                 if 'redirect' in ret and request.args.get('auto_redirect', 'True') == 'True':
                     response.status_code = int(ret['redirect'].get('code', ret['state']['code']))
-                    response.location = ret['redirect'].get('location', request.host_url)
+                    response.headers['location'] = ret['redirect'].get('location', request.host_url)
+                    # 参考链接:
+                    # http://werkzeug.pocoo.org/docs/0.11/wrappers/#werkzeug.wrappers.BaseResponse.autocorrect_location_header
+                    # 变量操纵位置 werkzeug/wrappers.py
+                    response.autocorrect_location_header = False
                 return response
 
             if isinstance(ret, Response):

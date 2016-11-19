@@ -61,7 +61,7 @@ def r_sign_up():
     # 所有必须参数得到满足,才去认真对待该请求。即,当所有必须参数满足后,才把返回结果通过302重定向传给资源服务器。
     # 在必须参数没有得到满足的情况下,直接把结果抛给请求的客户端。
     args_rules = [
-        Rules.APP_ID.value,
+        Rules.APP_ID_EXT.value,
         Rules.TS.value,
         Rules.SIGN.value,
         Rules.REDIRECT_URL.value
@@ -123,7 +123,7 @@ def r_bind():
     # 所有必须参数得到满足,才去认真对待该请求。即,当所有必须参数满足后,才把返回结果通过302重定向传给资源服务器。
     # 在必须参数没有得到满足的情况下,直接把结果抛给请求的客户端。
     args_rules = [
-        Rules.APP_ID.value,
+        Rules.APP_ID_EXT.value,
         Rules.OPENID.value,
         Rules.TS.value,
         Rules.SIGN.value,
@@ -186,7 +186,7 @@ def r_unbind():
     # 所有必须参数得到满足,才去认真对待该请求。即,当所有必须参数满足后,才把返回结果通过302重定向传给资源服务器。
     # 在必须参数没有得到满足的情况下,直接把结果抛给请求的客户端。
     args_rules = [
-        Rules.APP_ID.value,
+        Rules.APP_ID_EXT.value,
         Rules.TS.value,
         Rules.SIGN.value,
         Rules.REDIRECT_URL.value

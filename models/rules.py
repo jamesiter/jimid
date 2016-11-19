@@ -12,8 +12,8 @@ __copyright__ = '(c) 2015 by James Iter.'
 
 
 class Rules(Enum):
-    ID = ('regex:^\d{1,17}$', 'id')
-    IDS = ('regex:^(\d{1,17}(,)?)+$', 'ids')
+    UID = ('regex:^\d{1,17}$', 'id')
+    UIDS = ('regex:^(\d{1,17}(,)?)+$', 'ids')
     LOGIN_NAME = (basestring, 'login_name', (5, 30))
     PASSWORD = (basestring, 'password', (1, 100))
     CREATE_TIME = ((int, long), 'create_time', (0, 9223372036854775807))
@@ -37,6 +37,8 @@ class Rules(Enum):
     KEYWORD = (basestring, 'keyword')
     # TODO: 加入filter正则表达式
     APP_ID = (basestring, 'id', (16, 16))
+    # EXT for external(客观的)
+    APP_ID_EXT = (basestring, 'appid', (16, 16))
     APP_SECRET = (basestring, 'secret', (32, 32))
     APP_REMARK = (basestring, 'remark', (0, 1024))
     OPENID = (basestring, 'openid', (0, 30))

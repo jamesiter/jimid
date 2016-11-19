@@ -47,7 +47,7 @@ class TestAppKey(unittest.TestCase):
         TestAppKey.superuser_cookies = r.cookies
         self.assertEqual('200', j_r['state']['code'])
 
-    # 创业appkey
+    # 创建appkey
     def test_12_create_app_key(self):
         payload = {
             "remark": "remark",

@@ -25,7 +25,7 @@ class UidOpenidMapping(object):
 
     def create(self):
         sql_stmt = ("INSERT INTO uid_openid_mapping (uid, appid, openid, create_time) VALUES (%(uid)s, %(appid)s, "
-                    "%(openid)s, %(create_time)s")
+                    "%(openid)s, %(create_time)s)")
 
         cnx = db.cnxpool.get_connection()
         cursor = cnx.cursor(dictionary=True, buffered=True)
@@ -111,7 +111,7 @@ class UidOpenidMapping(object):
             raise ji.PreviewingError(json.dumps(ret, ensure_ascii=False))
 
     def exist(self):
-        sql_stmt = ("SELECT uid FROM user WHERE uid = %(uid)s AND appid = %(appid)s LIMIT 1")
+        sql_stmt = ("SELECT uid FROM uid_openid_mapping WHERE uid = %(uid)s AND appid = %(appid)s LIMIT 1")
 
         cnx = db.cnxpool.get_connection()
         cursor = cnx.cursor(dictionary=True, buffered=True)

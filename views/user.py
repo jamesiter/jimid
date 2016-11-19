@@ -227,7 +227,7 @@ def r_get():
     user = User()
 
     args_rules = [
-        Rules.ID.value
+        Rules.UID.value
     ]
     user.id = g.token.get('uid', 0).__str__()
 
@@ -250,7 +250,7 @@ def r_change_password():
     user = User()
 
     args_rules = [
-        Rules.ID.value
+        Rules.UID.value
     ]
     user.id = g.token.get('uid', 0).__str__()
 
@@ -278,7 +278,7 @@ def r_auth():
     user = User()
 
     args_rules = [
-        Rules.ID.value
+        Rules.UID.value
     ]
     user.id = g.token.get('uid', 0).__str__()
 
