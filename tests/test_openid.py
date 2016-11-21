@@ -224,6 +224,26 @@ class TestOpenid(unittest.TestCase):
         print r.headers._store['location']
         self.assertEqual(302, r.status_code)
 
+    def test_26_openid_auth(self):
+        args = {
+            'ts': urllib.quote_plus(TestOpenid.now_ts.__str__()),
+            'appid': urllib.quote_plus(TestOpenid.app_id),
+            'redirect_url': urllib.quote_plus('http://www.baidu.com'),
+            'method': 'GET',
+            'base_url': 'http://jimauth.dev.iit.im/openid/_auth'
+        }
+        sign = ji.Security.ji_hash_sign(algorithm='sha1', secret=TestOpenid.app_secret,
+                                        content=args)
+
+        url = '&'.join(['appid=' + TestOpenid.app_id, 'ts=' + TestOpenid.now_ts.__str__(),
+                        'redirect_url=http://www.baidu.com', 'sign=' + sign])
+        url = 'http://jimauth.dev.iit.im/openid/_auth?' + url
+        r = requests.get(url, cookies=TestOpenid.cookies, allow_redirects=False)
+        j_r = json.loads(r.content)
+        print json.dumps(j_r, ensure_ascii=False)
+        print r.headers._store['location']
+        self.assertEqual(302, r.status_code)
+
     # 删除appkey
     def test_31_delete(self):
         url = 'http://jimauth.dev.iit.im/app_key/' + TestOpenid.app_id

@@ -54,6 +54,7 @@ add_rule(mgmt.blueprints, '/_search', view_func='mgmt.r_content_search', methods
 add_rule(openid.blueprint, '/_sign_up', view_func='openid.r_sign_up', methods=['GET'])
 add_rule(openid.blueprint, '/_bind', view_func='openid.r_bind', methods=['GET'])
 add_rule(openid.blueprint, '/_unbind', view_func='openid.r_unbind', methods=['GET'])
+add_rule(openid.blueprint, '/_auth', view_func='openid.r_auth', methods=['GET'])
 
 # app_key操作接口
 add_rule(app_key.blueprint, '', view_func='app_key.r_create', methods=['POST'])
