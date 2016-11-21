@@ -29,7 +29,7 @@ blueprints = Blueprint(
 )
 
 
-def exchange_302(state_code, attach=None):
+def exchange_302(state_code, attach=None, secret=''):
     if attach is None:
         attach = dict()
 
@@ -40,15 +40,23 @@ def exchange_302(state_code, attach=None):
         'location': request.args['redirect_url'].split('?', 1)
     }
 
-    if ret['redirect']['location'].__len__() < 2:
-        ret['redirect']['location'] = urllib.quote_plus(''.join([ret['redirect']['location'][0], '?',
-                                                                 'state=', json.dumps(ret['state'])]))
-    else:
-        ret['redirect']['location'] = urllib.quote_plus(''.join([
-            ret['redirect']['location'][0], '?', ret['redirect']['location'][1],
-            '&state=', json.dumps(ret['state'])]))
+    attach['code'] = state_code.__str__()
+    if ret['redirect']['location'].__len__() == 2:
+        for item in ret['redirect']['location'][1].split('&'):
+            kv = item.split('=', 1)
+            attach[kv[0]] = kv[1]
 
-    ret.update(attach)
+    sign = ji.Security.ji_hash_sign(algorithm='sha1', secret=secret, content=attach)
+    attach['sign'] = sign
+
+    url_parm = list()
+    for k, v in attach.items():
+        url_parm.append('='.join([k, v]))
+
+    url_parm = '&'.join(url_parm)
+
+    ret['redirect']['location'] = ''.join([ret['redirect']['location'][0], '?', url_parm])
+
     return ret
 
 
@@ -72,8 +80,6 @@ def r_sign_up():
     except ji.PreviewingError, e:
         return json.loads(e.message)
 
-    # TODO: 校验重定向的资源服务器地址,是否是合法、有效、备案过的地址(域名或IP).避免被用作让客户端去攻击其它服务器;
-
     app_key = AppKey()
     openid = UidOpenidMapping()
 
@@ -83,8 +89,10 @@ def r_sign_up():
     if app_key.exist():
         app_key.get()
     else:
-        return exchange_302(40450)
+        # 此处比较特殊,如果appid不存在,则使用空字符串作为签名秘钥
+        return exchange_302(state_code=40450)
 
+    # TODO: 校验重定向的资源服务器地址,是否是合法、有效、备案过的地址(域名或IP).避免被用作让客户端去攻击其它服务器;
     # 通过secret校验签名
     # TODO: 加入判断时间戳的逻辑,时间范围由配置文件指定
     needs = ['appid', 'ts', 'redirect_url']
@@ -95,7 +103,7 @@ def r_sign_up():
     sign = ji.Security.ji_hash_sign(algorithm='sha1', secret=app_key.secret, content=args)
 
     if sign != request.args['sign']:
-        return exchange_302(41250)
+        return exchange_302(state_code=41250, secret=app_key.secret)
 
     # 判断该用户是否已经在该appid下绑定过openid
     openid.uid = g.token.get('uid', 0).__str__()
@@ -104,12 +112,12 @@ def r_sign_up():
     try:
         if openid.exist():
             openid.get()
-            return exchange_302(40901, {'data': {'openid': openid.openid}})
+            return exchange_302(state_code=40901, attach={'openid': openid.openid}, secret=app_key.secret)
         else:
             openid.openid = ji.Common.generate_random_code(length=30)
             openid.create()
             openid.get()
-            return exchange_302(20000, {'data': {'openid': openid.openid}})
+            return exchange_302(state_code=20000, attach={'openid': openid.openid}, secret=app_key.secret)
     except ji.PreviewingError, e:
         return json.loads(e.message)
 
@@ -135,8 +143,6 @@ def r_bind():
     except ji.PreviewingError, e:
         return json.loads(e.message)
 
-    # TODO: 校验重定向的资源服务器地址,是否是合法、有效、备案过的地址(域名或IP).避免被用作让客户端去攻击其它服务器;
-
     app_key = AppKey()
     openid = UidOpenidMapping()
 
@@ -146,7 +152,10 @@ def r_bind():
     if app_key.exist():
         app_key.get()
     else:
-        return exchange_302(40450)
+        # 此处比较特殊,如果appid不存在,则使用空字符串作为签名秘钥
+        return exchange_302(state_code=40450)
+
+    # TODO: 校验重定向的资源服务器地址,是否是合法、有效、备案过的地址(域名或IP).避免被用作让客户端去攻击其它服务器;
 
     # 通过secret校验签名
     # TODO: 加入判断时间戳的逻辑,时间范围由配置文件指定
@@ -158,7 +167,7 @@ def r_bind():
     sign = ji.Security.ji_hash_sign(algorithm='sha1', secret=app_key.secret, content=args)
 
     if sign != request.args['sign']:
-        return exchange_302(41250)
+        return exchange_302(state_code=41250, secret=app_key.secret)
 
     # 判断该用户是否已经在该appid下绑定过openid
     openid.uid = g.token.get('uid', 0).__str__()
@@ -167,12 +176,12 @@ def r_bind():
     try:
         if openid.exist():
             openid.get()
-            return exchange_302(40901, {'data': {'openid': openid.openid}})
+            return exchange_302(state_code=40901, attach={'openid': openid.openid}, secret=app_key.secret)
         else:
             openid.openid = request.args['openid']
             openid.create()
             openid.get()
-            return exchange_302(20000, {'data': {'openid': openid.openid}})
+            return exchange_302(state_code=20000, attach={'openid': openid.openid}, secret=app_key.secret)
     except ji.PreviewingError, e:
         return json.loads(e.message)
 
@@ -197,8 +206,6 @@ def r_unbind():
     except ji.PreviewingError, e:
         return json.loads(e.message)
 
-    # TODO: 校验重定向的资源服务器地址,是否是合法、有效、备案过的地址(域名或IP).避免被用作让客户端去攻击其它服务器;
-
     app_key = AppKey()
     openid = UidOpenidMapping()
 
@@ -208,7 +215,10 @@ def r_unbind():
     if app_key.exist():
         app_key.get()
     else:
-        return exchange_302(40450)
+        # 此处比较特殊,如果appid不存在,则使用空字符串作为签名秘钥
+        return exchange_302(state_code=40450)
+
+    # TODO: 校验重定向的资源服务器地址,是否是合法、有效、备案过的地址(域名或IP).避免被用作让客户端去攻击其它服务器;
 
     # 通过secret校验签名
     # TODO: 加入判断时间戳的逻辑,时间范围由配置文件指定
@@ -220,7 +230,7 @@ def r_unbind():
     sign = ji.Security.ji_hash_sign(algorithm='sha1', secret=app_key.secret, content=args)
 
     if sign != request.args['sign']:
-        return exchange_302(41250)
+        return exchange_302(state_code=41250, secret=app_key.secret)
 
     # 判断该用户是否已经在该appid下绑定过openid
     openid.uid = g.token.get('uid', 0).__str__()
@@ -228,10 +238,11 @@ def r_unbind():
 
     try:
         if openid.exist():
+            openid.get()
             openid.delete()
-            return exchange_302(20000, {'data': {'openid': openid.openid}})
+            return exchange_302(state_code=20000, attach={'openid': openid.openid}, secret=app_key.secret)
         else:
-            return exchange_302(40401)
+            return exchange_302(state_code=40401, secret=app_key.secret)
     except ji.PreviewingError, e:
         return json.loads(e.message)
 
