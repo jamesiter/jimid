@@ -100,6 +100,9 @@ def r_sign_up():
     for k in needs:
         args[k] = urllib.quote_plus(request.args[k])
 
+    args['method'] = request.method.upper()
+    args['base_url'] = request.base_url
+
     sign = ji.Security.ji_hash_sign(algorithm='sha1', secret=app_key.secret, content=args)
 
     if sign != request.args['sign']:
@@ -164,6 +167,9 @@ def r_bind():
     for k in needs:
         args[k] = urllib.quote_plus(request.args[k])
 
+    args['method'] = request.method.upper()
+    args['base_url'] = request.base_url
+
     sign = ji.Security.ji_hash_sign(algorithm='sha1', secret=app_key.secret, content=args)
 
     if sign != request.args['sign']:
@@ -227,6 +233,9 @@ def r_unbind():
     for k in needs:
         args[k] = urllib.quote_plus(request.args[k])
 
+    args['method'] = request.method.upper()
+    args['base_url'] = request.base_url
+
     sign = ji.Security.ji_hash_sign(algorithm='sha1', secret=app_key.secret, content=args)
 
     if sign != request.args['sign']:
@@ -238,9 +247,8 @@ def r_unbind():
 
     try:
         if openid.exist():
-            openid.get()
             openid.delete()
-            return exchange_302(state_code=20000, attach={'openid': openid.openid}, secret=app_key.secret)
+            return exchange_302(state_code=20000, secret=app_key.secret)
         else:
             return exchange_302(state_code=40401, secret=app_key.secret)
     except ji.PreviewingError, e:

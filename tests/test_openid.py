@@ -107,15 +107,6 @@ class TestOpenid(unittest.TestCase):
         print json.dumps(j_r, ensure_ascii=False)
         self.assertEqual('200', j_r['state']['code'])
 
-    def test_16_generate_sign_with_sign_up(self):
-        args = {
-            'ts': urllib.quote_plus(TestOpenid.now_ts.__str__()),
-            'appid': urllib.quote_plus(TestOpenid.app_id),
-            'redirect_url': urllib.quote_plus('http://www.baidu.com')
-        }
-        TestOpenid.sign_with_sign_up = ji.Security.ji_hash_sign(algorithm='sha1', secret=TestOpenid.app_secret,
-                                                                content=args)
-
     def test_17_generate_sign_with_bind(self):
         args = {
             'ts': urllib.quote_plus(TestOpenid.now_ts.__str__()),
@@ -127,8 +118,17 @@ class TestOpenid(unittest.TestCase):
                                                              content=args)
 
     def test_21_openid_sign_up_no_user_cookie(self):
+        args = {
+            'ts': urllib.quote_plus(TestOpenid.now_ts.__str__()),
+            'appid': urllib.quote_plus(TestOpenid.app_id),
+            'redirect_url': urllib.quote_plus('http://www.baidu.com'),
+            'method': 'GET',
+            'base_url': 'http://jimauth.dev.iit.im/openid/_sign_up'
+        }
+        sign = ji.Security.ji_hash_sign(algorithm='sha1', secret=TestOpenid.app_secret,
+                                        content=args)
         url = '&'.join(['appid=' + TestOpenid.app_id, 'ts=' + TestOpenid.now_ts.__str__(),
-                        'redirect_url=http://www.baidu.com', 'sign=' + TestOpenid.sign_with_sign_up])
+                        'redirect_url=http://www.baidu.com', 'sign=' + sign])
         url = 'http://jimauth.dev.iit.im/openid/_sign_up?' + url
         r = requests.get(url)
         j_r = json.loads(r.content)
@@ -137,8 +137,17 @@ class TestOpenid(unittest.TestCase):
         self.assertEqual('41208', j_r['state']['sub']['code'])
 
     def test_22_openid_sign_up(self):
+        args = {
+            'ts': urllib.quote_plus(TestOpenid.now_ts.__str__()),
+            'appid': urllib.quote_plus(TestOpenid.app_id),
+            'redirect_url': urllib.quote_plus('http://www.baidu.com'),
+            'method': 'GET',
+            'base_url': 'http://jimauth.dev.iit.im/openid/_sign_up'
+        }
+        sign = ji.Security.ji_hash_sign(algorithm='sha1', secret=TestOpenid.app_secret,
+                                        content=args)
         url = '&'.join(['appid=' + TestOpenid.app_id, 'ts=' + TestOpenid.now_ts.__str__(),
-                        'redirect_url=http://www.baidu.com', 'sign=' + TestOpenid.sign_with_sign_up])
+                        'redirect_url=http://www.baidu.com', 'sign=' + sign])
         url = 'http://jimauth.dev.iit.im/openid/_sign_up?' + url
         r = requests.get(url, cookies=TestOpenid.cookies, allow_redirects=False)
         j_r = json.loads(r.content)
@@ -153,8 +162,19 @@ class TestOpenid(unittest.TestCase):
         self.assertEqual(302, r.status_code)
 
     def test_23_openid_bind(self):
+        args = {
+            'ts': urllib.quote_plus(TestOpenid.now_ts.__str__()),
+            'appid': urllib.quote_plus(TestOpenid.app_id),
+            'redirect_url': urllib.quote_plus('http://www.baidu.com'),
+            'openid': '1',
+            'method': 'GET',
+            'base_url': 'http://jimauth.dev.iit.im/openid/_bind'
+        }
+        sign = ji.Security.ji_hash_sign(algorithm='sha1', secret=TestOpenid.app_secret,
+                                        content=args)
+
         url = '&'.join(['appid=' + TestOpenid.app_id, 'ts=' + TestOpenid.now_ts.__str__(), 'openid=1',
-                        'redirect_url=http://www.baidu.com', 'sign=' + TestOpenid.sign_with_bind])
+                        'redirect_url=http://www.baidu.com', 'sign=' + sign])
         url = 'http://jimauth.dev.iit.im/openid/_bind?' + url
         r = requests.get(url, cookies=TestOpenid.cookies, allow_redirects=False)
         j_r = json.loads(r.content)
@@ -164,8 +184,18 @@ class TestOpenid(unittest.TestCase):
         self.assertEqual('40901', j_r['state']['sub']['code'])
 
     def test_24_openid_unbind(self):
+        args = {
+            'ts': urllib.quote_plus(TestOpenid.now_ts.__str__()),
+            'appid': urllib.quote_plus(TestOpenid.app_id),
+            'redirect_url': urllib.quote_plus('http://www.baidu.com'),
+            'method': 'GET',
+            'base_url': 'http://jimauth.dev.iit.im/openid/_unbind'
+        }
+        sign = ji.Security.ji_hash_sign(algorithm='sha1', secret=TestOpenid.app_secret,
+                                        content=args)
+
         url = '&'.join(['appid=' + TestOpenid.app_id, 'ts=' + TestOpenid.now_ts.__str__(),
-                        'redirect_url=http://www.baidu.com', 'sign=' + TestOpenid.sign_with_sign_up])
+                        'redirect_url=http://www.baidu.com', 'sign=' + sign])
         url = 'http://jimauth.dev.iit.im/openid/_unbind?' + url
         r = requests.get(url, cookies=TestOpenid.cookies, allow_redirects=False)
         j_r = json.loads(r.content)
@@ -174,8 +204,19 @@ class TestOpenid(unittest.TestCase):
         self.assertEqual(302, r.status_code)
 
     def test_25_openid_rebind(self):
+        args = {
+            'ts': urllib.quote_plus(TestOpenid.now_ts.__str__()),
+            'appid': urllib.quote_plus(TestOpenid.app_id),
+            'redirect_url': urllib.quote_plus('http://www.baidu.com'),
+            'openid': '1',
+            'method': 'GET',
+            'base_url': 'http://jimauth.dev.iit.im/openid/_bind'
+        }
+        sign = ji.Security.ji_hash_sign(algorithm='sha1', secret=TestOpenid.app_secret,
+                                        content=args)
+
         url = '&'.join(['appid=' + TestOpenid.app_id, 'ts=' + TestOpenid.now_ts.__str__(), 'openid=1',
-                        'redirect_url=http://www.baidu.com', 'sign=' + TestOpenid.sign_with_bind])
+                        'redirect_url=http://www.baidu.com', 'sign=' + sign])
         url = 'http://jimauth.dev.iit.im/openid/_bind?' + url
         r = requests.get(url, cookies=TestOpenid.cookies, allow_redirects=False)
         j_r = json.loads(r.content)
