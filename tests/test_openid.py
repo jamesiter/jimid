@@ -134,6 +134,7 @@ class TestOpenid(unittest.TestCase):
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
         self.assertEqual(278, r.status_code)
+        self.assertEqual('41208', j_r['state']['sub']['code'])
 
     def test_22_openid_sign_up(self):
         url = '&'.join(['appid=' + TestOpenid.app_id, 'ts=' + TestOpenid.now_ts.__str__(),
@@ -160,6 +161,7 @@ class TestOpenid(unittest.TestCase):
         print json.dumps(j_r, ensure_ascii=False)
         print r.headers._store['location']
         self.assertEqual(302, r.status_code)
+        self.assertEqual('40901', j_r['state']['sub']['code'])
 
     def test_24_openid_unbind(self):
         url = '&'.join(['appid=' + TestOpenid.app_id, 'ts=' + TestOpenid.now_ts.__str__(),
