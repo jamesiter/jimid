@@ -19,13 +19,13 @@ __copyright__ = '(c) 2016 by James Iter.'
 blueprint = Blueprint(
     'openid',
     __name__,
-    url_prefix='/openid'
+    url_prefix='/api/openid'
 )
 
 blueprints = Blueprint(
     'openids',
     __name__,
-    url_prefix='/openids'
+    url_prefix='/api/openids'
 )
 
 

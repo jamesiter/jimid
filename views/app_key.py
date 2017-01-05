@@ -18,13 +18,13 @@ __copyright__ = '(c) 2016 by James Iter.'
 blueprint = Blueprint(
     'app_key',
     __name__,
-    url_prefix='/app_key'
+    url_prefix='/api/app_key'
 )
 
 blueprints = Blueprint(
     'app_keys',
     __name__,
-    url_prefix='/app_keys'
+    url_prefix='/api/app_keys'
 )
 
 

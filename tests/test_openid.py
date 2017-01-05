@@ -18,6 +18,8 @@ __copyright__ = '(c) 2016 by James Iter.'
 
 class TestOpenid(unittest.TestCase):
 
+    base_url = 'http://jimauth.dev.iit.im/api'
+
     app_id = None
     app_secret = None
     sign_with_sign_up = None
@@ -48,7 +50,7 @@ class TestOpenid(unittest.TestCase):
             "password": TestOpenid.superuser_password
         }
 
-        url = 'http://jimauth.dev.iit.im/user/_sign_in'
+        url = TestOpenid.base_url + '/user/_sign_in'
         headers = {'content-type': 'application/json'}
         r = requests.post(url, data=json.dumps(payload), headers=headers)
         j_r = json.loads(r.content)
@@ -61,7 +63,7 @@ class TestOpenid(unittest.TestCase):
         payload = {
             "remark": "remark",
         }
-        url = 'http://jimauth.dev.iit.im/app_key'
+        url = TestOpenid.base_url + '/app_key'
         headers = {'content-type': 'application/json'}
         r = requests.post(url, cookies=TestOpenid.superuser_cookies, headers=headers, data=json.dumps(payload))
         j_r = json.loads(r.content)
@@ -77,7 +79,7 @@ class TestOpenid(unittest.TestCase):
             "password": TestOpenid.password
         }
 
-        url = 'http://jimauth.dev.iit.im/user/_sign_up'
+        url = TestOpenid.base_url + '/user/_sign_up'
         headers = {'content-type': 'application/json'}
         r = requests.post(url, data=json.dumps(payload), headers=headers)
         j_r = json.loads(r.content)
@@ -91,7 +93,7 @@ class TestOpenid(unittest.TestCase):
             "password": TestOpenid.password
         }
 
-        url = 'http://jimauth.dev.iit.im/user/_sign_in'
+        url = TestOpenid.base_url + '/user/_sign_in'
         headers = {'content-type': 'application/json'}
         r = requests.post(url, data=json.dumps(payload), headers=headers)
         j_r = json.loads(r.content)
@@ -100,7 +102,7 @@ class TestOpenid(unittest.TestCase):
         self.assertEqual('200', j_r['state']['code'])
 
     def test_15_get(self):
-        url = 'http://jimauth.dev.iit.im/user'
+        url = TestOpenid.base_url + '/user'
         r = requests.get(url, cookies=TestOpenid.cookies)
         j_r = json.loads(r.content)
         TestOpenid.uid = j_r['data']['id']
@@ -123,13 +125,13 @@ class TestOpenid(unittest.TestCase):
             'appid': urllib.quote_plus(TestOpenid.app_id),
             'redirect_url': urllib.quote_plus('http://www.baidu.com'),
             'method': 'GET',
-            'base_url': 'http://jimauth.dev.iit.im/openid/_sign_up'
+            'base_url': TestOpenid.base_url + '/openid/_sign_up'
         }
         sign = ji.Security.ji_hash_sign(algorithm='sha1', secret=TestOpenid.app_secret,
                                         content=args)
         url = '&'.join(['appid=' + TestOpenid.app_id, 'ts=' + TestOpenid.now_ts.__str__(),
                         'redirect_url=http://www.baidu.com', 'sign=' + sign])
-        url = 'http://jimauth.dev.iit.im/openid/_sign_up?' + url
+        url = TestOpenid.base_url + '/openid/_sign_up?' + url
         r = requests.get(url)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
@@ -142,13 +144,13 @@ class TestOpenid(unittest.TestCase):
             'appid': urllib.quote_plus(TestOpenid.app_id),
             'redirect_url': urllib.quote_plus('http://www.baidu.com'),
             'method': 'GET',
-            'base_url': 'http://jimauth.dev.iit.im/openid/_sign_up'
+            'base_url': TestOpenid.base_url + '/openid/_sign_up'
         }
         sign = ji.Security.ji_hash_sign(algorithm='sha1', secret=TestOpenid.app_secret,
                                         content=args)
         url = '&'.join(['appid=' + TestOpenid.app_id, 'ts=' + TestOpenid.now_ts.__str__(),
                         'redirect_url=http://www.baidu.com', 'sign=' + sign])
-        url = 'http://jimauth.dev.iit.im/openid/_sign_up?' + url
+        url = TestOpenid.base_url + '/openid/_sign_up?' + url
         r = requests.get(url, cookies=TestOpenid.cookies, allow_redirects=False)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
@@ -168,14 +170,14 @@ class TestOpenid(unittest.TestCase):
             'redirect_url': urllib.quote_plus('http://www.baidu.com'),
             'openid': '1',
             'method': 'GET',
-            'base_url': 'http://jimauth.dev.iit.im/openid/_bind'
+            'base_url': TestOpenid.base_url + '/openid/_bind'
         }
         sign = ji.Security.ji_hash_sign(algorithm='sha1', secret=TestOpenid.app_secret,
                                         content=args)
 
         url = '&'.join(['appid=' + TestOpenid.app_id, 'ts=' + TestOpenid.now_ts.__str__(), 'openid=1',
                         'redirect_url=http://www.baidu.com', 'sign=' + sign])
-        url = 'http://jimauth.dev.iit.im/openid/_bind?' + url
+        url = TestOpenid.base_url + '/openid/_bind?' + url
         r = requests.get(url, cookies=TestOpenid.cookies, allow_redirects=False)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
@@ -189,14 +191,14 @@ class TestOpenid(unittest.TestCase):
             'appid': urllib.quote_plus(TestOpenid.app_id),
             'redirect_url': urllib.quote_plus('http://www.baidu.com'),
             'method': 'GET',
-            'base_url': 'http://jimauth.dev.iit.im/openid/_unbind'
+            'base_url': TestOpenid.base_url + '/openid/_unbind'
         }
         sign = ji.Security.ji_hash_sign(algorithm='sha1', secret=TestOpenid.app_secret,
                                         content=args)
 
         url = '&'.join(['appid=' + TestOpenid.app_id, 'ts=' + TestOpenid.now_ts.__str__(),
                         'redirect_url=http://www.baidu.com', 'sign=' + sign])
-        url = 'http://jimauth.dev.iit.im/openid/_unbind?' + url
+        url = TestOpenid.base_url + '/openid/_unbind?' + url
         r = requests.get(url, cookies=TestOpenid.cookies, allow_redirects=False)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
@@ -210,14 +212,14 @@ class TestOpenid(unittest.TestCase):
             'redirect_url': urllib.quote_plus('http://www.baidu.com'),
             'openid': '1',
             'method': 'GET',
-            'base_url': 'http://jimauth.dev.iit.im/openid/_bind'
+            'base_url': TestOpenid.base_url + '/openid/_bind'
         }
         sign = ji.Security.ji_hash_sign(algorithm='sha1', secret=TestOpenid.app_secret,
                                         content=args)
 
         url = '&'.join(['appid=' + TestOpenid.app_id, 'ts=' + TestOpenid.now_ts.__str__(), 'openid=1',
                         'redirect_url=http://www.baidu.com', 'sign=' + sign])
-        url = 'http://jimauth.dev.iit.im/openid/_bind?' + url
+        url = TestOpenid.base_url + '/openid/_bind?' + url
         r = requests.get(url, cookies=TestOpenid.cookies, allow_redirects=False)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
@@ -230,14 +232,14 @@ class TestOpenid(unittest.TestCase):
             'appid': urllib.quote_plus(TestOpenid.app_id),
             'redirect_url': urllib.quote_plus('http://www.baidu.com'),
             'method': 'GET',
-            'base_url': 'http://jimauth.dev.iit.im/openid/_auth'
+            'base_url': TestOpenid.base_url + '/openid/_auth'
         }
         sign = ji.Security.ji_hash_sign(algorithm='sha1', secret=TestOpenid.app_secret,
                                         content=args)
 
         url = '&'.join(['appid=' + TestOpenid.app_id, 'ts=' + TestOpenid.now_ts.__str__(),
                         'redirect_url=http://www.baidu.com', 'sign=' + sign])
-        url = 'http://jimauth.dev.iit.im/openid/_auth?' + url
+        url = TestOpenid.base_url + '/openid/_auth?' + url
         r = requests.get(url, cookies=TestOpenid.cookies, allow_redirects=False)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
@@ -246,7 +248,7 @@ class TestOpenid(unittest.TestCase):
 
     # 删除appkey
     def test_31_delete(self):
-        url = 'http://jimauth.dev.iit.im/app_key/' + TestOpenid.app_id
+        url = TestOpenid.base_url + '/app_key/' + TestOpenid.app_id
         r = requests.delete(url, cookies=TestOpenid.superuser_cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
@@ -254,7 +256,7 @@ class TestOpenid(unittest.TestCase):
 
     # 超级用户删除普通用户
     def test_32_delete_via_superuser(self):
-        url = 'http://jimauth.dev.iit.im/mgmt/' + TestOpenid.uid.__str__()
+        url = TestOpenid.base_url + '/mgmt/' + TestOpenid.uid.__str__()
         r = requests.delete(url, cookies=TestOpenid.superuser_cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)

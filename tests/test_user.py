@@ -15,6 +15,8 @@ __copyright__ = '(c) 2016 by James Iter.'
 
 class TestUser(unittest.TestCase):
 
+    base_url = 'http://jimauth.dev.iit.im/api'
+
     cookies = None
     uid_s = []
     login_name = 'james'
@@ -41,7 +43,7 @@ class TestUser(unittest.TestCase):
             "password": TestUser.password
         }
 
-        url = 'http://jimauth.dev.iit.im/user/_sign_up'
+        url = TestUser.base_url + '/user/_sign_up'
         headers = {'content-type': 'application/json'}
         r = requests.post(url, data=json.dumps(payload), headers=headers)
         j_r = json.loads(r.content)
@@ -54,7 +56,7 @@ class TestUser(unittest.TestCase):
             "password": TestUser.password
         }
 
-        url = 'http://jimauth.dev.iit.im/user/_sign_up_by_mobile_phone'
+        url = TestUser.base_url + '/user/_sign_up_by_mobile_phone'
         headers = {'content-type': 'application/json'}
         r = requests.post(url, data=json.dumps(payload), headers=headers)
         j_r = json.loads(r.content)
@@ -67,7 +69,7 @@ class TestUser(unittest.TestCase):
             "password": TestUser.password
         }
 
-        url = 'http://jimauth.dev.iit.im/user/_sign_up_by_email'
+        url = TestUser.base_url + '/user/_sign_up_by_email'
         headers = {'content-type': 'application/json'}
         r = requests.post(url, data=json.dumps(payload), headers=headers)
         j_r = json.loads(r.content)
@@ -81,7 +83,7 @@ class TestUser(unittest.TestCase):
             "password": TestUser.password
         }
 
-        url = 'http://jimauth.dev.iit.im/user/_sign_in_by_email'
+        url = TestUser.base_url + '/user/_sign_in_by_email'
         headers = {'content-type': 'application/json'}
         r = requests.post(url, data=json.dumps(payload), headers=headers)
         j_r = json.loads(r.content)
@@ -90,7 +92,7 @@ class TestUser(unittest.TestCase):
         self.assertEqual('200', j_r['state']['code'])
 
     def test_15_get(self):
-        url = 'http://jimauth.dev.iit.im/user'
+        url = TestUser.base_url + '/user'
         r = requests.get(url, cookies=TestUser.cookies)
         j_r = json.loads(r.content)
         TestUser.uid_s.insert(0, j_r['data']['id'])
@@ -103,7 +105,7 @@ class TestUser(unittest.TestCase):
             "password": TestUser.password
         }
 
-        url = 'http://jimauth.dev.iit.im/user/_sign_in_by_mobile_phone'
+        url = TestUser.base_url + '/user/_sign_in_by_mobile_phone'
         headers = {'content-type': 'application/json'}
         r = requests.post(url, data=json.dumps(payload), headers=headers)
         j_r = json.loads(r.content)
@@ -112,7 +114,7 @@ class TestUser(unittest.TestCase):
         self.assertEqual('200', j_r['state']['code'])
 
     def test_17_get(self):
-        url = 'http://jimauth.dev.iit.im/user'
+        url = TestUser.base_url + '/user'
         r = requests.get(url, cookies=TestUser.cookies)
         j_r = json.loads(r.content)
         TestUser.uid_s.insert(0, j_r['data']['id'])
@@ -125,7 +127,7 @@ class TestUser(unittest.TestCase):
             "password": TestUser.password
         }
 
-        url = 'http://jimauth.dev.iit.im/user/_sign_in'
+        url = TestUser.base_url + '/user/_sign_in'
         headers = {'content-type': 'application/json'}
         r = requests.post(url, data=json.dumps(payload), headers=headers)
         j_r = json.loads(r.content)
@@ -135,7 +137,7 @@ class TestUser(unittest.TestCase):
 
     # 普通用户获取自己的用户信息
     def test_19_get(self):
-        url = 'http://jimauth.dev.iit.im/user'
+        url = TestUser.base_url + '/user'
         r = requests.get(url, cookies=TestUser.cookies)
         j_r = json.loads(r.content)
         TestUser.uid_s.append(j_r['data']['id'])
@@ -144,7 +146,7 @@ class TestUser(unittest.TestCase):
 
     # 普通用户通过token自我验证
     def test_20_user(self):
-        url = 'http://jimauth.dev.iit.im/user/_auth'
+        url = TestUser.base_url + '/user/_auth'
         r = requests.get(url, cookies=TestUser.cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
@@ -155,7 +157,7 @@ class TestUser(unittest.TestCase):
         payload = {
             "password": TestUser.password2
         }
-        url = 'http://jimauth.dev.iit.im/user/_change_password'
+        url = TestUser.base_url + '/user/_change_password'
         headers = {'content-type': 'application/json'}
         r = requests.patch(url, cookies=TestUser.cookies, data=json.dumps(payload), headers=headers)
         j_r = json.loads(r.content)
@@ -169,7 +171,7 @@ class TestUser(unittest.TestCase):
             "password": TestUser.password2
         }
 
-        url = 'http://jimauth.dev.iit.im/user/_sign_in'
+        url = TestUser.base_url + '/user/_sign_in'
         headers = {'content-type': 'application/json'}
         r = requests.post(url, data=json.dumps(payload), headers=headers)
         j_r = json.loads(r.content)
@@ -179,7 +181,7 @@ class TestUser(unittest.TestCase):
 
     # 普通用户重新获取自己的用户信息
     def test_23_get(self):
-        url = 'http://jimauth.dev.iit.im/user'
+        url = TestUser.base_url + '/user'
         r = requests.get(url, cookies=TestUser.cookies)
         j_r = json.loads(r.content)
         TestUser.uid_s[-1] = j_r['data']['id']
@@ -188,7 +190,7 @@ class TestUser(unittest.TestCase):
 
     # 测试普通用户通过登录名获取用户信息,应该返回失败,该接口只给超级用户使用
     def test_24_get_by_login_name(self):
-        url = 'http://jimauth.dev.iit.im/mgmt/_by_login_name/' + TestUser.login_name
+        url = TestUser.base_url + '/mgmt/_by_login_name/' + TestUser.login_name
         r = requests.get(url, cookies=TestUser.cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
@@ -196,7 +198,7 @@ class TestUser(unittest.TestCase):
 
     # 测试普通用户通过token禁用自己,应该返回失败,该接口只给超级用户使用
     def test_25_disable(self):
-        url = 'http://jimauth.dev.iit.im/mgmt/_disable/' + TestUser.uid_s[-1].__str__()
+        url = TestUser.base_url + '/mgmt/_disable/' + TestUser.uid_s[-1].__str__()
         r = requests.patch(url, cookies=TestUser.cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
@@ -204,7 +206,7 @@ class TestUser(unittest.TestCase):
 
     # 测试普通用户通过token解禁自己,应该返回失败,该接口只给超级用户使用
     def test_26_enable(self):
-        url = 'http://jimauth.dev.iit.im/mgmt/_enable/' + TestUser.uid_s[-1].__str__()
+        url = TestUser.base_url + '/mgmt/_enable/' + TestUser.uid_s[-1].__str__()
         r = requests.patch(url, cookies=TestUser.cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
@@ -212,7 +214,7 @@ class TestUser(unittest.TestCase):
 
     # 测试普通用户自我删除,应该返回失败,该系统不允许自我删除,而且删除权限只有超级用户拥有
     def test_27_delete(self):
-        url = 'http://jimauth.dev.iit.im/mgmt/' + TestUser.uid_s[-1].__str__()
+        url = TestUser.base_url + '/mgmt/' + TestUser.uid_s[-1].__str__()
         r = requests.delete(url, cookies=TestUser.cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
@@ -226,7 +228,7 @@ class TestUser(unittest.TestCase):
             "password": TestUser.superuser_password
         }
 
-        url = 'http://jimauth.dev.iit.im/user/_sign_in'
+        url = TestUser.base_url + '/user/_sign_in'
         headers = {'content-type': 'application/json'}
         r = requests.post(url, data=json.dumps(payload), headers=headers)
         j_r = json.loads(r.content)
@@ -236,7 +238,7 @@ class TestUser(unittest.TestCase):
 
     # 超级用户通过用户登录名称获取用户信息
     def test_32_get_by_login_name(self):
-        url = 'http://jimauth.dev.iit.im/mgmt/_by_login_name/' + TestUser.login_name
+        url = TestUser.base_url + '/mgmt/_by_login_name/' + TestUser.login_name
         r = requests.get(url, cookies=TestUser.superuser_cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
@@ -244,7 +246,7 @@ class TestUser(unittest.TestCase):
 
     # 超级用户禁用普通用户
     def test_33_disable(self):
-        url = 'http://jimauth.dev.iit.im/mgmt/_disable/' + TestUser.uid_s[-1].__str__()
+        url = TestUser.base_url + '/mgmt/_disable/' + TestUser.uid_s[-1].__str__()
         r = requests.patch(url, cookies=TestUser.superuser_cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
@@ -252,7 +254,7 @@ class TestUser(unittest.TestCase):
 
     # 禁用普通用户后,普通用户重新获取自己的用户信息,应该返回失败,应该该用户已经被禁用
     def test_34_get(self):
-        url = 'http://jimauth.dev.iit.im/user'
+        url = TestUser.base_url + '/user'
         r = requests.get(url, cookies=TestUser.cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
@@ -260,7 +262,7 @@ class TestUser(unittest.TestCase):
 
     # 超级用户解禁普通用户
     def test_35_enable(self):
-        url = 'http://jimauth.dev.iit.im/mgmt/_enable/' + TestUser.uid_s[-1].__str__()
+        url = TestUser.base_url + '/mgmt/_enable/' + TestUser.uid_s[-1].__str__()
         r = requests.patch(url, cookies=TestUser.superuser_cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
@@ -268,7 +270,7 @@ class TestUser(unittest.TestCase):
 
     # 解禁普通用户后,普通用户重新获取自己的用户信息
     def test_36_get(self):
-        url = 'http://jimauth.dev.iit.im/user'
+        url = TestUser.base_url + '/user'
         r = requests.get(url, cookies=TestUser.cookies)
         j_r = json.loads(r.content)
         TestUser.uid_s[-1] = j_r['data']['id']
@@ -277,7 +279,7 @@ class TestUser(unittest.TestCase):
 
     # 超级用户自我禁用,应该返回失败,该系统不允许自我删除
     def test_37_disable(self):
-        url = 'http://jimauth.dev.iit.im/mgmt/_disable/1'
+        url = TestUser.base_url + '/mgmt/_disable/1'
         r = requests.patch(url, cookies=TestUser.superuser_cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
@@ -286,7 +288,7 @@ class TestUser(unittest.TestCase):
     # 超级用户删除普通用户
     def test_38_delete_via_superuser(self):
         for uid in TestUser.uid_s:
-            url = 'http://jimauth.dev.iit.im/mgmt/' + uid.__str__()
+            url = TestUser.base_url + '/mgmt/' + uid.__str__()
             r = requests.delete(url, cookies=TestUser.superuser_cookies)
             j_r = json.loads(r.content)
             print json.dumps(j_r, ensure_ascii=False)
@@ -294,7 +296,7 @@ class TestUser(unittest.TestCase):
 
     # 超级用户自我删除,应该返回失败,该系统不允许自我删除
     def test_39_delete_superuser(self):
-        url = 'http://jimauth.dev.iit.im/mgmt/1'
+        url = TestUser.base_url + '/mgmt/1'
         r = requests.delete(url, cookies=TestUser.superuser_cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)

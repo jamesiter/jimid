@@ -15,6 +15,8 @@ __copyright__ = '(c) 2016 by James Iter.'
 
 class TestAppKey(unittest.TestCase):
 
+    base_url = 'http://jimauth.dev.iit.im/api'
+
     app_id = None
 
     cookies = None
@@ -39,7 +41,7 @@ class TestAppKey(unittest.TestCase):
             "password": TestAppKey.superuser_password
         }
 
-        url = 'http://jimauth.dev.iit.im/user/_sign_in'
+        url = TestAppKey.base_url + '/user/_sign_in'
         headers = {'content-type': 'application/json'}
         r = requests.post(url, data=json.dumps(payload), headers=headers)
         j_r = json.loads(r.content)
@@ -52,7 +54,7 @@ class TestAppKey(unittest.TestCase):
         payload = {
             "remark": "remark",
         }
-        url = 'http://jimauth.dev.iit.im/app_key'
+        url = TestAppKey.base_url + '/app_key'
         headers = {'content-type': 'application/json'}
         r = requests.post(url, cookies=TestAppKey.superuser_cookies, headers=headers, data=json.dumps(payload))
         j_r = json.loads(r.content)
@@ -62,7 +64,7 @@ class TestAppKey(unittest.TestCase):
 
     # 获取appkey列表
     def test_13_get_list_via_page(self):
-        url = 'http://jimauth.dev.iit.im/app_keys?page=1&page_size=5'
+        url = TestAppKey.base_url + '/app_keys?page=1&page_size=5'
         r = requests.get(url, cookies=TestAppKey.superuser_cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
@@ -75,7 +77,7 @@ class TestAppKey(unittest.TestCase):
             "remark": "new remark"
         }
 
-        url = 'http://jimauth.dev.iit.im/app_key'
+        url = TestAppKey.base_url + '/app_key'
         headers = {'content-type': 'application/json'}
         r = requests.patch(url, cookies=TestAppKey.superuser_cookies, headers=headers, data=json.dumps(payload))
         j_r = json.loads(r.content)
@@ -84,7 +86,7 @@ class TestAppKey(unittest.TestCase):
 
     # appkey全文检索
     def test_17_get_list_via_content_search(self):
-        url = 'http://jimauth.dev.iit.im/app_keys/_search?page=1&page_size=5&keyword=a'
+        url = TestAppKey.base_url + '/app_keys/_search?page=1&page_size=5&keyword=a'
         r = requests.get(url, cookies=TestAppKey.superuser_cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
@@ -92,7 +94,7 @@ class TestAppKey(unittest.TestCase):
 
     # 删除appkey
     def test_18_delete(self):
-        url = 'http://jimauth.dev.iit.im/app_key/' + TestAppKey.app_id
+        url = TestAppKey.base_url + '/app_key/' + TestAppKey.app_id
         r = requests.delete(url, cookies=TestAppKey.superuser_cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)

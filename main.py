@@ -13,7 +13,7 @@ import route_table
 from models import Database as db
 from models import Utils
 from models import User
-from views.user import blueprint as auth_blueprint
+from views.user import blueprint as user_blueprint
 from views.mgmt import blueprint as mgmt_blueprint
 from views.mgmt import blueprints as mgmts_blueprint
 from views.app_key import blueprint as app_key_blueprint
@@ -89,7 +89,8 @@ def r_before_request():
 def r_after_request(response):
     try:
         # 由于浏览器同源策略，凡是发送请求url的协议、域名、端口三者之间任意一与当前页面地址不同即为跨域。
-        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Access-Control-Allow-Origin'] = '/'.join(request.referrer.split('/')[:3])
+        # response.headers['Access-Control-Allow-Origin'] = '*'
         response.headers['Access-Control-Allow-Credentials'] = 'true'
         response.headers['Access-Control-Allow-Methods'] = 'HEAD, GET, POST, DELETE, OPTIONS, PATCH, PUT'
         response.headers['Access-Control-Allow-Headers'] = 'X-Request-With, Content-Type'
@@ -110,7 +111,7 @@ try:
     db.init_conn()
     thread.start_new_thread(db.keepalived, ())
 
-    app.register_blueprint(auth_blueprint)
+    app.register_blueprint(user_blueprint)
     app.register_blueprint(mgmt_blueprint)
     app.register_blueprint(mgmts_blueprint)
     app.register_blueprint(app_key_blueprint)

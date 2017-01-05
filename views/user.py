@@ -18,7 +18,7 @@ __copyright__ = '(c) 2016 by James Iter.'
 blueprint = Blueprint(
     'user',
     __name__,
-    url_prefix='/user'
+    url_prefix='/api/user'
 )
 
 

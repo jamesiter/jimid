@@ -169,7 +169,7 @@
                             '</tr>';
                     $('#t_body').append(trHTML);
                 });
-                rerender_pagination(url, result.paging['page'], result.paging['page_size'], result.paging['total'], 20);
+                rerender_pagination(url, result.paging['page'], result.paging['page_size'], result.paging['total'], 10);
             }
         });
     }
@@ -204,7 +204,9 @@
         }
         if (page < last_pagination - (width - balance_of_power)) {
             if (page < balance_of_power) {
-                end_pagination = width;
+                if (last_pagination > width) {
+                    end_pagination = width;
+                }
             } else {
                 end_pagination = page + (width - balance_of_power);
             }
@@ -239,7 +241,7 @@
         var page = 1;
         var page_size = 10;
 
-        cur_url = '/mgmts?page=' + page + '&page_size=' + page_size;
+        cur_url = '/api/mgmts?page=' + page + '&page_size=' + page_size;
         rerender(cur_url);
 
         $("#t_body").on('click', ".click_edit", function() {
@@ -264,10 +266,10 @@
 
         $("#t_body").on('click', ".enabled_checkbox", function() {
             var id = $(this).parent().parent().find('td:eq(1)').html();
-            var action_url = '/mgmt/_disable/';
+            var action_url = '/api/mgmt/_disable/';
 
             if ($(this)[0].checked) {
-                action_url = '/mgmt/_enable/';
+                action_url = '/api/mgmt/_enable/';
             }
             $.ajax({
                 url : action_url + id,
@@ -296,9 +298,9 @@
             }
             last_ready = setTimeout(function() {
                 var keyword = $('#content_search').val();
-                cur_url = '/mgmts?page=' + page + '&page_size=' + page_size;
+                cur_url = '/api/mgmts?page=' + page + '&page_size=' + page_size;
                 if (keyword.length > 0) {
-                    cur_url = '/mgmts/_search?page=' + page + '&page_size=' + page_size + '&keyword=' + keyword;
+                    cur_url = '/api/mgmts/_search?page=' + page + '&page_size=' + page_size + '&keyword=' + keyword;
                 }
                 rerender(cur_url);
             }, 500);
@@ -322,7 +324,7 @@
         $(me).parent().html('<button type="button" class="btn btn-danger" onclick="user_delete(this)">删除</button>');
 
         $.ajax({
-            url : '/mgmt',
+            url : '/api/mgmt',
             type : 'PATCH',
             contentType: "application/json; charset=utf-8",
             data : JSON.stringify({
@@ -345,7 +347,7 @@
     function user_delete(me) {
         var id = $(me).parent().parent().find('td:eq(1)').text();
         $.ajax({
-            url : '/mgmt/' + id,
+            url : '/api/mgmt/' + id,
             type : 'DELETE',
             error : function() {
                 insert_warning_window($('#header'), '<strong>删除用户信失败, 请联系管理员! </strong>');
@@ -387,7 +389,7 @@
 
     function create_user() {
         $.ajax({
-            url : '/user/_sign_up',
+            url : '/api/user/_sign_up',
             type : 'POST',
             contentType: "application/json; charset=utf-8",
             data : JSON.stringify({
@@ -405,7 +407,7 @@
 
     function sign_out() {
         $.ajax({
-            url : '/user/_sign_out',
+            url : '/api/user/_sign_out',
             type : 'GET',
             contentType: "application/json; charset=utf-8",
             error : function() {
@@ -432,7 +434,7 @@
         });
         if (ids.length > 0) {
             $.ajax({
-                url : '/mgmts',
+                url : '/api/mgmts',
                 type : 'PATCH',
                 contentType: "application/json; charset=utf-8",
                 data : JSON.stringify({
@@ -457,7 +459,7 @@
         });
         if (ids.length > 0) {
             $.ajax({
-                url : '/mgmts',
+                url : '/api/mgmts',
                 type : 'PATCH',
                 contentType: "application/json; charset=utf-8",
                 data : JSON.stringify({
@@ -482,7 +484,7 @@
         });
         if (ids.length > 0) {
             $.ajax({
-                url : '/mgmts',
+                url : '/api/mgmts',
                 type : 'DELETE',
                 contentType: "application/json; charset=utf-8",
                 data : JSON.stringify({
