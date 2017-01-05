@@ -30,6 +30,29 @@ blueprints = Blueprint(
 
 @Utils.dumps2response
 @Utils.superuser
+def r_get(_id):
+    user = User()
+
+    args_rules = [
+        Rules.UID.value
+    ]
+    user.id = _id
+
+    try:
+        ji.Check.previewing(args_rules, user.__dict__)
+        user.id = long(user.id)
+        user.get()
+        ret = dict()
+        ret['state'] = ji.Common.exchange_state(20000)
+        ret['data'] = user.__dict__
+        del ret['data']['password']
+        return ret
+    except ji.PreviewingError, e:
+        return json.loads(e.message)
+
+
+@Utils.dumps2response
+@Utils.superuser
 def r_get_by_login_name(login_name=None):
     user = User()
 

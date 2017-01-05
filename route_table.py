@@ -33,6 +33,8 @@ add_rule(user.blueprint, '', view_func='user.r_get', methods=['GET'])
 add_rule(user.blueprint, '/_change_password', view_func='user.r_change_password', methods=['PATCH'])
 
 # 管理接口
+# 通过uid获取用户信息
+add_rule(mgmt.blueprint, '/<_id>', view_func='mgmt.r_get', methods=['GET'])
 # 通过用户名获取用户信息
 add_rule(mgmt.blueprint, '/_by_login_name/<login_name>', view_func='mgmt.r_get_by_login_name', methods=['GET'])
 # 删除用户(用户不可以删除自身,说白了只能超级用户删除普通用户,且超级用户不能删除自己)
