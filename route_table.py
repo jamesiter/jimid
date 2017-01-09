@@ -45,6 +45,8 @@ add_rule(mgmt.blueprint, '/_disable/<_id>', view_func='mgmt.r_disable', methods=
 add_rule(mgmt.blueprint, '/_enable/<_id>', view_func='mgmt.r_enable', methods=['PATCH'])
 # 管理员更新用户信息
 add_rule(mgmt.blueprint, '', view_func='mgmt.r_update', methods=['PATCH'])
+# 管理员更新用户密码
+add_rule(mgmt.blueprint, '/_change_password', view_func='mgmt.r_change_password', methods=['PATCH'])
 
 # 管理员批量操作用户信息
 add_rule(mgmt.blueprints, '', view_func='mgmt.r_get_by_filter', methods=['GET'])

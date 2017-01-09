@@ -223,6 +223,36 @@ def r_update():
 
 @Utils.dumps2response
 @Utils.superuser
+def r_change_password():
+
+    user = User()
+
+    args_rules = [
+        Rules.UID.value
+    ]
+
+    user.id = request.json.get('id', 0).__str__()
+    try:
+        ji.Check.previewing(args_rules, user.__dict__)
+        user.get()
+    except ji.PreviewingError, e:
+        return json.loads(e.message)
+
+    args_rules = [
+        Rules.PASSWORD.value
+    ]
+    user.password = request.json.get('password')
+
+    try:
+        ji.Check.previewing(args_rules, user.__dict__)
+        user.password = ji.Security.ji_pbkdf2(user.password)
+        user.update()
+    except ji.PreviewingError, e:
+        return json.loads(e.message)
+
+
+@Utils.dumps2response
+@Utils.superuser
 def r_get_by_filter():
     page = str(request.args.get('page', 1))
     page_size = str(request.args.get('page_size', 50))
