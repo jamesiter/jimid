@@ -40,6 +40,7 @@ class Rules(Enum):
     # EXT for external(客观的)
     APP_ID_EXT = (basestring, 'appid', (16, 16))
     APP_SECRET = (basestring, 'secret', (32, 32))
+    APP_NAME = (basestring, 'name', (0, 255))
     APP_REMARK = (basestring, 'remark', (0, 1024))
     OPENID = (basestring, 'openid', (0, 30))
     # 9999999999 @ Sat, 20 Nov 2286 17:46:39 GMT, 10个9能记录到2286年

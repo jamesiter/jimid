@@ -21,11 +21,12 @@ class AppKey(object):
         self.id = kwargs.get('id', None)
         self.secret = kwargs.get('secret', None)
         self.create_time = ji.Common.tus()
+        self.name = kwargs.get('name', '')
         self.remark = kwargs.get('remark', '')
 
     def create(self):
-        sql_stmt = ("INSERT INTO app_key (id, secret, create_time, remark) VALUES (%(id)s, %(secret)s,"
-                    "%(create_time)s, %(remark)s)")
+        sql_stmt = ("INSERT INTO app_key (id, secret, create_time, name, remark) VALUES (%(id)s, %(secret)s,"
+                    "%(create_time)s, %(name)s, %(remark)s)")
 
         cnx = db.cnxpool.get_connection()
         cursor = cnx.cursor(dictionary=True, buffered=True)
@@ -51,7 +52,7 @@ class AppKey(object):
             raise ji.PreviewingError(json.dumps(ret, ensure_ascii=False))
 
         sql_stmt = ("UPDATE app_key SET id = %(id)s, secret = %(secret)s,"
-                    "create_time = %(create_time)s, remark = %(remark)s WHERE id = %(id)s")
+                    "create_time = %(create_time)s, name = %(name)s, remark = %(remark)s WHERE id = %(id)s")
 
         cnx = db.cnxpool.get_connection()
         cursor = cnx.cursor(dictionary=True, buffered=True)
@@ -169,7 +170,8 @@ class AppKey(object):
         keywords = {
             'id': FilterFieldType.STR.value,
             'secret': FilterFieldType.STR.value,
-            'create_time': FilterFieldType.INT.value
+            'create_time': FilterFieldType.INT.value,
+            'name': FilterFieldType.STR.value
         }
 
         return keywords
@@ -240,7 +242,7 @@ class AppKey(object):
 
     @classmethod
     def content_search(cls, offset=0, limit=50, order_by='id', order='asc', keyword=''):
-        allow_field = ['id', 'secret']
+        allow_field = ['id', 'secret', 'name']
         _kv = dict()
         _kv = _kv.fromkeys(allow_field, '%' + keyword + '%')
         where_str = ' OR '.join([k + ' LIKE %(' + k + ')s' for k in _kv.keys()])

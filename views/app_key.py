@@ -35,11 +35,13 @@ def r_create():
     app_key = AppKey()
 
     args_rules = [
+        Rules.APP_NAME.value,
         Rules.APP_REMARK.value
     ]
 
     app_key.id = ji.Common.generate_random_code(length=16, letter_form='mix', numeral=True)
     app_key.secret = ji.Common.generate_random_code(length=32, letter_form='mix', numeral=True)
+    app_key.name = request.json.get('name', '')
     app_key.remark = request.json.get('remark', '')
 
     try:
@@ -90,6 +92,11 @@ def r_update():
             Rules.APP_SECRET.value
         )
 
+    if 'name' in request.json:
+        args_rules.append(
+            Rules.APP_NAME.value
+        )
+
     if 'remark' in request.json:
         args_rules.append(
             Rules.APP_REMARK.value
@@ -107,6 +114,7 @@ def r_update():
         app_key.get()
 
         app_key.secret = request.json.get('secret', app_key.secret)
+        app_key.name = request.json.get('name', app_key.name)
         app_key.remark = request.json.get('remark', app_key.remark)
 
         app_key.update()

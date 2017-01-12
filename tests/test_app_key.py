@@ -52,6 +52,7 @@ class TestAppKey(unittest.TestCase):
     # 创建appkey
     def test_12_create_app_key(self):
         payload = {
+            "name": "name",
             "remark": "remark",
         }
         url = TestAppKey.base_url + '/app_key'
@@ -74,6 +75,7 @@ class TestAppKey(unittest.TestCase):
     def test_14_update(self):
         payload = {
             "id": TestAppKey.app_id,
+            "name": "new name",
             "remark": "new remark"
         }
 
