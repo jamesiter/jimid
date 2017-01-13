@@ -3,6 +3,7 @@
 
 
 from models.utils import add_rule
+from views import openid_admin
 from views import user, mgmt, openid, app_key
 
 
@@ -67,3 +68,8 @@ add_rule(app_key.blueprint, '/<_id>', view_func='app_key.r_delete', methods=['DE
 add_rule(app_key.blueprints, '', view_func='app_key.r_get_by_filter', methods=['GET'])
 add_rule(app_key.blueprints, '/_search', view_func='app_key.r_content_search', methods=['GET'])
 
+# openid管理接口
+add_rule(openid_admin.blueprint, '', view_func='openid_admin.r_update', methods=['PATCH'])
+add_rule(openid_admin.blueprint, '/<appid>/<uid>', view_func='openid_admin.r_delete', methods=['DELETE'])
+add_rule(openid_admin.blueprints, '', view_func='openid_admin.r_get_by_filter', methods=['GET'])
+add_rule(openid_admin.blueprints, '/_search', view_func='openid_admin.r_content_search', methods=['GET'])

@@ -51,7 +51,7 @@ class UidOpenidMapping(object):
                                                    ', appid -> ', self.appid])
             raise ji.PreviewingError(json.dumps(ret, ensure_ascii=False))
 
-        sql_stmt = ("UPDATE uid_openid_mapping SET uid = %(uid)s, appid = %(appid)s "
+        sql_stmt = ("UPDATE uid_openid_mapping SET uid = %(uid)s, appid = %(appid)s, openid = %(openid)s "
                     "WHERE uid = %(id)s AND appid = %(appid)s")
 
         cnx = db.cnxpool.get_connection()
@@ -186,7 +186,7 @@ class UidOpenidMapping(object):
         return keywords
 
     @classmethod
-    def get_by_filter(cls, offset=0, limit=50, order_by='uid', order='asc', filter_str=''):
+    def get_by_filter(cls, offset=0, limit=50, order_by='create_time', order='asc', filter_str=''):
         sql_stmt = ("SELECT * FROM uid_openid_mapping ORDER BY " + order_by + " " + order +
                     " LIMIT %(offset)s, %(limit)s")
         sql_stmt_count = ("SELECT count(uid) FROM uid_openid_mapping")
