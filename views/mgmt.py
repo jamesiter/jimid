@@ -6,6 +6,7 @@ import json
 from flask import Blueprint, request
 import jimit as ji
 
+from models import UidOpenidMapping
 from models import Utils, Rules, User
 
 
@@ -160,6 +161,8 @@ def r_delete(_id):
             raise ji.PreviewingError(json.dumps(ret, ensure_ascii=False))
 
         user.delete()
+        # 删除依赖于该用户的openid
+        UidOpenidMapping.delete_by_filter('in_uid=' + _id)
     except ji.PreviewingError, e:
         return json.loads(e.message)
 

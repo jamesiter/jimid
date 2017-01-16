@@ -6,6 +6,7 @@ import json
 from flask import Blueprint, request, g, make_response
 import jimit as ji
 
+from models import UidOpenidMapping
 from models import Utils, Rules, AppKey
 
 
@@ -70,6 +71,8 @@ def r_delete(_id):
         ji.Check.previewing(args_rules, app_key.__dict__)
         if app_key.exist():
             app_key.delete()
+            # 删除依赖于该AppKey的openid
+            UidOpenidMapping.delete_by_filter('in_appid=' + _id)
         else:
             ret = dict()
             ret['state'] = ji.Common.exchange_state(40401)
