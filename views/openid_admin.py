@@ -189,7 +189,7 @@ def r_delete(appid, uid):
 
     args_rules = [
         Rules.APP_ID_EXT.value,
-        Rules.UID.value
+        Rules.UID_EXT.value
     ]
 
     openid.appid = appid
@@ -212,7 +212,7 @@ def r_update():
 
     args_rules = [
         Rules.APP_ID_EXT.value,
-        Rules.UID.value
+        Rules.UID_EXT.value
     ]
 
     if 'openid' in request.json:
@@ -225,9 +225,11 @@ def r_update():
         ret['state'] = ji.Common.exchange_state(20000)
         return ret
 
+    request.json['uid'] = request.json.get('uid', '').__str__()
+
     try:
         ji.Check.previewing(args_rules, request.json)
-        openid.appid = request.json.get('openid', None)
+        openid.appid = request.json.get('appid', None)
         openid.uid = request.json.get('uid', None)
         openid.get()
 
@@ -366,7 +368,7 @@ def r_content_search():
     offset = str(request.args.get('offset', offset))
     limit = str(request.args.get('limit', page_size))
 
-    order_by = request.args.get('order_by', 'id')
+    order_by = request.args.get('order_by', 'create_time')
     order = request.args.get('order', 'asc')
     keyword = request.args.get('keyword', '')
 
@@ -384,17 +386,10 @@ def r_content_search():
     except ji.PreviewingError, e:
         return json.loads(e.message)
 
-    user = User()
     app_key_map_by_id = dict()
     user_map_by_id = dict()
 
-    args_rules = [
-        Rules.LOGIN_NAME.value
-    ]
-
     try:
-        ji.Check.previewing(args_rules, user.__dict__)
-
         offset = int(offset)
         limit = int(limit)
         ret = dict()
@@ -417,7 +412,7 @@ def r_content_search():
 
         openid_data, ret['paging']['total'] = UidOpenidMapping.get_by_filter(
             offset=offset, limit=limit, order_by=order_by, order=order,
-            filter_str='in_uid=' + ','.join(user_map_by_id.keys()))
+            filter_str='in_uid=' + ','.join(str(uid) for uid in user_map_by_id.keys()))
 
         for openid in openid_data:
             openid['user'] = user_map_by_id[openid['uid']]

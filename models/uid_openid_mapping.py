@@ -52,7 +52,7 @@ class UidOpenidMapping(object):
             raise ji.PreviewingError(json.dumps(ret, ensure_ascii=False))
 
         sql_stmt = ("UPDATE uid_openid_mapping SET uid = %(uid)s, appid = %(appid)s, openid = %(openid)s "
-                    "WHERE uid = %(id)s AND appid = %(appid)s")
+                    "WHERE uid = %(uid)s AND appid = %(appid)s")
 
         cnx = db.cnxpool.get_connection()
         cursor = cnx.cursor(dictionary=True, buffered=True)

@@ -13,6 +13,7 @@ __copyright__ = '(c) 2015 by James Iter.'
 
 class Rules(Enum):
     UID = ('regex:^\d{1,17}$', 'id')
+    UID_EXT = ('regex:^\d{1,17}$', 'uid')
     UIDS = ('regex:^(\d{1,17}(,)?)+$', 'ids')
     LOGIN_NAME = (basestring, 'login_name', (5, 30))
     PASSWORD = (basestring, 'password', (1, 100))
