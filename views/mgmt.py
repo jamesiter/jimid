@@ -162,7 +162,7 @@ def r_delete(_id):
 
         user.delete()
         # 删除依赖于该用户的openid
-        UidOpenidMapping.delete_by_filter('in_uid=' + _id)
+        UidOpenidMapping.delete_by_filter('uid:in:' + _id)
     except ji.PreviewingError, e:
         return json.loads(e.message)
 

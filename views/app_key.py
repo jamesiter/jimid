@@ -37,12 +37,14 @@ def r_create():
 
     args_rules = [
         Rules.APP_NAME.value,
+        Rules.APP_HOME_PAGE.value,
         Rules.APP_REMARK.value
     ]
 
     app_key.id = ji.Common.generate_random_code(length=16, letter_form='mix', numeral=True)
     app_key.secret = ji.Common.generate_random_code(length=32, letter_form='mix', numeral=True)
     app_key.name = request.json.get('name', '')
+    app_key.home_page = request.json.get('home_page', '')
     app_key.remark = request.json.get('remark', '')
 
     try:
@@ -72,7 +74,7 @@ def r_delete(_id):
         if app_key.exist():
             app_key.delete()
             # 删除依赖于该AppKey的openid
-            UidOpenidMapping.delete_by_filter('in_appid=' + _id)
+            UidOpenidMapping.delete_by_filter('appid:in:' + _id)
         else:
             ret = dict()
             ret['state'] = ji.Common.exchange_state(40401)
@@ -100,6 +102,11 @@ def r_update():
             Rules.APP_NAME.value
         )
 
+    if 'home_page' in request.json:
+        args_rules.append(
+            Rules.APP_HOME_PAGE.value
+        )
+
     if 'remark' in request.json:
         args_rules.append(
             Rules.APP_REMARK.value
@@ -118,6 +125,7 @@ def r_update():
 
         app_key.secret = request.json.get('secret', app_key.secret)
         app_key.name = request.json.get('name', app_key.name)
+        app_key.home_page = request.json.get('home_page', app_key.home_page)
         app_key.remark = request.json.get('remark', app_key.remark)
 
         app_key.update()

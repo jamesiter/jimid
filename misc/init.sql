@@ -28,13 +28,13 @@ CREATE TABLE IF NOT EXISTS app_key(
   secret CHAR(32) NOT NULL,
   create_time BIGINT UNSIGNED NOT NULL,
   name VARCHAR(255) NOT NULL DEFAULT '',
+  home_page VARCHAR(255) NOT NULL DEFAULT '',
   remark VARCHAR(1024) NOT NULL DEFAULT '',
   PRIMARY KEY (id))
   ENGINE=InnoDB;
 
 ALTER TABLE app_key ADD INDEX (id);
 ALTER TABLE app_key ADD INDEX (name);
-ALTER TABLE app_key ADD INDEX (remark);
 
 
 CREATE TABLE IF NOT EXISTS uid_openid_mapping(
