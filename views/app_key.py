@@ -187,21 +187,24 @@ def r_get_by_filter():
         last_pagination = (ret['paging']['total'] + page_size - 1) / page_size
 
         if page <= 1:
-            ret['paging']['prev'] = host_url + '/app_keys?page=1&page_size=' + page_size.__str__() + other_str
-        else:
-            ret['paging']['prev'] = host_url + '/app_keys?page=' + str(page-1) + '&page_size=' + page_size.__str__() + \
+            ret['paging']['prev'] = host_url + blueprint.url_prefix + '?page=1&page_size=' + page_size.__str__() + \
                                     other_str
+        else:
+            ret['paging']['prev'] = host_url + blueprint.url_prefix + '?page=' + str(page-1) + '&page_size=' + \
+                                    page_size.__str__() + other_str
 
         if page >= last_pagination:
-            ret['paging']['next'] = host_url + '/app_keys?page=' + last_pagination.__str__() + '&page_size=' + \
-                                    page_size.__str__() + other_str
+            ret['paging']['next'] = host_url + blueprint.url_prefix + '?page=' + last_pagination.__str__() + \
+                                    '&page_size=' + page_size.__str__() + other_str
         else:
-            ret['paging']['next'] = host_url + '/app_keys?page=' + str(page+1) + '&page_size=' + page_size.__str__() + \
-                                    other_str
+            ret['paging']['next'] = host_url + blueprint.url_prefix + '?page=' + str(page+1) + '&page_size=' + \
+                                    page_size.__str__() + other_str
 
-        ret['paging']['first'] = host_url + '/app_keys?page=1&page_size=' + page_size.__str__() + other_str
+        ret['paging']['first'] = host_url + blueprint.url_prefix + '?page=1&page_size=' + \
+            page_size.__str__() + other_str
         ret['paging']['last'] = \
-            host_url + '/app_keys?page=' + last_pagination.__str__() + '&page_size=' + page_size.__str__() + other_str
+            host_url + blueprint.url_prefix + '?page=' + last_pagination.__str__() + '&page_size=' + \
+            page_size.__str__() + other_str
 
         return ret
     except ji.PreviewingError, e:
@@ -263,22 +266,24 @@ def r_content_search():
         last_pagination = (ret['paging']['total'] + page_size - 1) / page_size
 
         if page <= 1:
-            ret['paging']['prev'] = host_url + '/app_keys/_search?page=1&page_size=' + page_size.__str__() + other_str
-        else:
-            ret['paging']['prev'] = host_url + '/app_keys/_search?page=' + str(page-1) + '&page_size=' + \
+            ret['paging']['prev'] = host_url + blueprints.url_prefix + '/_search?page=1&page_size=' + \
                                     page_size.__str__() + other_str
+        else:
+            ret['paging']['prev'] = host_url + blueprints.url_prefix + '/_search?page=' + str(page-1) + \
+                                    '&page_size=' + page_size.__str__() + other_str
 
         if page >= last_pagination:
-            ret['paging']['next'] = host_url + '/app_keys/_search?page=' + last_pagination.__str__() + '&page_size=' + \
-                                    page_size.__str__() + other_str
+            ret['paging']['next'] = host_url + blueprints.url_prefix + '/_search?page=' + last_pagination.__str__() + \
+                                    '&page_size=' + page_size.__str__() + other_str
         else:
-            ret['paging']['next'] = host_url + '/app_keys/_search?page=' + str(page+1) + '&page_size=' + \
-                                    page_size.__str__() + other_str
+            ret['paging']['next'] = host_url + blueprints.url_prefix + '/_search?page=' + str(page+1) + \
+                                    '&page_size=' + page_size.__str__() + other_str
 
-        ret['paging']['first'] = host_url + '/app_keys/_search?page=1&page_size=' + page_size.__str__() + other_str
+        ret['paging']['first'] = host_url + blueprints.url_prefix + '/_search?page=1&page_size=' + \
+            page_size.__str__() + other_str
         ret['paging']['last'] = \
-            host_url + '/app_keys/_search?page=' + last_pagination.__str__() + '&page_size=' + page_size.__str__() + \
-            other_str
+            host_url + blueprints.url_prefix + '/_search?page=' + last_pagination.__str__() + '&page_size=' + \
+            page_size.__str__() + other_str
 
         return ret
     except ji.PreviewingError, e:

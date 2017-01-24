@@ -22,6 +22,8 @@ from views.openid import blueprint as openid_blueprint
 from views.openid import blueprints as openids_blueprint
 from views.openid_admin import blueprint as openid_admin_blueprint
 from views.openid_admin import blueprints as openids_admin_blueprint
+from views.role import blueprint as role_blueprint
+from views.role import blueprints as roles_blueprint
 
 
 __author__ = 'James Iter'
@@ -122,6 +124,8 @@ try:
     app.register_blueprint(openids_blueprint)
     app.register_blueprint(openid_admin_blueprint)
     app.register_blueprint(openids_admin_blueprint)
+    app.register_blueprint(role_blueprint)
+    app.register_blueprint(roles_blueprint)
 except:
     logger.error(traceback.format_exc())
 

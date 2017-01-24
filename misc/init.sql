@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS user(
     email_verified BOOLEAN NOT NULL DEFAULT FALSE,
     manager BOOLEAN NOT NULL DEFAULT FALSE,
     enabled BOOLEAN NOT NULL DEFAULT TRUE,
+    role_id BIGINT NOT NULL DEFAULT 0,
     PRIMARY KEY (id))
     ENGINE=InnoDB;
 
@@ -40,11 +41,31 @@ ALTER TABLE app_key ADD INDEX (name);
 CREATE TABLE IF NOT EXISTS uid_openid_mapping(
     uid BIGINT UNSIGNED NOT NULL,
     appid CHAR(30) NOT NULL,
-    openid VARCHAR(30) NOT NULL,
+    openid VARCHAR(255) NOT NULL,
     create_time BIGINT UNSIGNED NOT NULL,
     PRIMARY KEY (uid, appid, openid))
     ENGINE=InnoDB;
 
 ALTER TABLE uid_openid_mapping ADD INDEX (uid, appid);
 ALTER TABLE uid_openid_mapping ADD INDEX (appid, openid);
+
+
+CREATE TABLE IF NOT EXISTS role(
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL DEFAULT '',
+    remark VARCHAR(1024) NOT NULL DEFAULT '',
+    PRIMARY KEY (id))
+    ENGINE=InnoDB;
+
+ALTER TABLE role ADD INDEX (id);
+ALTER TABLE role ADD INDEX (name);
+
+
+CREATE TABLE IF NOT EXISTS role_appid_mapping(
+    role_id BIGINT UNSIGNED NOT NULL,
+    appid CHAR(30) NOT NULL,
+    PRIMARY KEY (role_id, appid))
+    ENGINE=InnoDB;
+
+ALTER TABLE role_appid_mapping ADD INDEX (role_id, appid);
 

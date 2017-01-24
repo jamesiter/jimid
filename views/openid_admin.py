@@ -145,7 +145,7 @@ def r_get_by_login_name_without_appid(login_name=None):
             app_key_map_by_id[app_key['id']] = app_key
 
         openid_data, ret['paging']['total'] = UidOpenidMapping.get_by_filter(
-            offset=offset, limit=limit, order_by=order_by, order=order, filter_str='in_uid=' + user.id.__str__())
+            offset=offset, limit=limit, order_by=order_by, order=order, filter_str='uid:in:' + user.id.__str__())
 
         for openid in openid_data:
             openid['user'] = user.__dict__
@@ -306,7 +306,7 @@ def r_get_by_filter():
 
         openid_data, ret['paging']['total'] = UidOpenidMapping.get_by_filter(
             offset=offset, limit=limit, order_by=order_by, order=order,
-            filter_str='in_uid=' + ','.join(str(uid) for uid in user_map_by_id.keys()))
+            filter_str='uid:in:' + ','.join(str(uid) for uid in user_map_by_id.keys()))
 
         for openid in openid_data:
             openid['user'] = user_map_by_id[openid['uid']]
@@ -412,7 +412,7 @@ def r_content_search():
 
         openid_data, ret['paging']['total'] = UidOpenidMapping.get_by_filter(
             offset=offset, limit=limit, order_by=order_by, order=order,
-            filter_str='in_uid=' + ','.join(str(uid) for uid in user_map_by_id.keys()))
+            filter_str='uid:in:' + ','.join(str(uid) for uid in user_map_by_id.keys()))
 
         for openid in openid_data:
             openid['user'] = user_map_by_id[openid['uid']]

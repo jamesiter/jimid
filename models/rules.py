@@ -12,6 +12,7 @@ __copyright__ = '(c) 2015 by James Iter.'
 
 
 class Rules(Enum):
+    # 正则表达式方便校验其来自URL的参数
     UID = ('regex:^\d{1,17}$', 'id')
     UID_EXT = ('regex:^\d{1,17}$', 'uid')
     UIDS = ('regex:^(\d{1,17}(,)?)+$', 'ids')
@@ -49,3 +50,9 @@ class Rules(Enum):
     TS = ('regex:^\d{1,10}$', 'ts')
     SIGN = (basestring, 'sign')
     REDIRECT_URL = (basestring, 'redirect_url')
+
+    ROLE_ID = ('regex:^\d{1,17}$', 'id')
+    ROLE_ID_EXT = ('regex:^\d{1,17}$', 'role_id')
+    ROLE_NAME = (basestring, 'name', (0, 255))
+    ROLE_REMARK = (basestring, 'remark', (0, 1024))
+

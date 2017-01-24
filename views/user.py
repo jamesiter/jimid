@@ -6,6 +6,8 @@ import json
 from flask import Blueprint, request, g, make_response
 import jimit as ji
 
+from models import AppKey
+from models import UidOpenidMapping
 from models import Utils, Rules, User
 
 
@@ -294,4 +296,43 @@ def r_auth():
     except ji.PreviewingError, e:
         return json.loads(e.message)
 
+
+@Utils.dumps2response
+def r_app_list():
+    order_by = request.args.get('order_by', 'create_time')
+    order = request.args.get('order', 'asc')
+    app_key_map_by_id = dict()
+    openid = UidOpenidMapping()
+
+    args_rules = [
+        Rules.UID_EXT.value
+    ]
+    openid.uid = g.token.get('uid', 0).__str__()
+
+    try:
+        ji.Check.previewing(args_rules, openid.__dict__)
+        ret = dict()
+        ret['state'] = ji.Common.exchange_state(20000)
+        ret['data'] = list()
+
+        app_key_data, app_key_total = AppKey.get_by_filter(offset=0, limit=1000, order_by='create_time',
+                                                           order='asc', filter_str='')
+
+        for app_key in app_key_data:
+            del app_key['secret']
+            app_key_map_by_id[app_key['id']] = app_key
+
+        openid_data, openid_total = UidOpenidMapping.get_by_filter(
+            offset=0, limit=1000, order_by=order_by, order=order,
+            filter_str='uid:in:' + openid.uid)
+
+        # for openid in openid_data:
+        #     ret['data'].append(app_key_map_by_id[openid['appid']])
+
+        for app_key in app_key_data:
+            ret['data'].append(app_key_map_by_id[app_key['id']])
+
+        return ret
+    except ji.PreviewingError, e:
+        return json.loads(e.message)
 

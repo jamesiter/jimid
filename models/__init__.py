@@ -26,8 +26,16 @@ from app_key import (
     AppKey
 )
 
+from role import (
+    Role
+)
+
 from uid_openid_mapping import (
     UidOpenidMapping
+)
+
+from role_app_mapping import (
+    RoleAppMapping
 )
 
 from filter import (
@@ -43,5 +51,6 @@ __copyright__ = '(c) 2016 by James Iter.'
 
 
 __all__ = [
-    'Rules', 'Utils', 'Init', 'Database', 'User', 'AppKey', 'UidOpenidMapping', 'FilterFieldType', 'Filter'
+    'Rules', 'Utils', 'Init', 'Database', 'User', 'AppKey', 'Role', 'UidOpenidMapping', 'RoleAppMapping',
+    'FilterFieldType', 'Filter'
 ]

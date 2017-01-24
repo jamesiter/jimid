@@ -202,6 +202,11 @@ def r_update():
             Rules.EMAIL_VERIFIED.value
         )
 
+    if 'role_id' in request.json:
+        args_rules.append(
+            Rules.ROLE_ID_EXT.value
+        )
+
     if args_rules.__len__() < 2:
         ret = dict()
         ret['state'] = ji.Common.exchange_state(20000)
@@ -218,6 +223,7 @@ def r_update():
         user.mobile_phone_verified = request.json.get('mobile_phone_verified', user.mobile_phone_verified)
         user.email = request.json.get('email', user.email)
         user.email_verified = request.json.get('email_verified', user.email_verified)
+        user.role_id = request.json.get('role_id', user.role_id)
 
         user.update()
     except ji.PreviewingError, e:
@@ -308,21 +314,24 @@ def r_get_by_filter():
         last_pagination = (ret['paging']['total'] + page_size - 1) / page_size
 
         if page <= 1:
-            ret['paging']['prev'] = host_url + '/mgmts?page=1&page_size=' + page_size.__str__() + other_str
-        else:
-            ret['paging']['prev'] = host_url + '/mgmts?page=' + str(page-1) + '&page_size=' + page_size.__str__() + \
+            ret['paging']['prev'] = host_url + blueprint.url_prefix + '?page=1&page_size=' + page_size.__str__() + \
                                     other_str
+        else:
+            ret['paging']['prev'] = host_url + blueprint.url_prefix + '?page=' + str(page-1) + '&page_size=' + \
+                                    page_size.__str__() + other_str
 
         if page >= last_pagination:
-            ret['paging']['next'] = host_url + '/mgmts?page=' + last_pagination.__str__() + '&page_size=' + \
-                                    page_size.__str__() + other_str
+            ret['paging']['next'] = host_url + blueprint.url_prefix + '?page=' + last_pagination.__str__() + \
+                                    '&page_size=' + page_size.__str__() + other_str
         else:
-            ret['paging']['next'] = host_url + '/mgmts?page=' + str(page+1) + '&page_size=' + page_size.__str__() + \
-                                    other_str
+            ret['paging']['next'] = host_url + blueprint.url_prefix + '?page=' + str(page+1) + '&page_size=' + \
+                                    page_size.__str__() + other_str
 
-        ret['paging']['first'] = host_url + '/mgmts?page=1&page_size=' + page_size.__str__() + other_str
+        ret['paging']['first'] = host_url + blueprint.url_prefix + '?page=1&page_size=' + \
+            page_size.__str__() + other_str
         ret['paging']['last'] = \
-            host_url + '/mgmts?page=' + last_pagination.__str__() + '&page_size=' + page_size.__str__() + other_str
+            host_url + blueprint.url_prefix + '?page=' + last_pagination.__str__() + '&page_size=' + \
+            page_size.__str__() + other_str
 
         for i in range(ret['data'].__len__()):
             del ret['data'][i]['password']
@@ -352,6 +361,11 @@ def r_update_by_uid_s():
     if 'email_verified' in request.json:
         args_rules.append(
             Rules.EMAIL_VERIFIED.value
+        )
+
+    if 'role_id' in request.json:
+        args_rules.append(
+            Rules.ROLE_ID_EXT.value
         )
 
     if args_rules.__len__() < 2:
@@ -443,22 +457,24 @@ def r_content_search():
         last_pagination = (ret['paging']['total'] + page_size - 1) / page_size
 
         if page <= 1:
-            ret['paging']['prev'] = host_url + '/mgmts/_search?page=1&page_size=' + page_size.__str__() + other_str
-        else:
-            ret['paging']['prev'] = host_url + '/mgmts/_search?page=' + str(page-1) + '&page_size=' + page_size.__str__() + \
-                                    other_str
-
-        if page >= last_pagination:
-            ret['paging']['next'] = host_url + '/mgmts/_search?page=' + last_pagination.__str__() + '&page_size=' + \
+            ret['paging']['prev'] = host_url + blueprints.url_prefix + '/_search?page=1&page_size=' + \
                                     page_size.__str__() + other_str
         else:
-            ret['paging']['next'] = host_url + '/mgmts/_search?page=' + str(page+1) + '&page_size=' + page_size.__str__() + \
-                                    other_str
+            ret['paging']['prev'] = host_url + blueprints.url_prefix + '/_search?page=' + str(page-1) + \
+                                    '&page_size=' + page_size.__str__() + other_str
 
-        ret['paging']['first'] = host_url + '/mgmts/_search?page=1&page_size=' + page_size.__str__() + other_str
+        if page >= last_pagination:
+            ret['paging']['next'] = host_url + blueprints.url_prefix + '/_search?page=' + last_pagination.__str__() + \
+                                    '&page_size=' + page_size.__str__() + other_str
+        else:
+            ret['paging']['next'] = host_url + blueprints.url_prefix + '/_search?page=' + str(page+1) + \
+                                    '&page_size=' + page_size.__str__() + other_str
+
+        ret['paging']['first'] = host_url + blueprints.url_prefix + '/_search?page=1&page_size=' + \
+            page_size.__str__() + other_str
         ret['paging']['last'] = \
-            host_url + '/mgmts/_search?page=' + last_pagination.__str__() + '&page_size=' + page_size.__str__() + \
-            other_str
+            host_url + blueprints.url_prefix + '/_search?page=' + last_pagination.__str__() + '&page_size=' + \
+            page_size.__str__() + other_str
 
         for i in range(ret['data'].__len__()):
             del ret['data'][i]['password']

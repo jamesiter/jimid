@@ -264,3 +264,21 @@ class AppKey(object):
         finally:
             cursor.close()
             cnx.close()
+
+    @classmethod
+    def get_all(cls, order_by='create_time', order='asc'):
+        sql_stmt = ("SELECT * FROM app_key ORDER BY " + order_by + " " + order)
+        sql_stmt_count = ("SELECT count(id) FROM app_key")
+
+        cnx = db.cnxpool.get_connection()
+        cursor = cnx.cursor(dictionary=True, buffered=True)
+        try:
+            cursor.execute(sql_stmt)
+            rows = cursor.fetchall()
+            cursor.execute(sql_stmt_count)
+            count = cursor.fetchone()
+            return rows, count['count(id)']
+        finally:
+            cursor.close()
+            cnx.close()
+
