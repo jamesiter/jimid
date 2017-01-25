@@ -79,8 +79,12 @@ add_rule(openid_admin.blueprints, '/_search', view_func='openid_admin.r_content_
 # role管理接口
 # 创建角色
 add_rule(role.blueprint, '', view_func='role.r_create', methods=['POST'])
+# 获取角色
+add_rule(role.blueprints, '', view_func='role.r_get_by_filter', methods=['GET'])
+# 依据角色id获取应用
+add_rule(role.blueprints, '/_get_app_by_role_id/<role_id>', view_func='role.r_get_app_by_role_id', methods=['GET'])
 # 获取角色本身，及其所关联的用户和应用
-add_rule(role.blueprints, '', view_func='role.r_get_user_role_app_mapping', methods=['GET'])
+add_rule(role.blueprints, '/_get_user_role_app_mapping', view_func='role.r_get_user_role_app_mapping', methods=['GET'])
 # 更新角色
 add_rule(role.blueprint, '/<_id>', view_func='role.r_update', methods=['PATCH'])
 # 删除角色
@@ -95,5 +99,6 @@ add_rule(role.blueprint, '/_add_app_to_role/<role_id>/<appid>', view_func='role.
 # 把应用从角色删除
 add_rule(role.blueprint, '/_delete_app_from_role/<role_id>/<appid>', view_func='role.r_delete_app_from_role',
          methods=['DELETE'])
+# 模糊查找不属于任何角色的用户
 add_rule(role.blueprints, '/_search_with_free_users', view_func='role.r_content_search_with_free_users', methods=['GET'])
 

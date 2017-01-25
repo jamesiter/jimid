@@ -420,7 +420,7 @@ def r_add_app_to_role(role_id, appid):
     role_app_mapping = RoleAppMapping()
 
     args_rules = [
-        Rules.ROLE_ID.value,
+        Rules.ROLE_ID_EXT.value,
         Rules.APP_ID_EXT.value,
     ]
 
@@ -533,6 +533,44 @@ def r_content_search_with_free_users():
 
         for i in range(ret['data'].__len__()):
             del ret['data'][i]['password']
+
+        return ret
+    except ji.PreviewingError, e:
+        return json.loads(e.message)
+
+
+@Utils.dumps2response
+@Utils.superuser
+def r_get_app_by_role_id(role_id):
+    args_rules = [
+        Rules.ROLE_ID_EXT.value
+    ]
+
+    app_map_by_id = dict()
+
+    try:
+        ji.Check.previewing(args_rules, {'role_id': role_id})
+
+        ret = dict()
+        ret['state'] = ji.Common.exchange_state(20000)
+        ret['data'] = list()
+        ret['paging'] = {'total': 0, 'offset': 0, 'limit': 0, 'page': 1, 'page_size': 9999,
+                         'next': '', 'prev': '', 'first': '', 'last': ''}
+
+        app_key_data, app_key_total = AppKey.get_all(order_by='create_time', order='asc')
+
+        for app_key in app_key_data:
+            del app_key['secret']
+            app_map_by_id[app_key['id']] = app_key
+
+        role_app_data, role_app_total = RoleAppMapping.get_by_filter(
+            offset=0, limit=1000, order_by='role_id', order='asc', filter_str='role_id:in:' + role_id)
+
+        for role_app in role_app_data:
+            if role_app['appid'] not in app_map_by_id:
+                continue
+
+            ret['data'].append(app_map_by_id[role_app['appid']])
 
         return ret
     except ji.PreviewingError, e:

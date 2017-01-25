@@ -25,6 +25,7 @@ class Filter(object):
                 'lt': '<',
                 'ne': '!=',
                 'in': 'in',
+                'notin': 'in',
                 'like': 'like'}
 
     def __init__(self):
@@ -67,6 +68,10 @@ class Filter(object):
             # 上面为通过map实现的方式
             _sql_stmt = [cls.get_fit_statement(field_type=field_type, value=v) for v in value.split(',')]
             sql_stmt = keyword + ' in (' + ','.join(_sql_stmt) + ')'
+
+        elif operator == 'notin':
+            _sql_stmt = [cls.get_fit_statement(field_type=field_type, value=v) for v in value.split(',')]
+            sql_stmt = keyword + ' not in (' + ','.join(_sql_stmt) + ')'
 
         elif operator == 'like':
             sql_stmt = keyword + ' like %' + cls.get_fit_statement(field_type=field_type, value=value) + '%'
