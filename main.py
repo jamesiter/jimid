@@ -6,6 +6,9 @@ import traceback
 import thread
 import json
 from flask import request, g, make_response
+from flask import session
+from flask.ext.session import Session
+from datetime import timedelta
 import jimit as ji
 
 from models.initialize import app, logger
@@ -32,6 +35,11 @@ __contact__ = 'james.iter.cn@gmail.com'
 __copyright__ = '(c) 2016 by James Iter.'
 
 
+# 替换为Flask-Session
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(seconds=app.config['PERMANENT_SESSION_LIFETIME'])
+Session(app)
+
+
 def is_not_need_to_auth(endpoint):
     not_auth_table = [
         'user.r_sign_up',
@@ -51,7 +59,7 @@ def is_not_need_to_auth(endpoint):
 def r_before_request():
     try:
         if not is_not_need_to_auth(request.endpoint) and request.blueprint is not None and request.method != 'OPTIONS':
-            token = request.cookies.get('token', '')
+            token = session.get('token', '')
             g.token = Utils.verify_token(token)
             g.superuser = False
             if g.token['uid'] == 1:
@@ -65,12 +73,13 @@ def r_before_request():
             except ji.PreviewingError, e:
                 return json.loads(e.message)
 
-            # 如果账号禁用,则删除客户端token
+            # 如果账号禁用,则删除token
             if not auth.enabled:
                 ret = dict()
                 ret['state'] = ji.Common.exchange_state(40301)
+                for key in session.keys():
+                    session.pop(key=key)
                 response = make_response()
-                response.delete_cookie('token')
                 response.data = json.dumps(ret, ensure_ascii=False)
                 response.status_code = int(ret['state']['code'])
                 return response
@@ -104,7 +113,7 @@ def r_after_request(response):
         if not is_not_need_to_auth(request.endpoint) and hasattr(g, 'token') and \
                         g.token['exp'] < (ji.Common.ts() + (app.config['token_ttl'] / 2)):
             token = Utils.generate_token(g.token['uid'])
-            response.set_cookie('token', token)
+            session['token'] = token
         return response
     except ji.JITError, e:
         return json.loads(e.message)

@@ -4,6 +4,7 @@
 
 import json
 from flask import Blueprint, request, g, make_response
+from flask import session
 import jimit as ji
 
 from models import AppKey
@@ -142,8 +143,8 @@ def r_sign_in():
             raise ji.PreviewingError(json.dumps(ret, ensure_ascii=False))
 
         token = Utils.generate_token(user.id)
+        session['token'] = token
         rep = make_response()
-        rep.set_cookie('token', token)
         rep.data = json.dumps({'state': ji.Common.exchange_state(20000), 'manager': user.manager}, ensure_ascii=False)
         return rep
 
@@ -175,8 +176,8 @@ def r_sign_in_by_mobile_phone():
             raise ji.PreviewingError(json.dumps(ret, ensure_ascii=False))
 
         token = Utils.generate_token(user.id)
+        session['token'] = token
         rep = make_response()
-        rep.set_cookie('token', token)
         rep.data = json.dumps({'state': ji.Common.exchange_state(20000), 'manager': user.manager}, ensure_ascii=False)
         return rep
 
@@ -208,8 +209,8 @@ def r_sign_in_by_email():
             raise ji.PreviewingError(json.dumps(ret, ensure_ascii=False))
 
         token = Utils.generate_token(user.id)
+        session['token'] = token
         rep = make_response()
-        rep.set_cookie('token', token)
         rep.data = json.dumps({'state': ji.Common.exchange_state(20000), 'manager': user.manager}, ensure_ascii=False)
         return rep
 
@@ -219,9 +220,8 @@ def r_sign_in_by_email():
 
 @Utils.dumps2response
 def r_sign_out():
-    rep = make_response()
-    rep.delete_cookie('token')
-    return rep
+    for key in session.keys():
+        session.pop(key=key)
 
 
 @Utils.dumps2response

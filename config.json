@@ -10,5 +10,15 @@
   "log_cycle": "D",
   "token_ttl": 604800,
   "jwt_secret": "kcMsj4qj0EAvAvj3nlFlPZd2x7P9kBBQ$deae64883a03982913e6c5f0ba265c2c5dfd0cfx'",
-  "jwt_algorithm": "HS512"
+  "jwt_algorithm": "HS512",
+  "SESSION_TYPE": "filesystem",
+  "SESSION_PERMANENT": true,
+  "SESSION_USE_SIGNER": true,
+  "SESSION_FILE_DIR": "../cache",
+  "SESSION_FILE_THRESHOLD": 100,
+  "SESSION_KEY_PREFIX": "fuck-",
+  "SESSION_COOKIE_NAME": "session",
+  "SESSION_COOKIE_SECURE": false,
+  "SECRET_KEY": "QSYI73re6x553wmcNwT9tk4OCNK9OUS9xNUulDShEcvRw00YhCKaqHhEGYOGKOSB",
+  "PERMANENT_SESSION_LIFETIME": 604800
 }

@@ -4,3 +4,4 @@ enum34
 jimit
 requests
 PyJWT
+Flask-Session
