@@ -9,7 +9,6 @@ import jimit as ji
 
 from models import AppKey
 from models import RoleAppMapping
-from models import UidOpenidMapping
 from models import Utils, Rules, User
 
 
@@ -300,6 +299,8 @@ def r_auth():
 
 @Utils.dumps2response
 def r_app_list():
+    order_by = request.args.get('order_by', 'create_time')
+    order = request.args.get('order', 'asc')
     app_key_map_by_id = dict()
     user = User()
 
@@ -317,14 +318,13 @@ def r_app_list():
         ret['state'] = ji.Common.exchange_state(20000)
         ret['data'] = list()
 
-        app_key_data, app_key_total = AppKey.get_by_filter(offset=0, limit=1000, order_by='create_time',
-                                                           order='asc', filter_str='')
+        app_key_data, app_key_total = AppKey.get_all(order_by=order_by, order=order)
 
         for app_key in app_key_data:
             del app_key['secret']
             app_key_map_by_id[app_key['id']] = app_key
 
-        role_app_mapping_data, role_app_mapping_total = RoleAppMapping.get_all()
+        role_app_mapping_data, role_app_mapping_total = RoleAppMapping.get_all(order_by='role_id', order='asc')
 
         for role_app_mapping in role_app_mapping_data:
             if role_app_mapping['role_id'] == user.role_id:
