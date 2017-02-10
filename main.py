@@ -113,6 +113,9 @@ def r_after_request(response):
         if not is_not_need_to_auth(request.endpoint) and hasattr(g, 'token') and \
                         g.token['exp'] < (ji.Common.ts() + (app.config['token_ttl'] / 2)):
             token = Utils.generate_token(g.token['uid'])
+            # 清除原有token，由新token代替
+            for key in session.keys():
+                session.pop(key=key)
             session['token'] = token
         return response
     except ji.JITError, e:

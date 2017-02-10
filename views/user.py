@@ -8,6 +8,7 @@ from flask import session
 import jimit as ji
 
 from models import AppKey
+from models import RoleAppMapping
 from models import UidOpenidMapping
 from models import Utils, Rules, User
 
@@ -299,18 +300,19 @@ def r_auth():
 
 @Utils.dumps2response
 def r_app_list():
-    order_by = request.args.get('order_by', 'create_time')
-    order = request.args.get('order', 'asc')
     app_key_map_by_id = dict()
-    openid = UidOpenidMapping()
+    user = User()
 
     args_rules = [
-        Rules.UID_EXT.value
+        Rules.UID.value
     ]
-    openid.uid = g.token.get('uid', 0).__str__()
+    user.id = g.token.get('uid', 0).__str__()
 
     try:
-        ji.Check.previewing(args_rules, openid.__dict__)
+        ji.Check.previewing(args_rules, user.__dict__)
+
+        user.get()
+
         ret = dict()
         ret['state'] = ji.Common.exchange_state(20000)
         ret['data'] = list()
@@ -322,15 +324,11 @@ def r_app_list():
             del app_key['secret']
             app_key_map_by_id[app_key['id']] = app_key
 
-        openid_data, openid_total = UidOpenidMapping.get_by_filter(
-            offset=0, limit=1000, order_by=order_by, order=order,
-            filter_str='uid:in:' + openid.uid)
+        role_app_mapping_data, role_app_mapping_total = RoleAppMapping.get_all()
 
-        # for openid in openid_data:
-        #     ret['data'].append(app_key_map_by_id[openid['appid']])
-
-        for app_key in app_key_data:
-            ret['data'].append(app_key_map_by_id[app_key['id']])
+        for role_app_mapping in role_app_mapping_data:
+            if role_app_mapping['role_id'] == user.role_id:
+                ret['data'].append(app_key_map_by_id[role_app_mapping['appid']])
 
         return ret
     except ji.PreviewingError, e:

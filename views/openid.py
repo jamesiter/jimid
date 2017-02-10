@@ -115,12 +115,16 @@ def r_sign_up():
     try:
         if openid.exist():
             openid.get()
-            return exchange_302(state_code=40901, attach={'openid': openid.openid}, secret=app_key.secret)
+            return exchange_302(state_code=40901,
+                                attach={'openid': openid.openid, 'sid': request.cookies.get('sid', '')},
+                                secret=app_key.secret)
         else:
             openid.openid = ji.Common.generate_random_code(length=30)
             openid.create()
             openid.get()
-            return exchange_302(state_code=20000, attach={'openid': openid.openid}, secret=app_key.secret)
+            return exchange_302(state_code=20000,
+                                attach={'openid': openid.openid, 'sid': request.cookies.get('sid', '')},
+                                secret=app_key.secret)
     except ji.PreviewingError, e:
         return json.loads(e.message)
 
@@ -182,12 +186,16 @@ def r_bind():
     try:
         if openid.exist():
             openid.get()
-            return exchange_302(state_code=40901, attach={'openid': openid.openid}, secret=app_key.secret)
+            return exchange_302(state_code=40901,
+                                attach={'openid': openid.openid, 'sid': request.cookies.get('sid', '')},
+                                secret=app_key.secret)
         else:
             openid.openid = request.args['openid']
             openid.create()
             openid.get()
-            return exchange_302(state_code=20000, attach={'openid': openid.openid}, secret=app_key.secret)
+            return exchange_302(state_code=20000,
+                                attach={'openid': openid.openid, 'sid': request.cookies.get('sid', '')},
+                                secret=app_key.secret)
     except ji.PreviewingError, e:
         return json.loads(e.message)
 
@@ -311,7 +319,9 @@ def r_auth():
     try:
         if openid.exist():
             openid.get()
-            return exchange_302(state_code=20000, attach={'openid': openid.openid}, secret=app_key.secret)
+            return exchange_302(state_code=20000,
+                                attach={'openid': openid.openid, 'sid': request.cookies.get('sid', '')},
+                                secret=app_key.secret)
         else:
             return exchange_302(state_code=40401, secret=app_key.secret)
     except ji.PreviewingError, e:
