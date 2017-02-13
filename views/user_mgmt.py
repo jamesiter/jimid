@@ -213,6 +213,7 @@ def r_update(_id):
         return ret
 
     request.json['id'] = _id
+
     try:
         ji.Check.previewing(args_rules, request.json)
         user.id = int(request.json.get('id'))

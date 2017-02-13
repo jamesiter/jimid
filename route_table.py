@@ -66,7 +66,7 @@ add_rule(openid.blueprint, '/_auth', view_func='openid.r_auth', methods=['GET'])
 
 # app操作接口
 add_rule(app.blueprint, '', view_func='app.r_create', methods=['POST'])
-add_rule(app.blueprint, '', view_func='app.r_update', methods=['PATCH'])
+add_rule(app.blueprint, '/<_id>', view_func='app.r_update', methods=['PATCH'])
 add_rule(app.blueprint, '/<_id>', view_func='app.r_delete', methods=['DELETE'])
 add_rule(app.blueprints, '', view_func='app.r_get_by_filter', methods=['GET'])
 add_rule(app.blueprints, '/_search', view_func='app.r_content_search', methods=['GET'])

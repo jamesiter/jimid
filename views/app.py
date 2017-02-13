@@ -89,7 +89,7 @@ def r_delete(_id):
 
 @Utils.dumps2response
 @Utils.superuser
-def r_update():
+def r_update(_id):
 
     args_rules = [
         Rules.APP_ID.value
@@ -120,10 +120,12 @@ def r_update():
         ret['state'] = ji.Common.exchange_state(20000)
         return ret
 
+    request.json['id'] = _id
+
     try:
         ji.Check.previewing(args_rules, request.json)
         app = App()
-        app.id = request.json.get('id')
+        app.id = request.json['id']
         app.get()
 
         app.secret = request.json.get('secret', app.secret)
