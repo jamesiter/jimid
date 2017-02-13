@@ -24,7 +24,7 @@ INSERT INTO user (login_name, password, create_time, manager) VALUES
     ('admin', 'ji_pbkdf2$sha1$1000$Ji98s57956JcVrpwvnXKhC5kiJXZScv6$0e046371e16b913a78181f502c0b05fbadab6df5', UNIX_TIMESTAMP(NOW()) * 1000000, TRUE);
 
 
-CREATE TABLE IF NOT EXISTS app_key(
+CREATE TABLE IF NOT EXISTS app(
   id CHAR(16) NOT NULL,
   secret CHAR(32) NOT NULL,
   create_time BIGINT UNSIGNED NOT NULL,
@@ -34,8 +34,8 @@ CREATE TABLE IF NOT EXISTS app_key(
   PRIMARY KEY (id))
   ENGINE=InnoDB;
 
-ALTER TABLE app_key ADD INDEX (id);
-ALTER TABLE app_key ADD INDEX (name);
+ALTER TABLE app ADD INDEX (id);
+ALTER TABLE app ADD INDEX (name);
 
 
 CREATE TABLE IF NOT EXISTS uid_openid_mapping(

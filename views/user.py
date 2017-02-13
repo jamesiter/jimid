@@ -7,7 +7,7 @@ from flask import Blueprint, request, g, make_response
 from flask import session
 import jimit as ji
 
-from models import AppKey
+from models import App
 from models import RoleAppMapping
 from models import Utils, Rules, User
 
@@ -301,7 +301,7 @@ def r_auth():
 def r_app_list():
     order_by = request.args.get('order_by', 'create_time')
     order = request.args.get('order', 'asc')
-    app_key_map_by_id = dict()
+    app_map_by_id = dict()
     user = User()
 
     args_rules = [
@@ -318,17 +318,17 @@ def r_app_list():
         ret['state'] = ji.Common.exchange_state(20000)
         ret['data'] = list()
 
-        app_key_data, app_key_total = AppKey.get_all(order_by=order_by, order=order)
+        app_data, app_total = App.get_all(order_by=order_by, order=order)
 
-        for app_key in app_key_data:
-            del app_key['secret']
-            app_key_map_by_id[app_key['id']] = app_key
+        for app in app_data:
+            del app['secret']
+            app_map_by_id[app['id']] = app
 
         role_app_mapping_data, role_app_mapping_total = RoleAppMapping.get_all(order_by='role_id', order='asc')
 
         for role_app_mapping in role_app_mapping_data:
             if role_app_mapping['role_id'] == user.role_id:
-                ret['data'].append(app_key_map_by_id[role_app_mapping['appid']])
+                ret['data'].append(app_map_by_id[role_app_mapping['appid']])
 
         return ret
     except ji.PreviewingError, e:

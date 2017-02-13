@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import json
-from flask import Blueprint, request, g, make_response
+from flask import Blueprint, request
 import jimit as ji
 
-from models import AppKey
+from models import App
 from models import RoleAppMapping
 from models import User
 from models import Utils, Rules, Role
@@ -97,10 +97,10 @@ def r_delete(_id):
     try:
         ji.Check.previewing(args_rules, role.__dict__)
 
-        role.delete()
         # 删除依赖于该AppKey的openid
         RoleAppMapping.delete_by_filter(filter_str='role_id:in:' + _id)
         User.update_by_filter(kv={'role_id': 0}, filter_str='role_id:in:' + _id)
+        role.delete()
     except ji.PreviewingError, e:
         return json.loads(e.message)
 
@@ -335,11 +335,11 @@ def r_get_user_role_app_mapping():
         ret['paging'] = {'total': 0, 'offset': 0, 'limit': 0, 'page': 1, 'page_size': 9999,
                          'next': '', 'prev': '', 'first': '', 'last': ''}
 
-        app_key_data, app_key_total = AppKey.get_all(order_by='create_time', order='asc')
+        app_data, app_total = App.get_all(order_by='create_time', order='asc')
 
-        for app_key in app_key_data:
-            del app_key['secret']
-            app_map_by_id[app_key['id']] = app_key
+        for app in app_data:
+            del app['secret']
+            app_map_by_id[app['id']] = app
 
         roles, ret['paging']['total'] = Role.get_all(order_by=order_by, order=order)
 
@@ -557,11 +557,11 @@ def r_get_app_by_role_id(role_id):
         ret['paging'] = {'total': 0, 'offset': 0, 'limit': 0, 'page': 1, 'page_size': 9999,
                          'next': '', 'prev': '', 'first': '', 'last': ''}
 
-        app_key_data, app_key_total = AppKey.get_all(order_by='create_time', order='asc')
+        app_data, app_total = App.get_all(order_by='create_time', order='asc')
 
-        for app_key in app_key_data:
-            del app_key['secret']
-            app_map_by_id[app_key['id']] = app_key
+        for app in app_data:
+            del app['secret']
+            app_map_by_id[app['id']] = app
 
         role_app_data, role_app_total = RoleAppMapping.get_by_filter(
             offset=0, limit=1000, order_by='role_id', order='asc', filter_str='role_id:in:' + role_id)

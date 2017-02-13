@@ -6,7 +6,7 @@ import json
 from flask import Blueprint, request
 import jimit as ji
 
-from models import Utils, Rules, AppKey, UidOpenidMapping, User
+from models import Utils, Rules, App, UidOpenidMapping, User
 
 
 __author__ = 'James Iter'
@@ -31,17 +31,17 @@ blueprints = Blueprint(
 @Utils.dumps2response
 @Utils.superuser
 def r_get(appid, uid):
-    app_key = AppKey()
+    app = App()
     user = User()
     openid = UidOpenidMapping()
 
     args_rules = [
         Rules.APP_ID_EXT.value,
     ]
-    app_key.id = appid
+    app.id = appid
 
     try:
-        ji.Check.previewing(args_rules, app_key.__dict__)
+        ji.Check.previewing(args_rules, app.__dict__)
     except ji.PreviewingError, e:
         return json.loads(e.message)
 
@@ -59,7 +59,7 @@ def r_get(appid, uid):
     openid.uid = uid
 
     try:
-        app_key.get()
+        app.get()
 
         user.id = long(user.id)
         user.get()
@@ -71,7 +71,7 @@ def r_get(appid, uid):
         ret['data'] = openid.__dict__
         ret['data']['user'] = user.__dict__
         del ret['data']['user']['password']
-        ret['data']['app_key'] = app_key.__dict__
+        ret['data']['app'] = app.__dict__
         return ret
     except ji.PreviewingError, e:
         return json.loads(e.message)
@@ -118,7 +118,7 @@ def r_get_by_login_name_without_appid(login_name=None):
         return json.loads(e.message)
 
     user = User()
-    app_key_map_by_id = dict()
+    app_map_by_id = dict()
 
     args_rules = [
         Rules.LOGIN_NAME.value
@@ -137,12 +137,12 @@ def r_get_by_login_name_without_appid(login_name=None):
         ret['data'] = list()
         ret['paging'] = {'total': 0, 'offset': offset, 'limit': limit, 'page': page, 'page_size': page_size,
                          'next': '', 'prev': '', 'first': '', 'last': ''}
-        app_key_data, app_key_total = AppKey.get_by_filter(offset=0, limit=1000, order_by='create_time',
-                                                           order=order, filter_str='')
+        app_data, app_total = App.get_by_filter(offset=0, limit=1000, order_by='create_time',
+                                                order=order, filter_str='')
 
-        for app_key in app_key_data:
-            del app_key['secret']
-            app_key_map_by_id[app_key['id']] = app_key
+        for app in app_data:
+            del app['secret']
+            app_map_by_id[app['id']] = app
 
         openid_data, ret['paging']['total'] = UidOpenidMapping.get_by_filter(
             offset=offset, limit=limit, order_by=order_by, order=order, filter_str='uid:in:' + user.id.__str__())
@@ -150,7 +150,7 @@ def r_get_by_login_name_without_appid(login_name=None):
         for openid in openid_data:
             openid['user'] = user.__dict__
             del openid['user']['password']
-            openid['app_key'] = app_key_map_by_id[openid['appid']]
+            openid['app'] = app_map_by_id[openid['appid']]
             ret['data'].append(openid)
 
         host_url = request.host_url.rstrip('/')
@@ -280,7 +280,7 @@ def r_get_by_filter():
     except ji.PreviewingError, e:
         return json.loads(e.message)
 
-    app_key_map_by_id = dict()
+    app_map_by_id = dict()
     user_map_by_id = dict()
 
     try:
@@ -291,12 +291,12 @@ def r_get_by_filter():
         ret['data'] = list()
         ret['paging'] = {'total': 0, 'offset': offset, 'limit': limit, 'page': page, 'page_size': page_size,
                          'next': '', 'prev': '', 'first': '', 'last': ''}
-        app_key_data, app_key_total = AppKey.get_by_filter(offset=0, limit=1000, order_by='create_time',
-                                                           order='asc', filter_str='')
+        app_data, app_total = App.get_by_filter(offset=0, limit=1000, order_by='create_time',
+                                                order='asc', filter_str='')
 
-        for app_key in app_key_data:
-            del app_key['secret']
-            app_key_map_by_id[app_key['id']] = app_key
+        for app in app_data:
+            del app['secret']
+            app_map_by_id[app['id']] = app
 
         users, users_total = User.get_by_filter(offset=0, limit=limit, order_by='id',
                                                 order='asc', filter_str=filter_str)
@@ -311,7 +311,7 @@ def r_get_by_filter():
         for openid in openid_data:
             openid['user'] = user_map_by_id[openid['uid']]
             del openid['user']['password']
-            openid['app_key'] = app_key_map_by_id[openid['appid']]
+            openid['app'] = app_map_by_id[openid['appid']]
             ret['data'].append(openid)
 
         host_url = request.host_url.rstrip('/')
@@ -386,7 +386,7 @@ def r_content_search():
     except ji.PreviewingError, e:
         return json.loads(e.message)
 
-    app_key_map_by_id = dict()
+    app_map_by_id = dict()
     user_map_by_id = dict()
 
     try:
@@ -397,12 +397,12 @@ def r_content_search():
         ret['data'] = list()
         ret['paging'] = {'total': 0, 'offset': offset, 'limit': limit, 'page': page, 'page_size': page_size,
                          'next': '', 'prev': '', 'first': '', 'last': ''}
-        app_key_data, app_key_total = AppKey.get_by_filter(offset=0, limit=1000, order_by='create_time',
-                                                           order='asc', filter_str='')
+        app_data, app_total = App.get_by_filter(offset=0, limit=1000, order_by='create_time',
+                                                order='asc', filter_str='')
 
-        for app_key in app_key_data:
-            del app_key['secret']
-            app_key_map_by_id[app_key['id']] = app_key
+        for app in app_data:
+            del app['secret']
+            app_map_by_id[app['id']] = app
 
         users, users_total = User.content_search(offset=0, limit=limit, order_by='id',
                                                  order='asc', keyword=keyword)
@@ -417,7 +417,7 @@ def r_content_search():
         for openid in openid_data:
             openid['user'] = user_map_by_id[openid['uid']]
             del openid['user']['password']
-            openid['app_key'] = app_key_map_by_id[openid['appid']]
+            openid['app'] = app_map_by_id[openid['appid']]
             ret['data'].append(openid)
 
         host_url = request.host_url.rstrip('/')

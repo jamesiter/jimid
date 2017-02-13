@@ -3,11 +3,12 @@
 
 
 import json
-from flask import Blueprint, request, g, make_response
+from flask import Blueprint, request
 import jimit as ji
 
+from models import RoleAppMapping
 from models import UidOpenidMapping
-from models import Utils, Rules, AppKey
+from models import Utils, Rules, App
 
 
 __author__ = 'James Iter'
@@ -17,15 +18,15 @@ __copyright__ = '(c) 2016 by James Iter.'
 
 
 blueprint = Blueprint(
-    'app_key',
+    'app',
     __name__,
-    url_prefix='/api/app_key'
+    url_prefix='/api/app'
 )
 
 blueprints = Blueprint(
-    'app_keys',
+    'apps',
     __name__,
-    url_prefix='/api/app_keys'
+    url_prefix='/api/apps'
 )
 
 
@@ -33,7 +34,7 @@ blueprints = Blueprint(
 @Utils.superuser
 def r_create():
 
-    app_key = AppKey()
+    app = App()
 
     args_rules = [
         Rules.APP_NAME.value,
@@ -41,19 +42,19 @@ def r_create():
         Rules.APP_REMARK.value
     ]
 
-    app_key.id = ji.Common.generate_random_code(length=16, letter_form='mix', numeral=True)
-    app_key.secret = ji.Common.generate_random_code(length=32, letter_form='mix', numeral=True)
-    app_key.name = request.json.get('name', '')
-    app_key.home_page = request.json.get('home_page', '')
-    app_key.remark = request.json.get('remark', '')
+    app.id = ji.Common.generate_random_code(length=16, letter_form='mix', numeral=True)
+    app.secret = ji.Common.generate_random_code(length=32, letter_form='mix', numeral=True)
+    app.name = request.json.get('name', '')
+    app.home_page = request.json.get('home_page', '')
+    app.remark = request.json.get('remark', '')
 
     try:
-        ji.Check.previewing(args_rules, app_key.__dict__)
-        app_key.create()
-        app_key.get()
+        ji.Check.previewing(args_rules, app.__dict__)
+        app.create()
+        app.get()
         ret = dict()
         ret['state'] = ji.Common.exchange_state(20000)
-        ret['data'] = app_key.__dict__
+        ret['data'] = app.__dict__
         return ret
     except ji.PreviewingError, e:
         return json.loads(e.message)
@@ -62,19 +63,21 @@ def r_create():
 @Utils.dumps2response
 @Utils.superuser
 def r_delete(_id):
-    app_key = AppKey()
+    app = App()
 
     args_rules = [
         Rules.APP_ID.value
     ]
-    app_key.id = _id
+    app.id = _id
 
     try:
-        ji.Check.previewing(args_rules, app_key.__dict__)
-        if app_key.exist():
-            app_key.delete()
+        ji.Check.previewing(args_rules, app.__dict__)
+        if app.exist():
+            app.delete()
             # 删除依赖于该AppKey的openid
             UidOpenidMapping.delete_by_filter('appid:in:' + _id)
+            # 删除依赖于该AppKey的role映射
+            RoleAppMapping.delete_by_filter('appid:in' + _id)
         else:
             ret = dict()
             ret['state'] = ji.Common.exchange_state(40401)
@@ -119,16 +122,16 @@ def r_update():
 
     try:
         ji.Check.previewing(args_rules, request.json)
-        app_key = AppKey()
-        app_key.id = request.json.get('id')
-        app_key.get()
+        app = App()
+        app.id = request.json.get('id')
+        app.get()
 
-        app_key.secret = request.json.get('secret', app_key.secret)
-        app_key.name = request.json.get('name', app_key.name)
-        app_key.home_page = request.json.get('home_page', app_key.home_page)
-        app_key.remark = request.json.get('remark', app_key.remark)
+        app.secret = request.json.get('secret', app.secret)
+        app.name = request.json.get('name', app.name)
+        app.home_page = request.json.get('home_page', app.home_page)
+        app.remark = request.json.get('remark', app.remark)
 
-        app_key.update()
+        app.update()
     except ji.PreviewingError, e:
         return json.loads(e.message)
 
@@ -179,8 +182,8 @@ def r_get_by_filter():
         ret['paging'] = {'total': 0, 'offset': offset, 'limit': limit, 'page': page, 'page_size': page_size,
                          'next': '', 'prev': '', 'first': '', 'last': ''}
 
-        ret['data'], ret['paging']['total'] = AppKey.get_by_filter(offset=offset, limit=limit, order_by=order_by,
-                                                                   order=order, filter_str=filter_str)
+        ret['data'], ret['paging']['total'] = App.get_by_filter(offset=offset, limit=limit, order_by=order_by,
+                                                                order=order, filter_str=filter_str)
 
         host_url = request.host_url.rstrip('/')
         other_str = '&filter=' + filter_str + '&order=' + order + '&order_by=' + order_by
@@ -258,8 +261,8 @@ def r_content_search():
         ret['data'] = list()
         ret['paging'] = {'total': 0, 'offset': offset, 'limit': limit, 'page': page, 'page_size': page_size}
 
-        ret['data'], ret['paging']['total'] = AppKey.content_search(offset=offset, limit=limit, order_by=order_by,
-                                                                    order=order, keyword=keyword)
+        ret['data'], ret['paging']['total'] = App.content_search(offset=offset, limit=limit, order_by=order_by,
+                                                                 order=order, keyword=keyword)
 
         host_url = request.host_url.rstrip('/')
         other_str = '&keyword=' + keyword + '&order=' + order + '&order_by=' + order_by

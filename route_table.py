@@ -4,7 +4,7 @@
 
 from models.utils import add_rule
 from views import openid_admin, role
-from views import user, mgmt, openid, app_key
+from views import user, mgmt, openid, app
 
 
 __author__ = 'James Iter'
@@ -63,12 +63,12 @@ add_rule(openid.blueprint, '/_bind', view_func='openid.r_bind', methods=['GET'])
 add_rule(openid.blueprint, '/_unbind', view_func='openid.r_unbind', methods=['GET'])
 add_rule(openid.blueprint, '/_auth', view_func='openid.r_auth', methods=['GET'])
 
-# app_key操作接口
-add_rule(app_key.blueprint, '', view_func='app_key.r_create', methods=['POST'])
-add_rule(app_key.blueprint, '', view_func='app_key.r_update', methods=['PATCH'])
-add_rule(app_key.blueprint, '/<_id>', view_func='app_key.r_delete', methods=['DELETE'])
-add_rule(app_key.blueprints, '', view_func='app_key.r_get_by_filter', methods=['GET'])
-add_rule(app_key.blueprints, '/_search', view_func='app_key.r_content_search', methods=['GET'])
+# app操作接口
+add_rule(app.blueprint, '', view_func='app.r_create', methods=['POST'])
+add_rule(app.blueprint, '', view_func='app.r_update', methods=['PATCH'])
+add_rule(app.blueprint, '/<_id>', view_func='app.r_delete', methods=['DELETE'])
+add_rule(app.blueprints, '', view_func='app.r_get_by_filter', methods=['GET'])
+add_rule(app.blueprints, '/_search', view_func='app.r_content_search', methods=['GET'])
 
 # openid管理接口
 add_rule(openid_admin.blueprint, '', view_func='openid_admin.r_update', methods=['PATCH'])

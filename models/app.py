@@ -16,7 +16,7 @@ __contact__ = 'james.iter.cn@gmail.com'
 __copyright__ = '(c) 2016 by James Iter.'
 
 
-class AppKey(object):
+class App(object):
     def __init__(self, **kwargs):
         self.id = kwargs.get('id', None)
         self.secret = kwargs.get('secret', None)
@@ -26,7 +26,7 @@ class AppKey(object):
         self.remark = kwargs.get('remark', '')
 
     def create(self):
-        sql_stmt = ("INSERT INTO app_key (id, secret, create_time, name, home_page, remark) VALUES (%(id)s, %(secret)s,"
+        sql_stmt = ("INSERT INTO app (id, secret, create_time, name, home_page, remark) VALUES (%(id)s, %(secret)s,"
                     "%(create_time)s, %(name)s, %(home_page)s, %(remark)s)")
 
         cnx = db.cnxpool.get_connection()
@@ -52,7 +52,7 @@ class AppKey(object):
             ret['state']['sub']['zh-cn'] = ''.join([ret['state']['sub']['zh-cn'], ': ', self.id.__str__()])
             raise ji.PreviewingError(json.dumps(ret, ensure_ascii=False))
 
-        sql_stmt = ("UPDATE app_key SET id = %(id)s, secret = %(secret)s,"
+        sql_stmt = ("UPDATE app SET id = %(id)s, secret = %(secret)s,"
                     "create_time = %(create_time)s, name = %(name)s, home_page = %(home_page)s,"
                     "remark = %(remark)s WHERE id = %(id)s")
 
@@ -78,7 +78,7 @@ class AppKey(object):
             ret['state']['sub']['zh-cn'] = ''.join([ret['state']['sub']['zh-cn'], ': ', self.id.__str__()])
             raise ji.PreviewingError(json.dumps(ret, ensure_ascii=False))
 
-        sql_stmt = ("DELETE FROM app_key WHERE id = %(id)s")
+        sql_stmt = ("DELETE FROM app WHERE id = %(id)s")
 
         cnx = db.cnxpool.get_connection()
         cursor = cnx.cursor(dictionary=True, buffered=True)
@@ -90,7 +90,7 @@ class AppKey(object):
             cnx.close()
 
     def get(self):
-        sql_stmt = ("SELECT " + ', '.join(self.__dict__.keys()) + " FROM app_key WHERE id = %(id)s LIMIT 1")
+        sql_stmt = ("SELECT " + ', '.join(self.__dict__.keys()) + " FROM app WHERE id = %(id)s LIMIT 1")
 
         cnx = db.cnxpool.get_connection()
         cursor = cnx.cursor(dictionary=True, buffered=True)
@@ -110,7 +110,7 @@ class AppKey(object):
             raise ji.PreviewingError(json.dumps(ret, ensure_ascii=False))
 
     def exist(self):
-        sql_stmt = ("SELECT id FROM app_key WHERE id = %(id)s LIMIT 1")
+        sql_stmt = ("SELECT id FROM app WHERE id = %(id)s LIMIT 1")
 
         cnx = db.cnxpool.get_connection()
         cursor = cnx.cursor(dictionary=True, buffered=True)
@@ -129,7 +129,7 @@ class AppKey(object):
     def get_by(self, field):
         sql_field = field + ' = %(' + field + ')s'
         sql_stmt = ("SELECT " + ', '.join(self.__dict__.keys()) +
-                    " FROM app_key WHERE " + sql_field + " LIMIT 1")
+                    " FROM app WHERE " + sql_field + " LIMIT 1")
 
         cnx = db.cnxpool.get_connection()
         cursor = cnx.cursor(dictionary=True, buffered=True)
@@ -150,7 +150,7 @@ class AppKey(object):
 
     def exist_by(self, field):
         sql_field = field + ' = %(' + field + ')s'
-        sql_stmt = ("SELECT id FROM app_key WHERE " + sql_field + " LIMIT 1")
+        sql_stmt = ("SELECT id FROM app WHERE " + sql_field + " LIMIT 1")
 
         cnx = db.cnxpool.get_connection()
         cursor = cnx.cursor(dictionary=True, buffered=True)
@@ -180,13 +180,13 @@ class AppKey(object):
 
     @classmethod
     def get_by_filter(cls, offset=0, limit=50, order_by='id', order='asc', filter_str=''):
-        sql_stmt = ("SELECT * FROM app_key ORDER BY " + order_by + " " + order + " LIMIT %(offset)s, %(limit)s")
-        sql_stmt_count = ("SELECT count(id) FROM app_key")
+        sql_stmt = ("SELECT * FROM app ORDER BY " + order_by + " " + order + " LIMIT %(offset)s, %(limit)s")
+        sql_stmt_count = ("SELECT count(id) FROM app")
         where_str = Filter.filter_str_to_sql(allow_keywords=cls.get_filter_keywords(), filter_str=filter_str)
         if where_str != '':
-            sql_stmt = ("SELECT * FROM app_key WHERE " + where_str + " ORDER BY " + order_by + " " + order +
+            sql_stmt = ("SELECT * FROM app WHERE " + where_str + " ORDER BY " + order_by + " " + order +
                         " LIMIT %(offset)s, %(limit)s")
-            sql_stmt_count = ("SELECT count(id) FROM app_key WHERE " + where_str)
+            sql_stmt_count = ("SELECT count(id) FROM app WHERE " + where_str)
 
         cnx = db.cnxpool.get_connection()
         cursor = cnx.cursor(dictionary=True, buffered=True)
@@ -217,7 +217,7 @@ class AppKey(object):
         # 上面为通过map实现的方式
         set_str = ', '.join([k + ' = %(' + k + ')s' for k in _kv.keys()])
         where_str = Filter.filter_str_to_sql(allow_keywords=cls.get_filter_keywords(), filter_str=filter_str)
-        sql_stmt = ("UPDATE app_key SET " + set_str + " WHERE " + where_str)
+        sql_stmt = ("UPDATE app SET " + set_str + " WHERE " + where_str)
 
         cnx = db.cnxpool.get_connection()
         cursor = cnx.cursor(dictionary=True, buffered=True)
@@ -231,7 +231,7 @@ class AppKey(object):
     @classmethod
     def delete_by_filter(cls, filter_str=''):
         where_str = Filter.filter_str_to_sql(allow_keywords=cls.get_filter_keywords(), filter_str=filter_str)
-        sql_stmt = ("DELETE FROM app_key WHERE " + where_str)
+        sql_stmt = ("DELETE FROM app WHERE " + where_str)
 
         cnx = db.cnxpool.get_connection()
         cursor = cnx.cursor(dictionary=True, buffered=True)
@@ -248,9 +248,9 @@ class AppKey(object):
         _kv = dict()
         _kv = _kv.fromkeys(allow_field, '%' + keyword + '%')
         where_str = ' OR '.join([k + ' LIKE %(' + k + ')s' for k in _kv.keys()])
-        sql_stmt = ("SELECT * FROM app_key WHERE " + where_str + " ORDER BY " + order_by + " " + order +
+        sql_stmt = ("SELECT * FROM app WHERE " + where_str + " ORDER BY " + order_by + " " + order +
                     " LIMIT %(offset)s, %(limit)s")
-        sql_stmt_count = ("SELECT count(id) FROM app_key WHERE " + where_str)
+        sql_stmt_count = ("SELECT count(id) FROM app WHERE " + where_str)
 
         _kv.update({'offset': offset, 'limit': limit})
         cnx = db.cnxpool.get_connection()
@@ -267,8 +267,8 @@ class AppKey(object):
 
     @classmethod
     def get_all(cls, order_by='create_time', order='asc'):
-        sql_stmt = ("SELECT * FROM app_key ORDER BY " + order_by + " " + order)
-        sql_stmt_count = ("SELECT count(id) FROM app_key")
+        sql_stmt = ("SELECT * FROM app ORDER BY " + order_by + " " + order)
+        sql_stmt_count = ("SELECT count(id) FROM app")
 
         cnx = db.cnxpool.get_connection()
         cursor = cnx.cursor(dictionary=True, buffered=True)

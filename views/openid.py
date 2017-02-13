@@ -7,7 +7,7 @@ from flask import Blueprint, request, g, make_response
 import urllib
 import jimit as ji
 
-from models import Utils, Rules, AppKey, UidOpenidMapping
+from models import Utils, Rules, App, UidOpenidMapping
 
 
 __author__ = 'James Iter'
@@ -80,14 +80,14 @@ def r_sign_up():
     except ji.PreviewingError, e:
         return json.loads(e.message)
 
-    app_key = AppKey()
+    app = App()
     openid = UidOpenidMapping()
 
     # 校验appid及获取appid对应的secret
-    app_key.id = request.args['appid']
+    app.id = request.args['appid']
 
-    if app_key.exist():
-        app_key.get()
+    if app.exist():
+        app.get()
     else:
         # 此处比较特殊,如果appid不存在,则使用空字符串作为签名秘钥
         return exchange_302(state_code=40450)
@@ -103,28 +103,28 @@ def r_sign_up():
     args['method'] = request.method.upper()
     args['base_url'] = request.base_url
 
-    sign = ji.Security.ji_hash_sign(algorithm='sha1', secret=app_key.secret, content=args)
+    sign = ji.Security.ji_hash_sign(algorithm='sha1', secret=app.secret, content=args)
 
     if sign != request.args['sign']:
-        return exchange_302(state_code=41250, secret=app_key.secret)
+        return exchange_302(state_code=41250, secret=app.secret)
 
     # 判断该用户是否已经在该appid下绑定过openid
     openid.uid = g.token.get('uid', 0).__str__()
-    openid.appid = app_key.id
+    openid.appid = app.id
 
     try:
         if openid.exist():
             openid.get()
             return exchange_302(state_code=40901,
                                 attach={'openid': openid.openid, 'sid': request.cookies.get('sid', '')},
-                                secret=app_key.secret)
+                                secret=app.secret)
         else:
             openid.openid = ji.Common.generate_random_code(length=30)
             openid.create()
             openid.get()
             return exchange_302(state_code=20000,
                                 attach={'openid': openid.openid, 'sid': request.cookies.get('sid', '')},
-                                secret=app_key.secret)
+                                secret=app.secret)
     except ji.PreviewingError, e:
         return json.loads(e.message)
 
@@ -150,14 +150,14 @@ def r_bind():
     except ji.PreviewingError, e:
         return json.loads(e.message)
 
-    app_key = AppKey()
+    app = App()
     openid = UidOpenidMapping()
 
     # 校验appid及获取appid对应的secret
-    app_key.id = request.args['appid']
+    app.id = request.args['appid']
 
-    if app_key.exist():
-        app_key.get()
+    if app.exist():
+        app.get()
     else:
         # 此处比较特殊,如果appid不存在,则使用空字符串作为签名秘钥
         return exchange_302(state_code=40450)
@@ -174,28 +174,28 @@ def r_bind():
     args['method'] = request.method.upper()
     args['base_url'] = request.base_url
 
-    sign = ji.Security.ji_hash_sign(algorithm='sha1', secret=app_key.secret, content=args)
+    sign = ji.Security.ji_hash_sign(algorithm='sha1', secret=app.secret, content=args)
 
     if sign != request.args['sign']:
-        return exchange_302(state_code=41250, secret=app_key.secret)
+        return exchange_302(state_code=41250, secret=app.secret)
 
     # 判断该用户是否已经在该appid下绑定过openid
     openid.uid = g.token.get('uid', 0).__str__()
-    openid.appid = app_key.id
+    openid.appid = app.id
 
     try:
         if openid.exist():
             openid.get()
             return exchange_302(state_code=40901,
                                 attach={'openid': openid.openid, 'sid': request.cookies.get('sid', '')},
-                                secret=app_key.secret)
+                                secret=app.secret)
         else:
             openid.openid = request.args['openid']
             openid.create()
             openid.get()
             return exchange_302(state_code=20000,
                                 attach={'openid': openid.openid, 'sid': request.cookies.get('sid', '')},
-                                secret=app_key.secret)
+                                secret=app.secret)
     except ji.PreviewingError, e:
         return json.loads(e.message)
 
@@ -220,14 +220,14 @@ def r_unbind():
     except ji.PreviewingError, e:
         return json.loads(e.message)
 
-    app_key = AppKey()
+    app = App()
     openid = UidOpenidMapping()
 
     # 校验appid及获取appid对应的secret
-    app_key.id = request.args['appid']
+    app.id = request.args['appid']
 
-    if app_key.exist():
-        app_key.get()
+    if app.exist():
+        app.get()
     else:
         # 此处比较特殊,如果appid不存在,则使用空字符串作为签名秘钥
         return exchange_302(state_code=40450)
@@ -244,21 +244,21 @@ def r_unbind():
     args['method'] = request.method.upper()
     args['base_url'] = request.base_url
 
-    sign = ji.Security.ji_hash_sign(algorithm='sha1', secret=app_key.secret, content=args)
+    sign = ji.Security.ji_hash_sign(algorithm='sha1', secret=app.secret, content=args)
 
     if sign != request.args['sign']:
-        return exchange_302(state_code=41250, secret=app_key.secret)
+        return exchange_302(state_code=41250, secret=app.secret)
 
     # 判断该用户是否已经在该appid下绑定过openid
     openid.uid = g.token.get('uid', 0).__str__()
-    openid.appid = app_key.id
+    openid.appid = app.id
 
     try:
         if openid.exist():
             openid.delete()
-            return exchange_302(state_code=20000, secret=app_key.secret)
+            return exchange_302(state_code=20000, secret=app.secret)
         else:
-            return exchange_302(state_code=40401, secret=app_key.secret)
+            return exchange_302(state_code=40401, secret=app.secret)
     except ji.PreviewingError, e:
         return json.loads(e.message)
 
@@ -283,14 +283,14 @@ def r_auth():
     except ji.PreviewingError, e:
         return json.loads(e.message)
 
-    app_key = AppKey()
+    app = App()
     openid = UidOpenidMapping()
 
     # 校验appid及获取appid对应的secret
-    app_key.id = request.args['appid']
+    app.id = request.args['appid']
 
-    if app_key.exist():
-        app_key.get()
+    if app.exist():
+        app.get()
     else:
         # 此处比较特殊,如果appid不存在,则使用空字符串作为签名秘钥
         return exchange_302(state_code=40450)
@@ -307,23 +307,23 @@ def r_auth():
     args['method'] = request.method.upper()
     args['base_url'] = request.base_url
 
-    sign = ji.Security.ji_hash_sign(algorithm='sha1', secret=app_key.secret, content=args)
+    sign = ji.Security.ji_hash_sign(algorithm='sha1', secret=app.secret, content=args)
 
     if sign != request.args['sign']:
-        return exchange_302(state_code=41250, secret=app_key.secret)
+        return exchange_302(state_code=41250, secret=app.secret)
 
     # 判断该用户是否已经在该appid下绑定过openid
     openid.uid = g.token.get('uid', 0).__str__()
-    openid.appid = app_key.id
+    openid.appid = app.id
 
     try:
         if openid.exist():
             openid.get()
             return exchange_302(state_code=20000,
                                 attach={'openid': openid.openid, 'sid': request.cookies.get('sid', '')},
-                                secret=app_key.secret)
+                                secret=app.secret)
         else:
-            return exchange_302(state_code=40401, secret=app_key.secret)
+            return exchange_302(state_code=40401, secret=app.secret)
     except ji.PreviewingError, e:
         return json.loads(e.message)
 

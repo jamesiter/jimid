@@ -19,8 +19,8 @@ from models import User
 from views.user import blueprint as user_blueprint
 from views.mgmt import blueprint as mgmt_blueprint
 from views.mgmt import blueprints as mgmts_blueprint
-from views.app_key import blueprint as app_key_blueprint
-from views.app_key import blueprints as app_keys_blueprint
+from views.app import blueprint as app_blueprint
+from views.app import blueprints as apps_blueprint
 from views.openid import blueprint as openid_blueprint
 from views.openid import blueprints as openids_blueprint
 from views.openid_admin import blueprint as openid_admin_blueprint
@@ -111,7 +111,7 @@ def r_after_request(response):
 
         # 少于token生命周期一半时,自动对其续期
         if not is_not_need_to_auth(request.endpoint) and hasattr(g, 'token') and \
-                        g.token['exp'] < (ji.Common.ts() + (app.config['token_ttl'] / 2)):
+                g.token['exp'] < (ji.Common.ts() + (app.config['token_ttl'] / 2)):
             token = Utils.generate_token(g.token['uid'])
             # 清除原有token，由新token代替
             for key in session.keys():
@@ -130,8 +130,8 @@ try:
     app.register_blueprint(user_blueprint)
     app.register_blueprint(mgmt_blueprint)
     app.register_blueprint(mgmts_blueprint)
-    app.register_blueprint(app_key_blueprint)
-    app.register_blueprint(app_keys_blueprint)
+    app.register_blueprint(app_blueprint)
+    app.register_blueprint(apps_blueprint)
     app.register_blueprint(openid_blueprint)
     app.register_blueprint(openids_blueprint)
     app.register_blueprint(openid_admin_blueprint)

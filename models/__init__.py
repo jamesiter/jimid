@@ -22,8 +22,8 @@ from user import (
     User
 )
 
-from app_key import (
-    AppKey
+from app import (
+    App
 )
 
 from role import (
@@ -51,6 +51,6 @@ __copyright__ = '(c) 2016 by James Iter.'
 
 
 __all__ = [
-    'Rules', 'Utils', 'Init', 'Database', 'User', 'AppKey', 'Role', 'UidOpenidMapping', 'RoleAppMapping',
+    'Rules', 'Utils', 'Init', 'Database', 'User', 'App', 'Role', 'UidOpenidMapping', 'RoleAppMapping',
     'FilterFieldType', 'Filter'
 ]
