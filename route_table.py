@@ -3,7 +3,7 @@
 
 
 from models.utils import add_rule
-from views import openid_admin, role
+from views import openid_mgmt, role
 from views import user, user_mgmt, openid, app
 
 
@@ -72,10 +72,10 @@ add_rule(app.blueprints, '', view_func='app.r_get_by_filter', methods=['GET'])
 add_rule(app.blueprints, '/_search', view_func='app.r_content_search', methods=['GET'])
 
 # openid管理接口
-add_rule(openid_admin.blueprint, '', view_func='openid_admin.r_update', methods=['PATCH'])
-add_rule(openid_admin.blueprint, '/<appid>/<uid>', view_func='openid_admin.r_delete', methods=['DELETE'])
-add_rule(openid_admin.blueprints, '', view_func='openid_admin.r_get_by_filter', methods=['GET'])
-add_rule(openid_admin.blueprints, '/_search', view_func='openid_admin.r_content_search', methods=['GET'])
+add_rule(openid_mgmt.blueprint, '/<appid>/<uid>', view_func='openid_mgmt.r_update', methods=['PATCH'])
+add_rule(openid_mgmt.blueprint, '/<appid>/<uid>', view_func='openid_mgmt.r_delete', methods=['DELETE'])
+add_rule(openid_mgmt.blueprints, '', view_func='openid_mgmt.r_get_by_filter', methods=['GET'])
+add_rule(openid_mgmt.blueprints, '/_search', view_func='openid_mgmt.r_content_search', methods=['GET'])
 
 # role管理接口
 # 创建角色

@@ -23,8 +23,8 @@ from views.app import blueprint as app_blueprint
 from views.app import blueprints as apps_blueprint
 from views.openid import blueprint as openid_blueprint
 from views.openid import blueprints as openids_blueprint
-from views.openid_admin import blueprint as openid_admin_blueprint
-from views.openid_admin import blueprints as openids_admin_blueprint
+from views.openid_mgmt import blueprint as openid_admin_blueprint
+from views.openid_mgmt import blueprints as openids_admin_blueprint
 from views.role import blueprint as role_blueprint
 from views.role import blueprints as roles_blueprint
 

@@ -16,15 +16,15 @@ __copyright__ = '(c) 2016 by James Iter.'
 
 
 blueprint = Blueprint(
-    'openid_admin',
+    'openid_mgmt',
     __name__,
-    url_prefix='/api/openid_admin'
+    url_prefix='/api/openid_mgmt'
 )
 
 blueprints = Blueprint(
-    'openids_admin',
+    'openids_mgmt',
     __name__,
-    url_prefix='/api/openids_admin'
+    url_prefix='/api/openids_mgmt'
 )
 
 
@@ -206,7 +206,7 @@ def r_delete(appid, uid):
 
 @Utils.dumps2response
 @Utils.superuser
-def r_update():
+def r_update(appid, uid):
 
     openid = UidOpenidMapping()
 
@@ -225,12 +225,10 @@ def r_update():
         ret['state'] = ji.Common.exchange_state(20000)
         return ret
 
-    request.json['uid'] = request.json.get('uid', '').__str__()
-
     try:
-        ji.Check.previewing(args_rules, request.json)
-        openid.appid = request.json.get('appid', None)
-        openid.uid = request.json.get('uid', None)
+        ji.Check.previewing(args_rules, {'appid': appid, 'uid': uid})
+        openid.appid = appid
+        openid.uid = uid
         openid.get()
 
         openid.openid = request.json.get('openid', openid.openid)
