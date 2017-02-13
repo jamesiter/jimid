@@ -32,8 +32,8 @@ class User(object):
 
     def create(self):
         sql_stmt = ("INSERT INTO user (login_name, password, create_time, mobile_phone, email,"
-                    "mobile_phone_verified, email_verified, manager, enabled) VALUES (%(login_name)s, %(password)s,"
-                    "%(create_time)s, %(mobile_phone)s, %(email)s, %(mobile_phone_verified)s,"
+                    "mobile_phone_verified, email_verified, manager, enabled, role_id) VALUES (%(login_name)s,"
+                    "%(password)s, %(create_time)s, %(mobile_phone)s, %(email)s, %(mobile_phone_verified)s,"
                     "%(email_verified)s, %(manager)s, %(enabled)s, %(role_id)s)")
 
         cnx = db.cnxpool.get_connection()

@@ -4,7 +4,7 @@
 
 from models.utils import add_rule
 from views import openid_admin, role
-from views import user, mgmt, openid, app
+from views import user, user_mgmt, openid, app
 
 
 __author__ = 'James Iter'
@@ -37,25 +37,26 @@ add_rule(user.blueprint, '/_app_list', view_func='user.r_app_list', methods=['GE
 
 # 管理接口
 # 通过uid获取用户信息
-add_rule(mgmt.blueprint, '/<_id>', view_func='mgmt.r_get', methods=['GET'])
+add_rule(user_mgmt.blueprint, '/<_id>', view_func='user_mgmt.r_get', methods=['GET'])
 # 通过用户名获取用户信息
-add_rule(mgmt.blueprint, '/_by_login_name/<login_name>', view_func='mgmt.r_get_by_login_name', methods=['GET'])
+add_rule(user_mgmt.blueprint, '/_by_login_name/<login_name>', view_func='user_mgmt.r_get_by_login_name',
+         methods=['GET'])
 # 删除用户(用户不可以删除自身,说白了只能超级用户删除普通用户,且超级用户不能删除自己)
-add_rule(mgmt.blueprint, '/<_id>', view_func='mgmt.r_delete', methods=['DELETE'])
+add_rule(user_mgmt.blueprint, '/<_id>', view_func='user_mgmt.r_delete', methods=['DELETE'])
 # 禁用用户(用户不可以禁用自身,只能超级用户禁用普通用户,且超级用户不能禁用自己)
-add_rule(mgmt.blueprint, '/_disable/<_id>', view_func='mgmt.r_disable', methods=['PATCH'])
+add_rule(user_mgmt.blueprint, '/_disable/<_id>', view_func='user_mgmt.r_disable', methods=['PATCH'])
 # 解禁用户(用户不可以解禁自身,只能超级用户解禁普通用户,且超级用户不能解禁自己)
-add_rule(mgmt.blueprint, '/_enable/<_id>', view_func='mgmt.r_enable', methods=['PATCH'])
+add_rule(user_mgmt.blueprint, '/_enable/<_id>', view_func='user_mgmt.r_enable', methods=['PATCH'])
 # 管理员更新用户信息
-add_rule(mgmt.blueprint, '', view_func='mgmt.r_update', methods=['PATCH'])
+add_rule(user_mgmt.blueprint, '/<_id>', view_func='user_mgmt.r_update', methods=['PATCH'])
 # 管理员更新用户密码
-add_rule(mgmt.blueprint, '/_change_password', view_func='mgmt.r_change_password', methods=['PATCH'])
+add_rule(user_mgmt.blueprint, '/_change_password/<_id>', view_func='user_mgmt.r_change_password', methods=['PATCH'])
 
 # 管理员批量操作用户信息
-add_rule(mgmt.blueprints, '', view_func='mgmt.r_get_by_filter', methods=['GET'])
-add_rule(mgmt.blueprints, '', view_func='mgmt.r_update_by_uid_s', methods=['PATCH'])
-add_rule(mgmt.blueprints, '', view_func='mgmt.r_delete_by_uid_s', methods=['DELETE'])
-add_rule(mgmt.blueprints, '/_search', view_func='mgmt.r_content_search', methods=['GET'])
+add_rule(user_mgmt.blueprints, '', view_func='user_mgmt.r_get_by_filter', methods=['GET'])
+add_rule(user_mgmt.blueprints, '', view_func='user_mgmt.r_update_by_uid_s', methods=['PATCH'])
+add_rule(user_mgmt.blueprints, '', view_func='user_mgmt.r_delete_by_uid_s', methods=['DELETE'])
+add_rule(user_mgmt.blueprints, '/_search', view_func='user_mgmt.r_content_search', methods=['GET'])
 
 # openid注册、绑定、解绑接口
 add_rule(openid.blueprint, '/_sign_up', view_func='openid.r_sign_up', methods=['GET'])

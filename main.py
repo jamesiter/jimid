@@ -17,8 +17,8 @@ from models import Database as db
 from models import Utils
 from models import User
 from views.user import blueprint as user_blueprint
-from views.mgmt import blueprint as mgmt_blueprint
-from views.mgmt import blueprints as mgmts_blueprint
+from views.user_mgmt import blueprint as mgmt_blueprint
+from views.user_mgmt import blueprints as mgmts_blueprint
 from views.app import blueprint as app_blueprint
 from views.app import blueprints as apps_blueprint
 from views.openid import blueprint as openid_blueprint

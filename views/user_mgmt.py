@@ -17,15 +17,15 @@ __copyright__ = '(c) 2016 by James Iter.'
 
 
 blueprint = Blueprint(
-    'mgmt',
+    'user_mgmt',
     __name__,
-    url_prefix='/api/mgmt'
+    url_prefix='/api/user_mgmt'
 )
 
 blueprints = Blueprint(
-    'mgmts',
+    'users_mgmt',
     __name__,
-    url_prefix='/api/mgmts'
+    url_prefix='/api/users_mgmt'
 )
 
 
@@ -169,7 +169,7 @@ def r_delete(_id):
 
 @Utils.dumps2response
 @Utils.superuser
-def r_update():
+def r_update(_id):
 
     user = User()
 
@@ -212,7 +212,7 @@ def r_update():
         ret['state'] = ji.Common.exchange_state(20000)
         return ret
 
-    request.json['id'] = request.json.get('id', 0).__str__()
+    request.json['id'] = _id
     try:
         ji.Check.previewing(args_rules, request.json)
         user.id = int(request.json.get('id'))
@@ -232,7 +232,7 @@ def r_update():
 
 @Utils.dumps2response
 @Utils.superuser
-def r_change_password():
+def r_change_password(_id):
 
     user = User()
 
@@ -240,7 +240,7 @@ def r_change_password():
         Rules.UID.value
     ]
 
-    user.id = request.json.get('id', 0).__str__()
+    user.id = _id
     try:
         ji.Check.previewing(args_rules, user.__dict__)
         user.get()
