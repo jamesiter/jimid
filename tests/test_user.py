@@ -22,7 +22,7 @@ class TestUser(unittest.TestCase):
     login_name = 'james'
     password = 'password'
     password2 = 'password2'
-    mobile_phone = '15601603670'
+    mobile_phone = '15600000000'
     email = 'james.iter.cn@gmail.com'
 
     superuser_cookies = None
@@ -144,7 +144,7 @@ class TestUser(unittest.TestCase):
         print json.dumps(j_r, ensure_ascii=False)
         self.assertEqual('200', j_r['state']['code'])
 
-    # 普通用户通过token自我验证
+    # 普通用户通过session id自我验证
     def test_20_user(self):
         url = TestUser.base_url + '/user/_auth'
         r = requests.get(url, cookies=TestUser.cookies)
@@ -190,23 +190,23 @@ class TestUser(unittest.TestCase):
 
     # 测试普通用户通过登录名获取用户信息,应该返回失败,该接口只给超级用户使用
     def test_24_get_by_login_name(self):
-        url = TestUser.base_url + '/mgmt/_by_login_name/' + TestUser.login_name
+        url = TestUser.base_url + '/user_mgmt/_by_login_name/' + TestUser.login_name
         r = requests.get(url, cookies=TestUser.cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
         self.assertEqual('403', j_r['state']['code'])
 
-    # 测试普通用户通过token禁用自己,应该返回失败,该接口只给超级用户使用
+    # 测试普通用户通过 session id 禁用自己,应该返回失败,该接口只给超级用户使用
     def test_25_disable(self):
-        url = TestUser.base_url + '/mgmt/_disable/' + TestUser.uid_s[-1].__str__()
+        url = TestUser.base_url + '/user_mgmt/_disable/' + TestUser.uid_s[-1].__str__()
         r = requests.patch(url, cookies=TestUser.cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
         self.assertEqual('403', j_r['state']['code'])
 
-    # 测试普通用户通过token解禁自己,应该返回失败,该接口只给超级用户使用
+    # 测试普通用户通过 session id 解禁自己,应该返回失败,该接口只给超级用户使用
     def test_26_enable(self):
-        url = TestUser.base_url + '/mgmt/_enable/' + TestUser.uid_s[-1].__str__()
+        url = TestUser.base_url + '/user_mgmt/_enable/' + TestUser.uid_s[-1].__str__()
         r = requests.patch(url, cookies=TestUser.cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
@@ -214,7 +214,7 @@ class TestUser(unittest.TestCase):
 
     # 测试普通用户自我删除,应该返回失败,该系统不允许自我删除,而且删除权限只有超级用户拥有
     def test_27_delete(self):
-        url = TestUser.base_url + '/mgmt/' + TestUser.uid_s[-1].__str__()
+        url = TestUser.base_url + '/user_mgmt/' + TestUser.uid_s[-1].__str__()
         r = requests.delete(url, cookies=TestUser.cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
@@ -238,7 +238,7 @@ class TestUser(unittest.TestCase):
 
     # 超级用户通过用户登录名称获取用户信息
     def test_32_get_by_login_name(self):
-        url = TestUser.base_url + '/mgmt/_by_login_name/' + TestUser.login_name
+        url = TestUser.base_url + '/user_mgmt/_by_login_name/' + TestUser.login_name
         r = requests.get(url, cookies=TestUser.superuser_cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
@@ -246,7 +246,7 @@ class TestUser(unittest.TestCase):
 
     # 超级用户禁用普通用户
     def test_33_disable(self):
-        url = TestUser.base_url + '/mgmt/_disable/' + TestUser.uid_s[-1].__str__()
+        url = TestUser.base_url + '/user_mgmt/_disable/' + TestUser.uid_s[-1].__str__()
         r = requests.patch(url, cookies=TestUser.superuser_cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
@@ -262,14 +262,29 @@ class TestUser(unittest.TestCase):
 
     # 超级用户解禁普通用户
     def test_35_enable(self):
-        url = TestUser.base_url + '/mgmt/_enable/' + TestUser.uid_s[-1].__str__()
+        url = TestUser.base_url + '/user_mgmt/_enable/' + TestUser.uid_s[-1].__str__()
         r = requests.patch(url, cookies=TestUser.superuser_cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
         self.assertEqual('200', j_r['state']['code'])
 
+    # 普通用户解禁后重新登录
+    def test_36_re_sign_in(self):
+        payload = {
+            "login_name": TestUser.login_name,
+            "password": TestUser.password2
+        }
+
+        url = TestUser.base_url + '/user/_sign_in'
+        headers = {'content-type': 'application/json'}
+        r = requests.post(url, data=json.dumps(payload), headers=headers)
+        j_r = json.loads(r.content)
+        print json.dumps(j_r, ensure_ascii=False)
+        TestUser.cookies = r.cookies
+        self.assertEqual('200', j_r['state']['code'])
+
     # 解禁普通用户后,普通用户重新获取自己的用户信息
-    def test_36_get(self):
+    def test_37_get(self):
         url = TestUser.base_url + '/user'
         r = requests.get(url, cookies=TestUser.cookies)
         j_r = json.loads(r.content)
@@ -278,25 +293,25 @@ class TestUser(unittest.TestCase):
         self.assertEqual('200', j_r['state']['code'])
 
     # 超级用户自我禁用,应该返回失败,该系统不允许自我删除
-    def test_37_disable(self):
-        url = TestUser.base_url + '/mgmt/_disable/1'
+    def test_38_disable(self):
+        url = TestUser.base_url + '/user_mgmt/_disable/1'
         r = requests.patch(url, cookies=TestUser.superuser_cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
         self.assertEqual('403', j_r['state']['code'])
 
     # 超级用户删除普通用户
-    def test_38_delete_via_superuser(self):
+    def test_39_delete_via_superuser(self):
         for uid in TestUser.uid_s:
-            url = TestUser.base_url + '/mgmt/' + uid.__str__()
+            url = TestUser.base_url + '/user_mgmt/' + uid.__str__()
             r = requests.delete(url, cookies=TestUser.superuser_cookies)
             j_r = json.loads(r.content)
             print json.dumps(j_r, ensure_ascii=False)
             self.assertEqual('200', j_r['state']['code'])
 
     # 超级用户自我删除,应该返回失败,该系统不允许自我删除
-    def test_39_delete_superuser(self):
-        url = TestUser.base_url + '/mgmt/1'
+    def test_40_delete_superuser(self):
+        url = TestUser.base_url + '/user_mgmt/1'
         r = requests.delete(url, cookies=TestUser.superuser_cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)

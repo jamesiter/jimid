@@ -1,11 +1,11 @@
-# 账号
+# 用户
 
 ## 注册
-> 用户注册接口
+> 通过登录名注册接口。
 
 ``` http
 POST https://$domain
-  /auth/_sign_up
+  /api/user/_sign_up
 {
     "login_name": "james",
     "password": "pswd"
@@ -15,6 +15,38 @@ POST https://$domain
 |参数名称|必须|类型|说明|
 |:--:|:--:|:--:|:--:|
 |login_name|Y|String|登录名|
+|password|Y|String|登录密码|
+
+> 通过手机号码注册接口。
+
+``` http
+POST https://$domain
+  /api/user/_sign_up_by_mobile_phone
+{
+    "mobile_phone": "15600000000",
+    "password": "pswd"
+}
+```
+
+|参数名称|必须|类型|说明|
+|:--:|:--:|:--:|:--:|
+|mobile_phone|Y|String|手机号码|
+|password|Y|String|登录密码|
+
+> 通过E-Mail注册接口。
+
+``` http
+POST https://$domain
+  /api/user/_sign_up_by_email
+{
+    "email": "james.iter.cn@gmail.com",
+    "password": "pswd"
+}
+```
+
+|参数名称|必须|类型|说明|
+|:--:|:--:|:--:|:--:|
+|email|Y|String|邮箱地址|
 |password|Y|String|登录密码|
 
 响应示例
@@ -31,9 +63,11 @@ POST https://$domain
         "email_verified": 0,
         "enabled": 1,
         "email": "",
-        "create_time": 1469902398631608,
-        "id": 529,
-        "login_name": "james"
+        "manager": 0,
+        "create_time": 1487054665671808,
+        "id": 369,
+        "role_id": 0,
+        "login_name": "jamesi"
     }
 }
 ```
@@ -46,13 +80,16 @@ POST https://$domain
 |mobile_phone_verified|Y|Boolean|经校验的用户手机号码|
 |email|Y|String|用户电子邮箱地址|
 |email_verified|Y|Boolean|经校验的用户电子邮箱地址|
+|enabled|Y|Boolean|账号是否被启用|
+|manager|Y|Boolean|账号是否是管理员|
+|role_id|Y|Long|用户角色id|
 |create_time|Y|Long|账号创建时间，单位`微秒`|
 
 ## 登录
-> 用户登录
+> 用户通过用户名登录。
 ``` http
 POST https://$domain
-  /auth/_sign_in
+  /api/user/_sign_in
 {
     "login_name": "james",
     "password": "pswd"
@@ -62,6 +99,36 @@ POST https://$domain
 |参数名称|必须|类型|说明|
 |:--:|:--:|:--:|:--:|
 |login_name|Y|String|登录名|
+|password|Y|String|登录密码|
+
+> 用户通过手机号码登录。
+``` http
+POST https://$domain
+  /api/user/_sign_up_by_mobile_phone
+{
+    "mobile_phone": "15600000000",
+    "password": "pswd"
+}
+```
+
+|参数名称|必须|类型|说明|
+|:--:|:--:|:--:|:--:|
+|mobile_phone|Y|String|绑定的手机号码|
+|password|Y|String|登录密码|
+
+> 用户通过E-Mail登录。
+``` http
+POST https://$domain
+  /api/user/_sign_up_by_email
+{
+    "email": "james.iter.cn@gmail.com",
+    "password": "pswd"
+}
+```
+
+|参数名称|必须|类型|说明|
+|:--:|:--:|:--:|:--:|
+|email|Y|String|绑定的邮箱地址|
 |password|Y|String|登录密码|
 
 响应示例
@@ -76,10 +143,10 @@ POST https://$domain
 ```
 
 ## 登出
-> 用户安全退出, 服务器端会发送一个让客户端浏览器清除自己对应token的消息
+> 用户安全退出。服务器端将删除，该用户在服务器端生成的session文件，并返回一个让客户端浏览器，清除存放自己session id的cookie响应。
 ``` http
 GET https://$domain
-  /auth/_sign_out
+  /api/user/_sign_out
 Header:
 Cookie='cookie'
 ```
@@ -96,10 +163,11 @@ Cookie='cookie'
 ```
 
 ## 验证
-> 通过token自我验证
+> 通过session id自我验证。该接口可用在，客户端已经登录，并获得session id后，需再次验证的情况下。
+集成本应用的资源服务器，会通过浏览器获取用户session id。然后资源服务器拿着获取到的用户session id，去JimID服务器验证该用户的合法性。这里用到的验证接口就是该接口。
 ``` http
 GET https://$domain
-  /auth/_auth
+  /api/user/_auth
 Header:
 Cookie='cookie'
 ```
@@ -119,9 +187,9 @@ Cookie='cookie'
 > 获取自己的用户信息
 ``` http
 GET https://$domain
-  /auth
+  /api/user
 Header:
-# 用户标识在cookie里存放着
+# 用户session id在cookie里存放着
 Cookie='cookie'
 ```
 
@@ -139,8 +207,10 @@ Cookie='cookie'
         "email_verified": 0,
         "enabled": 1,
         "email": "",
-        "create_time": 1469902398631608,
-        "id": 529,
+        "manager": 0,
+        "create_time": 1487054665671808,
+        "id": 369,
+        "role_id": 0,
         "login_name": "james"
     }
 }
@@ -154,13 +224,16 @@ Cookie='cookie'
 |mobile_phone_verified|Y|Boolean|经校验的用户手机号码|
 |email|Y|String|用户电子邮箱地址|
 |email_verified|Y|Boolean|经校验的用户电子邮箱地址|
+|enabled|Y|Boolean|账号是否被启用|
+|manager|Y|Boolean|账号是否是管理员|
+|role_id|Y|Long|用户角色id|
 |create_time|Y|Long|账号创建时间，单位`微秒`|
 
 ## 更改用户密码
 > 更改自己的登录密码
 ``` http
 PATCH https://$domain
-  /auth/_change_password
+  /api/user/_change_password
 Header:
 Cookie='cookie'
 {

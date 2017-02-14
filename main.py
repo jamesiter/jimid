@@ -71,6 +71,9 @@ def r_before_request():
             try:
                 auth.get()
             except ji.PreviewingError, e:
+                # 如果该用户获取失败，则清除该用户对应的session。因为该用户可能已经被删除。
+                for key in session.keys():
+                    session.pop(key=key)
                 return json.loads(e.message)
 
             # 如果账号禁用,则删除token
@@ -102,8 +105,8 @@ def r_before_request():
 def r_after_request(response):
     try:
         # 由于浏览器同源策略，凡是发送请求url的协议、域名、端口三者之间任意一与当前页面地址不同即为跨域。
-        response.headers['Access-Control-Allow-Origin'] = '/'.join(request.referrer.split('/')[:3])
-        # response.headers['Access-Control-Allow-Origin'] = '*'
+        # response.headers['Access-Control-Allow-Origin'] = '/'.join(request.referrer.split('/')[:3])
+        response.headers['Access-Control-Allow-Origin'] = '*'
         response.headers['Access-Control-Allow-Credentials'] = 'true'
         response.headers['Access-Control-Allow-Methods'] = 'HEAD, GET, POST, DELETE, OPTIONS, PATCH, PUT'
         response.headers['Access-Control-Allow-Headers'] = 'X-Request-With, Content-Type'

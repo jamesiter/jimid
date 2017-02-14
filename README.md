@@ -1,36 +1,19 @@
-Logo
-# jimauth
+<img width="220" height="100" src="./JimID-Logo.jpg">
+[![Python versions](https://img.shields.io/badge/Python-2.7-blue.svg)][python]
+[![API](https://img.shields.io/badge/API-RESTful-blue.svg)][restful]
+# JimID
+===
 
+## API
 > 默认数据交互格式 Content-Type: application/json
 
-## [状态码参考列表](docs/state_code.md)
-## [账号](docs/auth.md)
-## [管理接口](docs/mgmt.md)
+### [状态码参考列表](docs/state_code.md)
+### [用户账号](docs/user.md)
+### [管理接口](docs/mgmt.md)
 
-## 编辑特定用户
-## 邮箱校验
-## 短信电话校验
-?## 联系人列表
-## 更改密码页面
-## 登陆页面
-## 支持邮箱登录\电话登录
-
-
-# API
-## 邮箱注册(电话\邮箱注册的号码,用户名默认就是注册的邮箱或电话. 如果有人已经用该电话或邮箱号码注册了用户名,那么用随机值代替)
-## 电话注册
-## 邮箱登录验证
-## 电话登录验证
-## 邮箱绑定(如果一个人用自己的邮箱\电话各注册了一个账号,在邮箱账号里面想绑定之前已经注册了的手机号,那么先需到手机号码那里去解除手机号码绑定,再返回来绑定)
-## 电话绑定
-## 邮箱解绑
-## 电话解绑
-## 更改登录名
-
-项目成员
-姓名: E-Mail
-姓名: E-Mail
-姓名: E-Mail
+## 项目成员
+姓名: James Iter
+E-Mail: james.iter.cn@gmail.com
 
 Demo
 过滤器操作符原语
@@ -45,3 +28,6 @@ notin_id=1,2,5
 
 in包含'等于'及'或等于'的意思
 not in包含'不等于'及'且不等于'的意思
+
+[python]: https://www.python.org
+[restful]: http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm
