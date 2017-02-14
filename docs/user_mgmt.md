@@ -78,6 +78,7 @@ GET https://$domain
 
 ## 禁用用户账号
 > 禁用掉的账号将不允许登录, 且通过不了验证. 管理员无法自我禁用.
+
 ``` http
 PATCH https://$domain
   /api/user_mgmt/_disable/{uid}
@@ -103,6 +104,7 @@ Cookie='cookie'
 
 ## 启用用户账号
 > 启用已禁用的账号
+
 ``` http
 PATCH https://$domain
   /api/user_mgmt/_enable/{uid}
@@ -128,6 +130,7 @@ Cookie='cookie'
 
 ## 删除用户账号
 > 删除账号. 管理员无法自我删除.
+
 ``` http
 DELETE https://$domain
   /api/user_mgmt/{uid}
@@ -153,6 +156,7 @@ Cookie='cookie'
 
 ## 更新用户账号信息
 > 更新账号信息. 不支持普通用户自我更新, 普通用户更新各字段, 将有专门的接口
+
 ``` http
 PUT https://$domain
   /api/user_mgmt/_update/{uid}
@@ -186,6 +190,7 @@ Cookie='cookie'
 
 ## 更改指定用户密码
 > 超级用户更改指定用户的登录密码
+
 ``` http
 PATCH https://$domain
   /api/user_mgmt/_change_password/{uid}
@@ -280,13 +285,47 @@ GET https://$domain
 
 |参数名称|必须|类型|说明|
 |:--|:--:|:--:|:--|
-|total|Y|Long|用户总量|
-|offset|Y|Long|当前偏移量|
-|limit|Y|Long|返回条目数量|
-|page|Y|Long|透传客户端请求的该参数, 如果没有传递, 则返回默认值1|
-|page_size|Y|Long|透传客户端请求的该参数, 如果没有传递, 则返回默认值 50|
+|total|Y|Number|用户总量|
+|offset|Y|Number|当前偏移量|
+|limit|Y|Number|返回条目数量|
+|page|Y|Number|透传客户端请求的该参数, 如果没有传递, 则返回默认值1|
+|page_size|Y|Number|透传客户端请求的该参数, 如果没有传递, 则返回默认值 50|
 
 用户信息字段描述参见 [获取用户信息](user.md#获取用户信息)
+
+
+## 批量更新用户信息
+> 批量更新用户信息
+
+``` http
+PATCH https://$domain
+  /api/users_mgmt
+Header:
+Cookie='cookie'
+{
+    "ids": "1,2,3"
+}
+```
+
+|参数名称|必须|类型|说明|
+|:--|:--:|:--:|:--|
+|ids|Y|String|欲更新的用户ID列表，以`,`为分隔符|
+|mobile_phone_verified|N|Boolean|经校验的用户手机号码|
+|email_verified|N|Boolean|经校验的用户电子邮箱地址|
+|enabled|N|Boolean|账号是否被启用|
+|role_id|N|Long|用户角色id|
+
+响应示例
+``` json
+{
+    "state": {
+        "code": "200",
+        "zh-cn": "成功",
+        "en-us": "OK"
+    }
+}
+```
+
 
 [返回上一级](../README.md)
 ===
