@@ -1,7 +1,7 @@
 # 用户
 
 ## 注册
-> 通过登录名注册接口。
+### 通过登录名注册接口。
 
 ``` http
 POST https://$domain
@@ -17,7 +17,7 @@ POST https://$domain
 |login_name|Y|String|登录名|
 |password|Y|String|登录密码|
 
-> 通过手机号码注册接口。
+### 通过手机号码注册接口。
 
 ``` http
 POST https://$domain
@@ -33,7 +33,7 @@ POST https://$domain
 |mobile_phone|Y|String|手机号码|
 |password|Y|String|登录密码|
 
-> 通过E-Mail注册接口。
+### 通过E-Mail注册接口。
 
 ``` http
 POST https://$domain
@@ -86,7 +86,7 @@ POST https://$domain
 |create_time|Y|Long|账号创建时间，单位`微秒`|
 
 ## 登录
-> 用户通过用户名登录。
+### 用户通过用户名登录。
 ``` http
 POST https://$domain
   /api/user/_sign_in
@@ -101,7 +101,7 @@ POST https://$domain
 |login_name|Y|String|登录名|
 |password|Y|String|登录密码|
 
-> 用户通过手机号码登录。
+### 用户通过手机号码登录。
 ``` http
 POST https://$domain
   /api/user/_sign_up_by_mobile_phone
@@ -116,7 +116,7 @@ POST https://$domain
 |mobile_phone|Y|String|绑定的手机号码|
 |password|Y|String|登录密码|
 
-> 用户通过E-Mail登录。
+### 用户通过E-Mail登录。
 ``` http
 POST https://$domain
   /api/user/_sign_up_by_email

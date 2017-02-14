@@ -1,8 +1,8 @@
+<p>
 <img width="220" height="100" src="./JimID-Logo.jpg">
+</p>
 [![Python versions](https://img.shields.io/badge/Python-2.7-blue.svg)][python]
 [![API](https://img.shields.io/badge/API-RESTful-blue.svg)][restful]
-# JimID
-===
 
 ## API
 > 默认数据交互格式 Content-Type: application/json
