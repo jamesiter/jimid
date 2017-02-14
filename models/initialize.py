@@ -42,7 +42,7 @@ class Init(object):
         if not os.path.isdir(log_dir):
             os.makedirs(log_dir, 0755)
 
-        process_title = 'jimauth'
+        process_title = 'jimid'
         log_file_path = '.'.join([app.config['log_file_base'], process_title])
         _logger = logging.getLogger(log_file_path)
 

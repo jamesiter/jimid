@@ -11,7 +11,7 @@
 
 ### [状态码参考列表](docs/state_code.md)
 ### [用户账号](docs/user.md)
-### [管理接口](docs/mgmt.md)
+### [用户管理](docs/user_mgmt.md)
 
 ## 项目成员
 <pre>

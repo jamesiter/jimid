@@ -13,7 +13,7 @@ __contact__ = 'james.iter.cn@gmail.com'
 __copyright__ = '(c) 2016 by James Iter.'
 
 
-class TestMgmt(unittest.TestCase):
+class TestUserMgmt(unittest.TestCase):
 
     base_url = 'http://jimauth.dev.iit.im/api'
 
@@ -35,48 +35,48 @@ class TestMgmt(unittest.TestCase):
     # ------------------------------------------------普通用户---------------------------------------------------------
     # 注册普通用户
     def test_11_sign_up(self):
-        for i in range(1, TestMgmt.count):
+        for i in range(1, TestUserMgmt.count):
             payload = {
-                "login_name": TestMgmt.login_name + i.__str__(),
-                "password": TestMgmt.password
+                "login_name": TestUserMgmt.login_name + i.__str__(),
+                "password": TestUserMgmt.password
             }
 
-            url = TestMgmt.base_url + '/user/_sign_up'
+            url = TestUserMgmt.base_url + '/user/_sign_up'
             headers = {'content-type': 'application/json'}
             r = requests.post(url, data=json.dumps(payload), headers=headers)
             j_r = json.loads(r.content)
             print json.dumps(j_r, ensure_ascii=False)
-            TestMgmt.uid_s.append(j_r['data']['id'])
+            TestUserMgmt.uid_s.append(j_r['data']['id'])
             self.assertEqual('200', j_r['state']['code'])
 
     # ------------------------------------------------超级用户---------------------------------------------------------
     # 超级用户登录
     def test_31_sign_in_superuser(self):
         payload = {
-            "login_name": TestMgmt.superuser_name,
-            "password": TestMgmt.superuser_password
+            "login_name": TestUserMgmt.superuser_name,
+            "password": TestUserMgmt.superuser_password
         }
 
-        url = TestMgmt.base_url + '/user/_sign_in'
+        url = TestUserMgmt.base_url + '/user/_sign_in'
         headers = {'content-type': 'application/json'}
         r = requests.post(url, data=json.dumps(payload), headers=headers)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
-        TestMgmt.superuser_cookies = r.cookies
+        TestUserMgmt.superuser_cookies = r.cookies
         self.assertEqual('200', j_r['state']['code'])
 
     # 超级用户获取用户列表
     def test_32_get_list(self):
-        url = TestMgmt.base_url + '/mgmts?offset=10&limit=5'
-        r = requests.get(url, cookies=TestMgmt.superuser_cookies)
+        url = TestUserMgmt.base_url + '/mgmts?offset=10&limit=5'
+        r = requests.get(url, cookies=TestUserMgmt.superuser_cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
         self.assertEqual('200', j_r['state']['code'])
 
     # 超级用户获取用户列表
     def test_33_get_list_via_page(self):
-        url = TestMgmt.base_url + '/mgmts?page=2&page_size=5'
-        r = requests.get(url, cookies=TestMgmt.superuser_cookies)
+        url = TestUserMgmt.base_url + '/mgmts?page=2&page_size=5'
+        r = requests.get(url, cookies=TestUserMgmt.superuser_cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
         self.assertEqual('200', j_r['state']['code'])
@@ -84,7 +84,7 @@ class TestMgmt(unittest.TestCase):
     # 超级用户更新用户字段
     def test_34_update(self):
         payload = {
-            "id": TestMgmt.uid_s[10],
+            "id": TestUserMgmt.uid_s[10],
             "login_name": "new_login_name",
             "mobile_phone": "15601603670",
             "mobile_phone_verified": True,
@@ -92,9 +92,9 @@ class TestMgmt(unittest.TestCase):
             "email_verified": True
         }
 
-        url = TestMgmt.base_url + '/mgmt'
+        url = TestUserMgmt.base_url + '/mgmt'
         headers = {'content-type': 'application/json'}
-        r = requests.patch(url, cookies=TestMgmt.superuser_cookies, headers=headers, data=json.dumps(payload))
+        r = requests.patch(url, cookies=TestUserMgmt.superuser_cookies, headers=headers, data=json.dumps(payload))
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
         self.assertEqual('200', j_r['state']['code'])
@@ -102,38 +102,38 @@ class TestMgmt(unittest.TestCase):
     # 超级用户更新用户字段
     def test_35_update(self):
         payload = {
-            "id": TestMgmt.uid_s[11],
+            "id": TestUserMgmt.uid_s[11],
             "login_name": "new_login_name2",
         }
 
-        url = TestMgmt.base_url + '/mgmt'
+        url = TestUserMgmt.base_url + '/mgmt'
         headers = {'content-type': 'application/json'}
-        r = requests.patch(url, cookies=TestMgmt.superuser_cookies, headers=headers, data=json.dumps(payload))
+        r = requests.patch(url, cookies=TestUserMgmt.superuser_cookies, headers=headers, data=json.dumps(payload))
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
         self.assertEqual('200', j_r['state']['code'])
 
     # 超级用户获取用户列表
     def test_37_get_list_via_page(self):
-        url = TestMgmt.base_url + '/mgmts?page=3&page_size=5'
-        r = requests.get(url, cookies=TestMgmt.superuser_cookies)
+        url = TestUserMgmt.base_url + '/mgmts?page=3&page_size=5'
+        r = requests.get(url, cookies=TestUserMgmt.superuser_cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
         self.assertEqual('200', j_r['state']['code'])
 
     # 超级用户全文检索
     def test_37_get_list_via_content_search(self):
-        url = TestMgmt.base_url + '/mgmts/_search?page=1&page_size=5&keyword=a'
-        r = requests.get(url, cookies=TestMgmt.superuser_cookies)
+        url = TestUserMgmt.base_url + '/mgmts/_search?page=1&page_size=5&keyword=a'
+        r = requests.get(url, cookies=TestUserMgmt.superuser_cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
         self.assertEqual('200', j_r['state']['code'])
 
     # 超级用户删除普通用户
     def test_38_delete_via_superuser(self):
-        for uid in TestMgmt.uid_s:
-            url = TestMgmt.base_url + '/mgmt/' + uid.__str__()
-            r = requests.delete(url, cookies=TestMgmt.superuser_cookies)
+        for uid in TestUserMgmt.uid_s:
+            url = TestUserMgmt.base_url + '/mgmt/' + uid.__str__()
+            r = requests.delete(url, cookies=TestUserMgmt.superuser_cookies)
             j_r = json.loads(r.content)
             print json.dumps(j_r, ensure_ascii=False)
             self.assertEqual('200', j_r['state']['code'])
@@ -141,33 +141,33 @@ class TestMgmt(unittest.TestCase):
     # ------------------------------------------------普通用户---------------------------------------------------------
     # 注册普通用户
     def test_41_sign_up(self):
-        TestMgmt.uid_s = list()
+        TestUserMgmt.uid_s = list()
         for i in range(1, 4):
             payload = {
-                "login_name": TestMgmt.login_name + i.__str__(),
-                "password": TestMgmt.password
+                "login_name": TestUserMgmt.login_name + i.__str__(),
+                "password": TestUserMgmt.password
             }
 
-            url = TestMgmt.base_url + '/user/_sign_up'
+            url = TestUserMgmt.base_url + '/user/_sign_up'
             headers = {'content-type': 'application/json'}
             r = requests.post(url, data=json.dumps(payload), headers=headers)
             j_r = json.loads(r.content)
             print json.dumps(j_r, ensure_ascii=False)
-            TestMgmt.uid_s.append(j_r['data']['id'])
+            TestUserMgmt.uid_s.append(j_r['data']['id'])
             self.assertEqual('200', j_r['state']['code'])
 
     # 超级用户更新用户字段
     def test_42_update_by_uid_s(self):
         payload = {
-            "ids": ','.join([str(TestMgmt.uid_s[0]), str(TestMgmt.uid_s[1]), str(TestMgmt.uid_s[2])]),
+            "ids": ','.join([str(TestUserMgmt.uid_s[0]), str(TestUserMgmt.uid_s[1]), str(TestUserMgmt.uid_s[2])]),
             "login_name": "new_login_name2",
             "email_verified": True,
             "mobile_phone_verified": True,
         }
 
-        url = TestMgmt.base_url + '/mgmts'
+        url = TestUserMgmt.base_url + '/mgmts'
         headers = {'content-type': 'application/json'}
-        r = requests.patch(url, cookies=TestMgmt.superuser_cookies, headers=headers, data=json.dumps(payload))
+        r = requests.patch(url, cookies=TestUserMgmt.superuser_cookies, headers=headers, data=json.dumps(payload))
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
         self.assertEqual('200', j_r['state']['code'])
@@ -175,12 +175,12 @@ class TestMgmt(unittest.TestCase):
     # # 超级用户更新用户字段
     def test_43_delete_by_uid_s(self):
         payload = {
-            "ids": ','.join([str(TestMgmt.uid_s[0]), str(TestMgmt.uid_s[1]), str(TestMgmt.uid_s[2])]),
+            "ids": ','.join([str(TestUserMgmt.uid_s[0]), str(TestUserMgmt.uid_s[1]), str(TestUserMgmt.uid_s[2])]),
         }
 
-        url = TestMgmt.base_url + '/mgmts'
+        url = TestUserMgmt.base_url + '/mgmts'
         headers = {'content-type': 'application/json'}
-        r = requests.delete(url, cookies=TestMgmt.superuser_cookies, headers=headers, data=json.dumps(payload))
+        r = requests.delete(url, cookies=TestUserMgmt.superuser_cookies, headers=headers, data=json.dumps(payload))
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
         self.assertEqual('200', j_r['state']['code'])

@@ -85,6 +85,7 @@ POST https://$domain
 |role_id|Y|Long|用户角色id|
 |create_time|Y|Long|账号创建时间，单位`微秒`|
 
+
 ## 登录
 ### 用户通过用户名登录。
 ``` http
@@ -142,6 +143,7 @@ POST https://$domain
 }
 ```
 
+
 ## 登出
 > 用户安全退出。服务器端将删除，该用户在服务器端生成的session文件，并返回一个让客户端浏览器，清除存放自己session id的cookie响应。
 ``` http
@@ -161,6 +163,7 @@ Cookie='cookie'
     }
 }
 ```
+
 
 ## 验证
 > 通过session id自我验证。该接口可用在，客户端已经登录，并获得session id后，需再次验证的情况下。
@@ -182,6 +185,7 @@ Cookie='cookie'
     }
 }
 ```
+
 
 ## 获取用户信息
 > 获取自己的用户信息
@@ -228,6 +232,7 @@ Cookie='cookie'
 |manager|Y|Boolean|账号是否是管理员|
 |role_id|Y|Long|用户角色id|
 |create_time|Y|Long|账号创建时间，单位`微秒`|
+
 
 ## 更改用户密码
 > 更改自己的登录密码
