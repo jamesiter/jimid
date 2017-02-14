@@ -3,7 +3,7 @@
 </p>
 [![License](https://img.shields.io/badge/License-GPL3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html)
 [![Format](https://img.shields.io/badge/Format-JSON-blue.svg)](http://www.json.org/json-zh.html)
-[![Python versions](https://img.shields.io/badge/Python-2.7-blue.svg)](https://www.python.org)
+[![Python versions](https://img.shields.io/badge/Python-2.7.10-blue.svg)](https://www.python.org)
 [![API](https://img.shields.io/badge/API-RESTful-blue.svg)](http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm)
 
 ## API
@@ -14,8 +14,10 @@
 ### [管理接口](docs/mgmt.md)
 
 ## 项目成员
-姓名: James Iter
+<pre>
+姓名:    James Iter
 E-Mail: james.iter.cn@gmail.com
+</pre>
 
 Demo
 过滤器操作符原语
