@@ -1,8 +1,10 @@
 <p>
 <img width="220" height="100" src="./JimID-Logo.jpg">
 </p>
-[![Python versions](https://img.shields.io/badge/Python-2.7-blue.svg)][python]
-[![API](https://img.shields.io/badge/API-RESTful-blue.svg)][restful]
+[![License](https://img.shields.io/badge/License-GPL3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html)
+[![Format](https://img.shields.io/badge/Format-JSON-blue.svg)](http://www.json.org/json-zh.html)
+[![Python versions](https://img.shields.io/badge/Python-2.7-blue.svg)](https://www.python.org)
+[![API](https://img.shields.io/badge/API-RESTful-blue.svg)](http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm)
 
 ## API
 > 默认数据交互格式 Content-Type: application/json
@@ -28,6 +30,3 @@ notin_id=1,2,5
 
 in包含'等于'及'或等于'的意思
 not in包含'不等于'及'且不等于'的意思
-
-[python]: https://www.python.org
-[restful]: http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm
