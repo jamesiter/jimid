@@ -162,6 +162,7 @@ PUT https://$domain
   /api/user_mgmt/_update/{uid}
 Header:
 Cookie='cookie'
+Body:
 {
     "login_name": "new_login_name",
     "mobile_phone": "15600000000",
@@ -196,6 +197,7 @@ PATCH https://$domain
   /api/user_mgmt/_change_password/{uid}
 Header:
 Cookie='cookie'
+Body:
 {
     "password": "new_pswd"
 }
@@ -302,6 +304,7 @@ PATCH https://$domain
   /api/users_mgmt
 Header:
 Cookie='cookie'
+Body:
 {
     "ids": "1,2,3"
 }
@@ -325,6 +328,94 @@ Cookie='cookie'
     }
 }
 ```
+
+
+## 批量用户用户账号
+> 批量删除用户账号
+
+``` http
+DELETE https://$domain
+  /api/users_mgmt
+Header:
+Cookie='cookie'
+Body:
+{
+    "ids": "1,2,3"
+}
+```
+
+|参数名称|必须|类型|说明|
+|:--|:--:|:--:|:--|
+|ids|Y|String|欲删除的用户ID列表，以`,`为分隔符|
+
+响应示例
+``` json
+{
+    "state": {
+        "code": "200",
+        "zh-cn": "成功",
+        "en-us": "OK"
+    }
+}
+```
+
+
+## 全文检索
+> 通过全文检索的方式，查找出包含关键字的用户条目。
+
+``` http
+GET https://$domain
+  /api/users_mgmt/_search?keyword=admin
+Header:
+Cookie='cookie'
+```
+
+|参数名称|必须|类型|说明|
+|:--|:--:|:--:|:--|
+|keyword|N|String|全文检索的关键字|
+|offset|N|Number|偏移量, 默认值0|
+|limit|N|Number|返回条目数量, 默认值50|
+|page|N|Number|页号, 与offset同时存在时, 以offset为准, 默认值1|
+|page_size|N|Number|页大小, 默认值50|
+|order_by|N|String|所依据的字段|
+|order|N|Enum|排序策略，`asc`\|`desc`|
+
+
+响应示例
+``` json
+{
+    "state": {
+        "code": "200",
+        "zh-cn": "成功",
+        "en-us": "OK"
+    },
+    "data": [{
+        "mobile_phone": "",
+        "login_name": "admin",
+        "mobile_phone_verified": 0,
+        "email_verified": 0,
+        "enabled": 1,
+        "id": 1,
+        "role_id": 0,
+        "manager": 1,
+        "create_time": 1479283506000000,
+        "email": ""
+    }],
+    "paging": {
+        "total": 1,
+        "last": "http://jimauth.dev.iit.im/api/users_mgmt/_search?page=1&page_size=50&keyword=admin&order=asc&order_by=id",
+        "page_size": 50,
+        "next": "http://jimauth.dev.iit.im/api/users_mgmt/_search?page=1&page_size=50&keyword=admin&order=asc&order_by=id",
+        "limit": 50,
+        "offset": 0,
+        "prev": "http://jimauth.dev.iit.im/api/users_mgmt/_search?page=1&page_size=50&keyword=admin&order=asc&order_by=id",
+        "page": 1,
+        "first": "http://jimauth.dev.iit.im/api/users_mgmt/_search?page=1&page_size=50&keyword=admin&order=asc&order_by=id"
+    }
+}
+```
+
+返回字段的描述请参见 [获取用户列表](user_mgmt.md#获取用户列表)
 
 
 [返回上一级](../README.md)
