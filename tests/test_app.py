@@ -13,7 +13,7 @@ __contact__ = 'james.iter.cn@gmail.com'
 __copyright__ = '(c) 2016 by James Iter.'
 
 
-class TestAppKey(unittest.TestCase):
+class TestApp(unittest.TestCase):
 
     base_url = 'http://jimauth.dev.iit.im/api'
 
@@ -37,36 +37,37 @@ class TestAppKey(unittest.TestCase):
     # 超级用户登录
     def test_11_sign_in_superuser(self):
         payload = {
-            "login_name": TestAppKey.superuser_name,
-            "password": TestAppKey.superuser_password
+            "login_name": TestApp.superuser_name,
+            "password": TestApp.superuser_password
         }
 
-        url = TestAppKey.base_url + '/user/_sign_in'
+        url = TestApp.base_url + '/user/_sign_in'
         headers = {'content-type': 'application/json'}
         r = requests.post(url, data=json.dumps(payload), headers=headers)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
-        TestAppKey.superuser_cookies = r.cookies
+        TestApp.superuser_cookies = r.cookies
         self.assertEqual('200', j_r['state']['code'])
 
     # 创建appkey
     def test_12_create_app_key(self):
         payload = {
-            "name": "name",
-            "remark": "remark",
+            "name": "OA",
+            "home_page": "http://oa.iit.im",
+            "remark": "公司办公自动化系统",
         }
-        url = TestAppKey.base_url + '/app_key'
+        url = TestApp.base_url + '/app'
         headers = {'content-type': 'application/json'}
-        r = requests.post(url, cookies=TestAppKey.superuser_cookies, headers=headers, data=json.dumps(payload))
+        r = requests.post(url, cookies=TestApp.superuser_cookies, headers=headers, data=json.dumps(payload))
         j_r = json.loads(r.content)
-        TestAppKey.app_id = j_r['data']['id']
+        TestApp.app_id = j_r['data']['id']
         print json.dumps(j_r, ensure_ascii=False)
         self.assertEqual('200', j_r['state']['code'])
 
     # 获取appkey列表
     def test_13_get_list_via_page(self):
-        url = TestAppKey.base_url + '/app_keys?page=1&page_size=5'
-        r = requests.get(url, cookies=TestAppKey.superuser_cookies)
+        url = TestApp.base_url + '/apps?page=1&page_size=5'
+        r = requests.get(url, cookies=TestApp.superuser_cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
         self.assertEqual('200', j_r['state']['code'])
@@ -74,30 +75,30 @@ class TestAppKey(unittest.TestCase):
     # 更新appkey字段
     def test_14_update(self):
         payload = {
-            "id": TestAppKey.app_id,
-            "name": "new name",
-            "remark": "new remark"
+            "secret": True,
+            "name": "新应用",
+            "home_page": "http://new.iit.im",
         }
 
-        url = TestAppKey.base_url + '/app_key'
+        url = TestApp.base_url + '/app/' + TestApp.app_id
         headers = {'content-type': 'application/json'}
-        r = requests.patch(url, cookies=TestAppKey.superuser_cookies, headers=headers, data=json.dumps(payload))
+        r = requests.patch(url, cookies=TestApp.superuser_cookies, headers=headers, data=json.dumps(payload))
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
         self.assertEqual('200', j_r['state']['code'])
 
     # appkey全文检索
-    def test_17_get_list_via_content_search(self):
-        url = TestAppKey.base_url + '/app_keys/_search?page=1&page_size=5&keyword=a'
-        r = requests.get(url, cookies=TestAppKey.superuser_cookies)
+    def test_15_get_list_via_content_search(self):
+        url = TestApp.base_url + '/apps/_search?page=1&page_size=5&keyword=oa'
+        r = requests.get(url, cookies=TestApp.superuser_cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
         self.assertEqual('200', j_r['state']['code'])
 
     # 删除appkey
-    def test_18_delete(self):
-        url = TestAppKey.base_url + '/app_key/' + TestAppKey.app_id
-        r = requests.delete(url, cookies=TestAppKey.superuser_cookies)
+    def test_16_delete(self):
+        url = TestApp.base_url + '/app/' + TestApp.app_id
+        r = requests.delete(url, cookies=TestApp.superuser_cookies)
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
         self.assertEqual('200', j_r['state']['code'])

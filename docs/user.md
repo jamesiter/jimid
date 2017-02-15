@@ -265,5 +265,52 @@ Cookie='cookie'
 }
 ```
 
+
+## 获取用户应用
+> 获取用户所拥有的应用列表
+
+``` http
+GET https://$domain
+  /api/user/_app_list
+Header:
+# 用户session id在cookie里存放着
+Cookie='cookie'
+```
+
+响应示例
+``` json
+{
+    "state": {
+        "code": "200",
+        "zh-cn": "成功",
+        "en-us": "OK"
+    },
+    "data": [{
+        "remark": "Zabbix监控系统",
+        "name": "监控系统",
+        "home_page": "http://zabbix.iit.im",
+        "create_time": 1484623643693070,
+        "id": "0I5jpQVYsJ0QNk3f"
+    }, {
+          ...
+    }, {
+        "remark": "虚拟化平台",
+        "name": "JimV",
+        "home_page": "http://v.iit.im",
+        "create_time": 1484741145208302,
+        "id": "UuAsvSbVTsyHpqvF"
+    }]
+}
+```
+
+|参数名称|必须|类型|说明|
+|:--|:--:|:--:|:--|
+|id|Y|String|应用ID|
+|name|Y|String|应用名称|
+|home_page|Y|String|应用入口|
+|remark|Y|String|备注|
+|create_time|Y|Long|应用创建时间，单位`微秒`|
+
+
 [返回上一级](../README.md)
 ===

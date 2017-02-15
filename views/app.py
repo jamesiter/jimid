@@ -77,7 +77,7 @@ def r_delete(_id):
             # 删除依赖于该AppKey的openid
             UidOpenidMapping.delete_by_filter('appid:in:' + _id)
             # 删除依赖于该AppKey的role映射
-            RoleAppMapping.delete_by_filter('appid:in' + _id)
+            RoleAppMapping.delete_by_filter('appid:in:' + _id)
         else:
             ret = dict()
             ret['state'] = ji.Common.exchange_state(40401)
@@ -94,11 +94,6 @@ def r_update(_id):
     args_rules = [
         Rules.APP_ID.value
     ]
-
-    if 'secret' in request.json:
-        args_rules.append(
-            Rules.APP_SECRET.value
-        )
 
     if 'name' in request.json:
         args_rules.append(
@@ -128,7 +123,9 @@ def r_update(_id):
         app.id = request.json['id']
         app.get()
 
-        app.secret = request.json.get('secret', app.secret)
+        if request.json.get('secret', False):
+            app.secret = ji.Common.generate_random_code(length=32, letter_form='mix', numeral=True)
+
         app.name = request.json.get('name', app.name)
         app.home_page = request.json.get('home_page', app.home_page)
         app.remark = request.json.get('remark', app.remark)

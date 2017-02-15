@@ -42,7 +42,7 @@ class Rules(Enum):
     # EXT for external(客观的)
     APP_ID_EXT = (basestring, 'appid', (16, 16))
     APP_SECRET = (basestring, 'secret', (32, 32))
-    APP_NAME = (basestring, 'name', (0, 255))
+    APP_NAME = (basestring, 'name', (2, 255))
     APP_HOME_PAGE = (basestring, 'home_page', (0, 255))
     APP_REMARK = (basestring, 'remark', (0, 1024))
     OPENID = (basestring, 'openid', (0, 30))
