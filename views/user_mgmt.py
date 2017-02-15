@@ -203,6 +203,7 @@ def r_update(_id):
         )
 
     if 'role_id' in request.json:
+        request.json['role_id'] = request.json['role_id'].__str__()
         args_rules.append(
             Rules.ROLE_ID_EXT.value
         )
@@ -224,7 +225,7 @@ def r_update(_id):
         user.mobile_phone_verified = request.json.get('mobile_phone_verified', user.mobile_phone_verified)
         user.email = request.json.get('email', user.email)
         user.email_verified = request.json.get('email_verified', user.email_verified)
-        user.role_id = request.json.get('role_id', user.role_id)
+        user.role_id = int(request.json.get('role_id', user.role_id))
 
         user.update()
     except ji.PreviewingError, e:

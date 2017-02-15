@@ -146,6 +146,7 @@ POST https://$domain
 
 ## 登出
 > 用户安全退出。服务器端将删除，该用户在服务器端生成的session文件，并返回一个让客户端浏览器，清除存放自己session id的cookie响应。
+
 ``` http
 GET https://$domain
   /api/user/_sign_out
@@ -167,6 +168,7 @@ Cookie='cookie'
 
 ## 验证
 > 通过session id自我验证。该接口可用在，客户端已经登录，并获得session id后，需再次验证的情况下。
+
 集成本应用的资源服务器，会通过浏览器获取用户session id。然后资源服务器拿着获取到的用户session id，去JimID服务器验证该用户的合法性。这里用到的验证接口就是该接口。
 ``` http
 GET https://$domain
@@ -189,6 +191,7 @@ Cookie='cookie'
 
 ## 获取用户信息
 > 获取自己的用户信息
+
 ``` http
 GET https://$domain
   /api/user
@@ -236,6 +239,7 @@ Cookie='cookie'
 
 ## 更改用户密码
 > 更改自己的登录密码
+
 ``` http
 PATCH https://$domain
   /api/user/_change_password

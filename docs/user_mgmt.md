@@ -158,8 +158,8 @@ Cookie='cookie'
 > 更新账号信息. 不支持普通用户自我更新, 普通用户更新各字段, 将有专门的接口
 
 ``` http
-PUT https://$domain
-  /api/user_mgmt/_update/{uid}
+PATCH https://$domain
+  /api/user_mgmt/{uid}
 Header:
 Cookie='cookie'
 Body:
@@ -168,7 +168,8 @@ Body:
     "mobile_phone": "15600000000",
     "mobile_phone_verified": true,
     "email": "jimit@qq.com",
-    "email_verified": true
+    "email_verified": true,
+    "role_id": 0
 }
 ```
 
@@ -330,7 +331,7 @@ Body:
 ```
 
 
-## 批量用户用户账号
+## 批量删除用户账号
 > 批量删除用户账号
 
 ``` http
