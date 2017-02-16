@@ -226,7 +226,7 @@ def r_update(appid, uid):
         return ret
 
     try:
-        ji.Check.previewing(args_rules, {'appid': appid, 'uid': uid})
+        ji.Check.previewing(args_rules, {'appid': appid, 'uid': uid, 'openid': request.json.get('openid').__str__()})
         openid.appid = appid
         openid.uid = uid
         openid.get()
@@ -395,22 +395,37 @@ def r_content_search():
         ret['data'] = list()
         ret['paging'] = {'total': 0, 'offset': offset, 'limit': limit, 'page': page, 'page_size': page_size,
                          'next': '', 'prev': '', 'first': '', 'last': ''}
-        app_data, app_total = App.get_by_filter(offset=0, limit=1000, order_by='create_time',
-                                                order='asc', filter_str='')
+        app_data, app_total = App.get_all(order_by='create_time', order='asc')
 
         for app in app_data:
             del app['secret']
             app_map_by_id[app['id']] = app
 
-        users, users_total = User.content_search(offset=0, limit=limit, order_by='id',
-                                                 order='asc', keyword=keyword)
+        if keyword.__len__() > 0:
+            users, users_total = User.content_search(offset=0, limit=1000, order_by='id',
+                                                     order='asc', keyword=keyword)
+            for _user in users:
+                user_map_by_id[_user['id']] = _user
 
-        for _user in users:
-            user_map_by_id[_user['id']] = _user
+            openid_data, ret['paging']['total'] = UidOpenidMapping.get_by_filter(
+                offset=offset, limit=limit, order_by=order_by, order=order,
+                filter_str='uid:in:' + ','.join(str(uid) for uid in user_map_by_id.keys()))
 
-        openid_data, ret['paging']['total'] = UidOpenidMapping.get_by_filter(
-            offset=offset, limit=limit, order_by=order_by, order=order,
-            filter_str='uid:in:' + ','.join(str(uid) for uid in user_map_by_id.keys()))
+        else:
+            openid_data, ret['paging']['total'] = UidOpenidMapping.get_by_filter(
+                offset=offset, limit=limit, order_by=order_by, order=order,
+                filter_str='uid:in:' + ','.join(str(uid) for uid in user_map_by_id.keys()))
+
+            uid_s = list()
+            for openid in openid_data:
+                if openid['uid'] not in uid_s:
+                    uid_s.append(openid['uid'])
+
+            users, users_total = User.get_by_filter(offset=0, limit=limit, order_by='id', order='asc',
+                                                    filter_str='id:in:' + ','.join(str(uid) for uid in uid_s))
+
+            for _user in users:
+                user_map_by_id[_user['id']] = _user
 
         for openid in openid_data:
             openid['user'] = user_map_by_id[openid['uid']]

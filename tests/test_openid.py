@@ -28,7 +28,7 @@ class TestOpenid(unittest.TestCase):
     now_ts = ji.Common.ts()
 
     cookies = None
-    login_name = 'james'
+    login_name = ji.Common.generate_random_code(length=6)
     password = 'password'
     uid = None
 
@@ -58,12 +58,12 @@ class TestOpenid(unittest.TestCase):
         TestOpenid.superuser_cookies = r.cookies
         self.assertEqual('200', j_r['state']['code'])
 
-    # 创建appkey
-    def test_12_create_app_key(self):
+    # 创建应用
+    def test_12_create_app(self):
         payload = {
-            "remark": "remark",
+            "name": ji.Common.generate_random_code(length=6)
         }
-        url = TestOpenid.base_url + '/app_key'
+        url = TestOpenid.base_url + '/app'
         headers = {'content-type': 'application/json'}
         r = requests.post(url, cookies=TestOpenid.superuser_cookies, headers=headers, data=json.dumps(payload))
         j_r = json.loads(r.content)
@@ -85,6 +85,7 @@ class TestOpenid(unittest.TestCase):
         j_r = json.loads(r.content)
         print json.dumps(j_r, ensure_ascii=False)
         self.assertEqual('200', j_r['state']['code'])
+        TestOpenid.uid = j_r['data']['id']
 
     # 普通用户登录,获得普通用户cookie
     def test_14_sign_in(self):
@@ -101,36 +102,19 @@ class TestOpenid(unittest.TestCase):
         TestOpenid.cookies = r.cookies
         self.assertEqual('200', j_r['state']['code'])
 
-    def test_15_get(self):
-        url = TestOpenid.base_url + '/user'
-        r = requests.get(url, cookies=TestOpenid.cookies)
-        j_r = json.loads(r.content)
-        TestOpenid.uid = j_r['data']['id']
-        print json.dumps(j_r, ensure_ascii=False)
-        self.assertEqual('200', j_r['state']['code'])
-
-    def test_17_generate_sign_with_bind(self):
-        args = {
-            'ts': urllib.quote_plus(TestOpenid.now_ts.__str__()),
-            'appid': urllib.quote_plus(TestOpenid.app_id),
-            'redirect_url': urllib.quote_plus('http://www.baidu.com'),
-            'openid': '1'
-        }
-        TestOpenid.sign_with_bind = ji.Security.ji_hash_sign(algorithm='sha1', secret=TestOpenid.app_secret,
-                                                             content=args)
-
+    # 不携带在JimID已登录成功的用户cookie，尝试注册openid。应当失败，并返回278重定向到登录页面
     def test_21_openid_sign_up_no_user_cookie(self):
         args = {
             'ts': urllib.quote_plus(TestOpenid.now_ts.__str__()),
             'appid': urllib.quote_plus(TestOpenid.app_id),
-            'redirect_url': urllib.quote_plus('http://www.baidu.com'),
+            'redirect_url': urllib.quote_plus('http://service.iit.im'),
             'method': 'GET',
             'base_url': TestOpenid.base_url + '/openid/_sign_up'
         }
         sign = ji.Security.ji_hash_sign(algorithm='sha1', secret=TestOpenid.app_secret,
                                         content=args)
         url = '&'.join(['appid=' + TestOpenid.app_id, 'ts=' + TestOpenid.now_ts.__str__(),
-                        'redirect_url=http://www.baidu.com', 'sign=' + sign])
+                        'redirect_url=http://service.iit.im', 'sign=' + sign])
         url = TestOpenid.base_url + '/openid/_sign_up?' + url
         r = requests.get(url)
         j_r = json.loads(r.content)
@@ -138,18 +122,19 @@ class TestOpenid(unittest.TestCase):
         self.assertEqual(278, r.status_code)
         self.assertEqual('41208', j_r['state']['sub']['code'])
 
+    # 携带已在JimID登录成功的用户cookie。去注册openid
     def test_22_openid_sign_up(self):
         args = {
             'ts': urllib.quote_plus(TestOpenid.now_ts.__str__()),
             'appid': urllib.quote_plus(TestOpenid.app_id),
-            'redirect_url': urllib.quote_plus('http://www.baidu.com'),
+            'redirect_url': urllib.quote_plus('http://service.iit.im'),
             'method': 'GET',
             'base_url': TestOpenid.base_url + '/openid/_sign_up'
         }
         sign = ji.Security.ji_hash_sign(algorithm='sha1', secret=TestOpenid.app_secret,
                                         content=args)
         url = '&'.join(['appid=' + TestOpenid.app_id, 'ts=' + TestOpenid.now_ts.__str__(),
-                        'redirect_url=http://www.baidu.com', 'sign=' + sign])
+                        'redirect_url=http://service.iit.im', 'sign=' + sign])
         url = TestOpenid.base_url + '/openid/_sign_up?' + url
         r = requests.get(url, cookies=TestOpenid.cookies, allow_redirects=False)
         j_r = json.loads(r.content)
@@ -163,11 +148,23 @@ class TestOpenid(unittest.TestCase):
 
         self.assertEqual(302, r.status_code)
 
-    def test_23_openid_bind(self):
+    # 生成绑定所用签名
+    def test_23_generate_sign_with_bind(self):
         args = {
             'ts': urllib.quote_plus(TestOpenid.now_ts.__str__()),
             'appid': urllib.quote_plus(TestOpenid.app_id),
-            'redirect_url': urllib.quote_plus('http://www.baidu.com'),
+            'redirect_url': urllib.quote_plus('http://service.iit.im'),
+            'openid': '1'
+        }
+        TestOpenid.sign_with_bind = ji.Security.ji_hash_sign(algorithm='sha1', secret=TestOpenid.app_secret,
+                                                             content=args)
+
+    # 绑定
+    def test_24_openid_bind(self):
+        args = {
+            'ts': urllib.quote_plus(TestOpenid.now_ts.__str__()),
+            'appid': urllib.quote_plus(TestOpenid.app_id),
+            'redirect_url': urllib.quote_plus('http://service.iit.im'),
             'openid': '1',
             'method': 'GET',
             'base_url': TestOpenid.base_url + '/openid/_bind'
@@ -176,7 +173,7 @@ class TestOpenid(unittest.TestCase):
                                         content=args)
 
         url = '&'.join(['appid=' + TestOpenid.app_id, 'ts=' + TestOpenid.now_ts.__str__(), 'openid=1',
-                        'redirect_url=http://www.baidu.com', 'sign=' + sign])
+                        'redirect_url=http://service.iit.im', 'sign=' + sign])
         url = TestOpenid.base_url + '/openid/_bind?' + url
         r = requests.get(url, cookies=TestOpenid.cookies, allow_redirects=False)
         j_r = json.loads(r.content)
@@ -185,11 +182,12 @@ class TestOpenid(unittest.TestCase):
         self.assertEqual(302, r.status_code)
         self.assertEqual('40901', j_r['state']['sub']['code'])
 
-    def test_24_openid_unbind(self):
+    # 解绑
+    def test_25_openid_unbind(self):
         args = {
             'ts': urllib.quote_plus(TestOpenid.now_ts.__str__()),
             'appid': urllib.quote_plus(TestOpenid.app_id),
-            'redirect_url': urllib.quote_plus('http://www.baidu.com'),
+            'redirect_url': urllib.quote_plus('http://service.iit.im'),
             'method': 'GET',
             'base_url': TestOpenid.base_url + '/openid/_unbind'
         }
@@ -197,7 +195,7 @@ class TestOpenid(unittest.TestCase):
                                         content=args)
 
         url = '&'.join(['appid=' + TestOpenid.app_id, 'ts=' + TestOpenid.now_ts.__str__(),
-                        'redirect_url=http://www.baidu.com', 'sign=' + sign])
+                        'redirect_url=http://service.iit.im', 'sign=' + sign])
         url = TestOpenid.base_url + '/openid/_unbind?' + url
         r = requests.get(url, cookies=TestOpenid.cookies, allow_redirects=False)
         j_r = json.loads(r.content)
@@ -205,11 +203,12 @@ class TestOpenid(unittest.TestCase):
         print r.headers._store['location']
         self.assertEqual(302, r.status_code)
 
-    def test_25_openid_rebind(self):
+    # 重新绑定
+    def test_26_openid_rebind(self):
         args = {
             'ts': urllib.quote_plus(TestOpenid.now_ts.__str__()),
             'appid': urllib.quote_plus(TestOpenid.app_id),
-            'redirect_url': urllib.quote_plus('http://www.baidu.com'),
+            'redirect_url': urllib.quote_plus('http://service.iit.im'),
             'openid': '1',
             'method': 'GET',
             'base_url': TestOpenid.base_url + '/openid/_bind'
@@ -218,7 +217,7 @@ class TestOpenid(unittest.TestCase):
                                         content=args)
 
         url = '&'.join(['appid=' + TestOpenid.app_id, 'ts=' + TestOpenid.now_ts.__str__(), 'openid=1',
-                        'redirect_url=http://www.baidu.com', 'sign=' + sign])
+                        'redirect_url=http://service.iit.im', 'sign=' + sign])
         url = TestOpenid.base_url + '/openid/_bind?' + url
         r = requests.get(url, cookies=TestOpenid.cookies, allow_redirects=False)
         j_r = json.loads(r.content)
@@ -226,11 +225,11 @@ class TestOpenid(unittest.TestCase):
         print r.headers._store['location']
         self.assertEqual(302, r.status_code)
 
-    def test_26_openid_auth(self):
+    def test_27_openid_auth(self):
         args = {
             'ts': urllib.quote_plus(TestOpenid.now_ts.__str__()),
             'appid': urllib.quote_plus(TestOpenid.app_id),
-            'redirect_url': urllib.quote_plus('http://www.baidu.com'),
+            'redirect_url': urllib.quote_plus('http://service.iit.im'),
             'method': 'GET',
             'base_url': TestOpenid.base_url + '/openid/_auth'
         }
@@ -238,7 +237,7 @@ class TestOpenid(unittest.TestCase):
                                         content=args)
 
         url = '&'.join(['appid=' + TestOpenid.app_id, 'ts=' + TestOpenid.now_ts.__str__(),
-                        'redirect_url=http://www.baidu.com', 'sign=' + sign])
+                        'redirect_url=http://service.iit.im', 'sign=' + sign])
         url = TestOpenid.base_url + '/openid/_auth?' + url
         r = requests.get(url, cookies=TestOpenid.cookies, allow_redirects=False)
         j_r = json.loads(r.content)
@@ -246,21 +245,21 @@ class TestOpenid(unittest.TestCase):
         print r.headers._store['location']
         self.assertEqual(302, r.status_code)
 
-    # 删除appkey
-    def test_31_delete(self):
-        url = TestOpenid.base_url + '/app_key/' + TestOpenid.app_id
-        r = requests.delete(url, cookies=TestOpenid.superuser_cookies)
-        j_r = json.loads(r.content)
-        print json.dumps(j_r, ensure_ascii=False)
-        self.assertEqual('200', j_r['state']['code'])
-
-    # 超级用户删除普通用户
-    def test_32_delete_via_superuser(self):
-        url = TestOpenid.base_url + '/mgmt/' + TestOpenid.uid.__str__()
-        r = requests.delete(url, cookies=TestOpenid.superuser_cookies)
-        j_r = json.loads(r.content)
-        print json.dumps(j_r, ensure_ascii=False)
-        self.assertEqual('200', j_r['state']['code'])
+#     # 删除应用
+#     def test_31_delete(self):
+#         url = TestOpenid.base_url + '/app/' + TestOpenid.app_id
+#         r = requests.delete(url, cookies=TestOpenid.superuser_cookies)
+#         j_r = json.loads(r.content)
+#         print json.dumps(j_r, ensure_ascii=False)
+#         self.assertEqual('200', j_r['state']['code'])
+#
+#     # 超级用户删除普通用户
+#     def test_32_delete_via_superuser(self):
+#         url = TestOpenid.base_url + '/user_mgmt/' + TestOpenid.uid.__str__()
+#         r = requests.delete(url, cookies=TestOpenid.superuser_cookies)
+#         j_r = json.loads(r.content)
+#         print json.dumps(j_r, ensure_ascii=False)
+#         self.assertEqual('200', j_r['state']['code'])
 
 
 if __name__ == '__main__':
