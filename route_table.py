@@ -58,18 +58,18 @@ add_rule(user_mgmt.blueprints, '', view_func='user_mgmt.r_update_by_uid_s', meth
 add_rule(user_mgmt.blueprints, '', view_func='user_mgmt.r_delete_by_uid_s', methods=['DELETE'])
 add_rule(user_mgmt.blueprints, '/_search', view_func='user_mgmt.r_content_search', methods=['GET'])
 
-# openid注册、绑定、解绑接口
-add_rule(openid.blueprint, '/_sign_up', view_func='openid.r_sign_up', methods=['GET'])
-add_rule(openid.blueprint, '/_bind', view_func='openid.r_bind', methods=['GET'])
-add_rule(openid.blueprint, '/_unbind', view_func='openid.r_unbind', methods=['GET'])
-add_rule(openid.blueprint, '/_auth', view_func='openid.r_auth', methods=['GET'])
-
 # app操作接口
 add_rule(app.blueprint, '', view_func='app.r_create', methods=['POST'])
 add_rule(app.blueprint, '/<_id>', view_func='app.r_update', methods=['PATCH'])
 add_rule(app.blueprint, '/<_id>', view_func='app.r_delete', methods=['DELETE'])
 add_rule(app.blueprints, '', view_func='app.r_get_by_filter', methods=['GET'])
 add_rule(app.blueprints, '/_search', view_func='app.r_content_search', methods=['GET'])
+
+# openid注册、绑定、解绑接口
+add_rule(openid.blueprint, '/_sign_up', view_func='openid.r_sign_up', methods=['GET'])
+add_rule(openid.blueprint, '/_bind', view_func='openid.r_bind', methods=['GET'])
+add_rule(openid.blueprint, '/_unbind', view_func='openid.r_unbind', methods=['GET'])
+add_rule(openid.blueprint, '/_auth', view_func='openid.r_auth', methods=['GET'])
 
 # openid管理接口
 add_rule(openid_mgmt.blueprint, '/<appid>/<uid>', view_func='openid_mgmt.r_update', methods=['PATCH'])
@@ -101,5 +101,6 @@ add_rule(role.blueprint, '/_add_app_to_role/<role_id>/<appid>', view_func='role.
 add_rule(role.blueprint, '/_delete_app_from_role/<role_id>/<appid>', view_func='role.r_delete_app_from_role',
          methods=['DELETE'])
 # 模糊查找不属于任何角色的用户
-add_rule(role.blueprints, '/_search_with_free_users', view_func='role.r_content_search_with_free_users', methods=['GET'])
+add_rule(role.blueprints, '/_search_with_free_users', view_func='role.r_content_search_with_free_users',
+         methods=['GET'])
 

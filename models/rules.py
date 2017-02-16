@@ -53,6 +53,6 @@ class Rules(Enum):
 
     ROLE_ID = ('regex:^\d{1,17}$', 'id')
     ROLE_ID_EXT = ('regex:^\d{1,17}$', 'role_id')
-    ROLE_NAME = (basestring, 'name', (0, 255))
+    ROLE_NAME = (basestring, 'name', (2, 255))
     ROLE_REMARK = (basestring, 'remark', (0, 1024))
 

@@ -400,6 +400,8 @@ def r_delete_by_uid_s():
 
         filter_str = 'id:IN:' + request.json.get('ids')
         User.delete_by_filter(filter_str=filter_str)
+        # 删除依赖于这些用户的openid
+        UidOpenidMapping.delete_by_filter('uid:in:' + request.json.get('ids'))
     except ji.PreviewingError, e:
         return json.loads(e.message)
 

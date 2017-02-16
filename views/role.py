@@ -332,8 +332,7 @@ def r_get_user_role_app_mapping():
         ret = dict()
         ret['state'] = ji.Common.exchange_state(20000)
         ret['data'] = list()
-        ret['paging'] = {'total': 0, 'offset': 0, 'limit': 0, 'page': 1, 'page_size': 9999,
-                         'next': '', 'prev': '', 'first': '', 'last': ''}
+        ret['paging'] = {'total': 0}
 
         app_data, app_total = App.get_all(order_by='create_time', order='asc')
 
@@ -512,23 +511,23 @@ def r_content_search_with_free_users():
         last_pagination = (ret['paging']['total'] + page_size - 1) / page_size
 
         if page <= 1:
-            ret['paging']['prev'] = host_url + blueprints.url_prefix + '/_search?page=1&page_size=' + \
+            ret['paging']['prev'] = host_url + blueprints.url_prefix + '/_search_with_free_users?page=1&page_size=' + \
                                     page_size.__str__() + other_str
         else:
-            ret['paging']['prev'] = host_url + blueprints.url_prefix + '/_search?page=' + str(page-1) + \
+            ret['paging']['prev'] = host_url + blueprints.url_prefix + '/_search_with_free_users?page=' + str(page-1) + \
                                     '&page_size=' + page_size.__str__() + other_str
 
         if page >= last_pagination:
-            ret['paging']['next'] = host_url + blueprints.url_prefix + '/_search?page=' + last_pagination.__str__() + \
+            ret['paging']['next'] = host_url + blueprints.url_prefix + '/_search_with_free_users?page=' + last_pagination.__str__() + \
                                     '&page_size=' + page_size.__str__() + other_str
         else:
-            ret['paging']['next'] = host_url + blueprints.url_prefix + '/_search?page=' + str(page+1) + \
+            ret['paging']['next'] = host_url + blueprints.url_prefix + '/_search_with_free_users?page=' + str(page+1) + \
                                     '&page_size=' + page_size.__str__() + other_str
 
-        ret['paging']['first'] = host_url + blueprints.url_prefix + '/_search?page=1&page_size=' + \
+        ret['paging']['first'] = host_url + blueprints.url_prefix + '/_search_with_free_users?page=1&page_size=' + \
             page_size.__str__() + other_str
         ret['paging']['last'] = \
-            host_url + blueprints.url_prefix + '/_search?page=' + last_pagination.__str__() + '&page_size=' + \
+            host_url + blueprints.url_prefix + '/_search_with_free_users?page=' + last_pagination.__str__() + '&page_size=' + \
             page_size.__str__() + other_str
 
         for i in range(ret['data'].__len__()):
@@ -554,8 +553,6 @@ def r_get_app_by_role_id(role_id):
         ret = dict()
         ret['state'] = ji.Common.exchange_state(20000)
         ret['data'] = list()
-        ret['paging'] = {'total': 0, 'offset': 0, 'limit': 0, 'page': 1, 'page_size': 9999,
-                         'next': '', 'prev': '', 'first': '', 'last': ''}
 
         app_data, app_total = App.get_all(order_by='create_time', order='asc')
 

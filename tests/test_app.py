@@ -49,8 +49,8 @@ class TestApp(unittest.TestCase):
         TestApp.superuser_cookies = r.cookies
         self.assertEqual('200', j_r['state']['code'])
 
-    # 创建appkey
-    def test_12_create_app_key(self):
+    # 创建app
+    def test_12_create_app(self):
         payload = {
             "name": "OA",
             "home_page": "http://oa.iit.im",
@@ -64,7 +64,7 @@ class TestApp(unittest.TestCase):
         print json.dumps(j_r, ensure_ascii=False)
         self.assertEqual('200', j_r['state']['code'])
 
-    # 获取appkey列表
+    # 获取app列表
     def test_13_get_list_via_page(self):
         url = TestApp.base_url + '/apps?page=1&page_size=5'
         r = requests.get(url, cookies=TestApp.superuser_cookies)
@@ -72,7 +72,7 @@ class TestApp(unittest.TestCase):
         print json.dumps(j_r, ensure_ascii=False)
         self.assertEqual('200', j_r['state']['code'])
 
-    # 更新appkey字段
+    # 更新app字段
     def test_14_update(self):
         payload = {
             "secret": True,
@@ -87,7 +87,7 @@ class TestApp(unittest.TestCase):
         print json.dumps(j_r, ensure_ascii=False)
         self.assertEqual('200', j_r['state']['code'])
 
-    # appkey全文检索
+    # app全文检索
     def test_15_get_list_via_content_search(self):
         url = TestApp.base_url + '/apps/_search?page=1&page_size=5&keyword=oa'
         r = requests.get(url, cookies=TestApp.superuser_cookies)
@@ -95,7 +95,7 @@ class TestApp(unittest.TestCase):
         print json.dumps(j_r, ensure_ascii=False)
         self.assertEqual('200', j_r['state']['code'])
 
-    # 删除appkey
+    # 删除app
     def test_16_delete(self):
         url = TestApp.base_url + '/app/' + TestApp.app_id
         r = requests.delete(url, cookies=TestApp.superuser_cookies)
