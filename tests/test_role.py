@@ -10,9 +10,9 @@ import jimit as ji
 
 
 __author__ = 'James Iter'
-__date__ = '16/06/08'
+__date__ = '17/02/15'
 __contact__ = 'james.iter.cn@gmail.com'
-__copyright__ = '(c) 2016 by James Iter.'
+__copyright__ = '(c) 2017 by James Iter.'
 
 
 class TestRole(unittest.TestCase):

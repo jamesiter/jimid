@@ -13,6 +13,7 @@
 ### [用户账号](docs/user.md)
 ### [用户管理](docs/user_mgmt.md)
 ### [应用管理](docs/app.md)
+### [角色管理](docs/role.md)
 
 ## 项目成员
 <pre>
