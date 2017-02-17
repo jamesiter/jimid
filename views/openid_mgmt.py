@@ -30,48 +30,103 @@ blueprints = Blueprint(
 
 @Utils.dumps2response
 @Utils.superuser
-def r_get(appid, uid):
-    app = App()
-    user = User()
-    openid = UidOpenidMapping()
+def r_get(uid):
+    page = str(request.args.get('page', 1))
+    page_size = str(request.args.get('page_size', 50))
 
     args_rules = [
-        Rules.APP_ID_EXT.value,
+        Rules.PAGE.value,
+        Rules.PAGE_SIZE.value
     ]
-    app.id = appid
 
     try:
-        ji.Check.previewing(args_rules, app.__dict__)
+        ji.Check.previewing(args_rules, {'page': page, 'page_size': page_size})
     except ji.PreviewingError, e:
         return json.loads(e.message)
 
+    page = int(page)
+    page_size = int(page_size)
+
+    # 把page和page_size换算成offset和limit
+    offset = (page - 1) * page_size
+    # offset, limit将覆盖page及page_size的影响
+    offset = str(request.args.get('offset', offset))
+    limit = str(request.args.get('limit', page_size))
+
+    order_by = request.args.get('order_by', 'create_time')
+    order = request.args.get('order', 'asc')
+
     args_rules = [
-        Rules.UID.value
+        Rules.OFFSET.value,
+        Rules.LIMIT.value,
+        Rules.ORDER_BY.value,
+        Rules.ORDER.value
+    ]
+
+    try:
+        ji.Check.previewing(args_rules, {'offset': offset, 'limit': limit, 'order_by': order_by, 'order': order})
+    except ji.PreviewingError, e:
+        return json.loads(e.message)
+
+    user = User()
+    app_map_by_id = dict()
+
+    args_rules = [
+        Rules.UID_EXT.value
     ]
     user.id = uid
 
     try:
         ji.Check.previewing(args_rules, user.__dict__)
-    except ji.PreviewingError, e:
-        return json.loads(e.message)
 
-    openid.appid = appid
-    openid.uid = uid
-
-    try:
-        app.get()
-
-        user.id = long(user.id)
         user.get()
 
-        openid.get()
-
+        offset = int(offset)
+        limit = int(limit)
         ret = dict()
         ret['state'] = ji.Common.exchange_state(20000)
-        ret['data'] = openid.__dict__
-        ret['data']['user'] = user.__dict__
-        del ret['data']['user']['password']
-        ret['data']['app'] = app.__dict__
+        ret['data'] = list()
+        ret['paging'] = {'total': 0, 'offset': offset, 'limit': limit, 'page': page, 'page_size': page_size,
+                         'next': '', 'prev': '', 'first': '', 'last': ''}
+        app_data, app_total = App.get_all(order_by='create_time', order=order)
+
+        for app in app_data:
+            del app['secret']
+            app_map_by_id[app['id']] = app
+
+        openid_data, ret['paging']['total'] = UidOpenidMapping.get_by_filter(
+            offset=offset, limit=limit, order_by=order_by, order=order, filter_str='uid:in:' + user.id.__str__())
+
+        for openid in openid_data:
+            openid['user'] = user.__dict__
+            del openid['user']['password']
+            openid['app'] = app_map_by_id[openid['appid']]
+            ret['data'].append(openid)
+
+        host_url = request.host_url.rstrip('/')
+        other_str = '&order=' + order + '&order_by=' + order_by
+        last_pagination = (ret['paging']['total'] + page_size - 1) / page_size
+
+        if page <= 1:
+            ret['paging']['prev'] = host_url + blueprints.url_prefix + '?page=1&page_size=' + page_size.__str__() + \
+                                    other_str
+        else:
+            ret['paging']['prev'] = host_url + blueprints.url_prefix + '?page=' + str(page-1) + '&page_size=' + \
+                                    page_size.__str__() + other_str
+
+        if page >= last_pagination:
+            ret['paging']['next'] = host_url + blueprints.url_prefix + '?page=' + last_pagination.__str__() + \
+                                    '&page_size=' + page_size.__str__() + other_str
+        else:
+            ret['paging']['next'] = host_url + blueprints.url_prefix + '?page=' + str(page+1) + '&page_size=' + \
+                                    page_size.__str__() + other_str
+
+        ret['paging']['first'] = host_url + blueprints.url_prefix + '?page=1&page_size=' + \
+            page_size.__str__() + other_str
+        ret['paging']['last'] = \
+            host_url + blueprints.url_prefix + '?page=' + last_pagination.__str__() + '&page_size=' + \
+            page_size.__str__() + other_str
+
         return ret
     except ji.PreviewingError, e:
         return json.loads(e.message)
@@ -102,7 +157,7 @@ def r_get_by_login_name_without_appid(login_name=None):
     offset = str(request.args.get('offset', offset))
     limit = str(request.args.get('limit', page_size))
 
-    order_by = request.args.get('order_by', 'id')
+    order_by = request.args.get('order_by', 'create_time')
     order = request.args.get('order', 'asc')
 
     args_rules = [
@@ -137,8 +192,7 @@ def r_get_by_login_name_without_appid(login_name=None):
         ret['data'] = list()
         ret['paging'] = {'total': 0, 'offset': offset, 'limit': limit, 'page': page, 'page_size': page_size,
                          'next': '', 'prev': '', 'first': '', 'last': ''}
-        app_data, app_total = App.get_by_filter(offset=0, limit=1000, order_by='create_time',
-                                                order=order, filter_str='')
+        app_data, app_total = App.get_all(order_by='create_time', order=order)
 
         for app in app_data:
             del app['secret']
@@ -158,23 +212,23 @@ def r_get_by_login_name_without_appid(login_name=None):
         last_pagination = (ret['paging']['total'] + page_size - 1) / page_size
 
         if page <= 1:
-            ret['paging']['prev'] = host_url + blueprint.url_prefix + '?page=1&page_size=' + page_size.__str__() + \
+            ret['paging']['prev'] = host_url + blueprints.url_prefix + '?page=1&page_size=' + page_size.__str__() + \
                                     other_str
         else:
-            ret['paging']['prev'] = host_url + blueprint.url_prefix + '?page=' + str(page-1) + '&page_size=' + \
+            ret['paging']['prev'] = host_url + blueprints.url_prefix + '?page=' + str(page-1) + '&page_size=' + \
                                     page_size.__str__() + other_str
 
         if page >= last_pagination:
-            ret['paging']['next'] = host_url + blueprint.url_prefix + '?page=' + last_pagination.__str__() + \
+            ret['paging']['next'] = host_url + blueprints.url_prefix + '?page=' + last_pagination.__str__() + \
                                     '&page_size=' + page_size.__str__() + other_str
         else:
-            ret['paging']['next'] = host_url + blueprint.url_prefix + '?page=' + str(page+1) + '&page_size=' + \
+            ret['paging']['next'] = host_url + blueprints.url_prefix + '?page=' + str(page+1) + '&page_size=' + \
                                     page_size.__str__() + other_str
 
-        ret['paging']['first'] = host_url + blueprint.url_prefix + '?page=1&page_size=' + \
+        ret['paging']['first'] = host_url + blueprints.url_prefix + '?page=1&page_size=' + \
             page_size.__str__() + other_str
         ret['paging']['last'] = \
-            host_url + blueprint.url_prefix + '?page=' + last_pagination.__str__() + '&page_size=' + \
+            host_url + blueprints.url_prefix + '?page=' + last_pagination.__str__() + '&page_size=' + \
             page_size.__str__() + other_str
 
         return ret
@@ -289,14 +343,13 @@ def r_get_by_filter():
         ret['data'] = list()
         ret['paging'] = {'total': 0, 'offset': offset, 'limit': limit, 'page': page, 'page_size': page_size,
                          'next': '', 'prev': '', 'first': '', 'last': ''}
-        app_data, app_total = App.get_by_filter(offset=0, limit=1000, order_by='create_time',
-                                                order='asc', filter_str='')
+        app_data, app_total = App.get_all(order_by='create_time', order='asc')
 
         for app in app_data:
             del app['secret']
             app_map_by_id[app['id']] = app
 
-        users, users_total = User.get_by_filter(offset=0, limit=limit, order_by='id',
+        users, users_total = User.get_by_filter(offset=0, limit=1000, order_by='id',
                                                 order='asc', filter_str=filter_str)
 
         for _user in users:
@@ -317,23 +370,23 @@ def r_get_by_filter():
         last_pagination = (ret['paging']['total'] + page_size - 1) / page_size
 
         if page <= 1:
-            ret['paging']['prev'] = host_url + blueprint.url_prefix + '?page=1&page_size=' + page_size.__str__() + \
+            ret['paging']['prev'] = host_url + blueprints.url_prefix + '?page=1&page_size=' + page_size.__str__() + \
                                     other_str
         else:
-            ret['paging']['prev'] = host_url + blueprint.url_prefix + '?page=' + str(page-1) + '&page_size=' + \
+            ret['paging']['prev'] = host_url + blueprints.url_prefix + '?page=' + str(page-1) + '&page_size=' + \
                                     page_size.__str__() + other_str
 
         if page >= last_pagination:
-            ret['paging']['next'] = host_url + blueprint.url_prefix + '?page=' + last_pagination.__str__() + \
+            ret['paging']['next'] = host_url + blueprints.url_prefix + '?page=' + last_pagination.__str__() + \
                                     '&page_size=' + page_size.__str__() + other_str
         else:
-            ret['paging']['next'] = host_url + blueprint.url_prefix + '?page=' + str(page+1) + '&page_size=' + \
+            ret['paging']['next'] = host_url + blueprints.url_prefix + '?page=' + str(page+1) + '&page_size=' + \
                                     page_size.__str__() + other_str
 
-        ret['paging']['first'] = host_url + blueprint.url_prefix + '?page=1&page_size=' + \
+        ret['paging']['first'] = host_url + blueprints.url_prefix + '?page=1&page_size=' + \
             page_size.__str__() + other_str
         ret['paging']['last'] = \
-            host_url + blueprint.url_prefix + '?page=' + last_pagination.__str__() + '&page_size=' + \
+            host_url + blueprints.url_prefix + '?page=' + last_pagination.__str__() + '&page_size=' + \
             page_size.__str__() + other_str
 
         return ret
@@ -412,9 +465,10 @@ def r_content_search():
                 filter_str='uid:in:' + ','.join(str(uid) for uid in user_map_by_id.keys()))
 
         else:
+            # 不带关键字的情况
             openid_data, ret['paging']['total'] = UidOpenidMapping.get_by_filter(
                 offset=offset, limit=limit, order_by=order_by, order=order,
-                filter_str='uid:in:' + ','.join(str(uid) for uid in user_map_by_id.keys()))
+                filter_str='')
 
             uid_s = list()
             for openid in openid_data:

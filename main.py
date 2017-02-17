@@ -105,18 +105,18 @@ def r_before_request():
 def r_after_request(response):
     try:
         # 由于浏览器同源策略，凡是发送请求url的协议、域名、端口三者之间任意一与当前页面地址不同即为跨域。
-        response.headers['Access-Control-Allow-Origin'] = '/'.join(request.referrer.split('/')[:3])
-        # response.headers['Access-Control-Allow-Origin'] = '*'
+        # response.headers['Access-Control-Allow-Origin'] = '/'.join(request.referrer.split('/')[:3])
+        response.headers['Access-Control-Allow-Origin'] = '*'
         response.headers['Access-Control-Allow-Credentials'] = 'true'
         response.headers['Access-Control-Allow-Methods'] = 'HEAD, GET, POST, DELETE, OPTIONS, PATCH, PUT'
         response.headers['Access-Control-Allow-Headers'] = 'X-Request-With, Content-Type'
         response.headers['Access-Control-Expose-Headers'] = 'Set-Cookie'
 
-        # 少于token生命周期一半时,自动对其续期
+        # 少于session生命周期一半时,自动对其续期
         if not is_not_need_to_auth(request.endpoint) and hasattr(g, 'token') and \
                 g.token['exp'] < (ji.Common.ts() + (app.config['token_ttl'] / 2)):
             token = Utils.generate_token(g.token['uid'])
-            # 清除原有token，由新token代替
+            # 清除原有session，由新session代替
             for key in session.keys():
                 session.pop(key=key)
             session['token'] = token

@@ -3,7 +3,7 @@
 
 
 import json
-from flask import Blueprint, request, g, make_response
+from flask import Blueprint, request, g
 import urllib
 import jimit as ji
 

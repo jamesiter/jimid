@@ -245,21 +245,21 @@ class TestOpenid(unittest.TestCase):
         print r.headers._store['location']
         self.assertEqual(302, r.status_code)
 
-#     # 删除应用
-#     def test_31_delete(self):
-#         url = TestOpenid.base_url + '/app/' + TestOpenid.app_id
-#         r = requests.delete(url, cookies=TestOpenid.superuser_cookies)
-#         j_r = json.loads(r.content)
-#         print json.dumps(j_r, ensure_ascii=False)
-#         self.assertEqual('200', j_r['state']['code'])
-#
-#     # 超级用户删除普通用户
-#     def test_32_delete_via_superuser(self):
-#         url = TestOpenid.base_url + '/user_mgmt/' + TestOpenid.uid.__str__()
-#         r = requests.delete(url, cookies=TestOpenid.superuser_cookies)
-#         j_r = json.loads(r.content)
-#         print json.dumps(j_r, ensure_ascii=False)
-#         self.assertEqual('200', j_r['state']['code'])
+    # 删除应用
+    def test_31_delete(self):
+        url = TestOpenid.base_url + '/app/' + TestOpenid.app_id
+        r = requests.delete(url, cookies=TestOpenid.superuser_cookies)
+        j_r = json.loads(r.content)
+        print json.dumps(j_r, ensure_ascii=False)
+        self.assertEqual('200', j_r['state']['code'])
+
+    # 超级用户删除普通用户
+    def test_32_delete_via_superuser(self):
+        url = TestOpenid.base_url + '/user_mgmt/' + TestOpenid.uid.__str__()
+        r = requests.delete(url, cookies=TestOpenid.superuser_cookies)
+        j_r = json.loads(r.content)
+        print json.dumps(j_r, ensure_ascii=False)
+        self.assertEqual('200', j_r['state']['code'])
 
 
 if __name__ == '__main__':
