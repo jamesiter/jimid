@@ -18,7 +18,7 @@ class TestUserMgmt(unittest.TestCase):
     base_url = 'http://jimauth.dev.iit.im/api'
 
     cookies = None
-    batch_login_name_prefix = 'jamesc'
+    batch_login_name_prefix = 'james'
     login_name = batch_login_name_prefix + '1'
     password = 'password'
     password2 = 'password2'

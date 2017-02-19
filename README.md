@@ -15,6 +15,7 @@
 ### [应用管理](docs/app.md)
 ### [角色管理](docs/role.md)
 ### [OpenID](docs/openid.md)
+### [OpenID管理](docs/openid_mgmt.md)
 
 ## 项目成员
 <pre>
