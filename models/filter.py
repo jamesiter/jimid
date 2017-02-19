@@ -74,7 +74,8 @@ class Filter(object):
             sql_stmt = keyword + ' not in (' + ','.join(_sql_stmt) + ')'
 
         elif operator == 'like':
-            sql_stmt = keyword + ' like %' + cls.get_fit_statement(field_type=field_type, value=value) + '%'
+            sql_stmt = keyword + ' like "%' + cls.get_fit_statement(
+                field_type=field_type, value=value).strip('"') + '%"'
 
         return sql_stmt
 
