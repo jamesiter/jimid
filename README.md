@@ -49,7 +49,7 @@ mysql -u jimid -pyour_jimid_db_password -e 'show databases'
 配置文件路径：`sites/jimid/config.json`
 <br>
 **提示：**
->下表中凸显的配置项需要用户根据自己的环境手动修改。
+> 下表中凸显的配置项，需要用户根据自己的环境手动修改。
 
 |配置项|默认值|说明|
 |:--|:--|:--|
@@ -57,13 +57,13 @@ mysql -u jimid -pyour_jimid_db_password -e 'show databases'
 |db_host|localhost|数据库地址|
 |db_port|3306|数据库端口|
 |db_user|jimid|连接数控的用户名|
-|`db_password`|jimid.pswd.com|连接数控的密码|
+|**`db_password`**|jimid.pswd.com|连接数控的密码|
 |db_pool_size|10|连接池|
 |db_charset|utf8|默认字符集|
 |debug|false|是否为调试模式|
 |log_cycle|D|日志轮转周期|
 |token_ttl|604800|token有效期|
-|`jwt_secret`||token安全码|
+|**`jwt_secret`**||token安全码|
 |jwt_algorithm|HS512|token哈希算法|
 |SESSION_TYPE|filesystem|session存放类型|
 |SESSION_PERMANENT|true|session是否持久化存储|
@@ -72,13 +72,13 @@ mysql -u jimid -pyour_jimid_db_password -e 'show databases'
 |SESSION_FILE_THRESHOLD|1000|存放的session超过该数量，之前的将被删除|
 |SESSION_COOKIE_NAME|sid|session id在客户端cookie中的存放名称|
 |SESSION_COOKIE_SECURE|false|cookie的传输是否只在https的环境中进行|
-|`SECRET_KEY`||session安全码|
+|**`SECRET_KEY`**||session安全码|
 |PERMANENT_SESSION_LIFETIME|604800|cookie在客户端的持久化时间。该值需与token_ttl相同|
 
 
 ### 启动服务
 ``` bash
-
+python ~/sites/jimid/main.py
 ```
 
 
