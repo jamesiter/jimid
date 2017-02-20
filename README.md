@@ -78,7 +78,10 @@ mysql -u jimid -pyour_jimid_db_password -e 'show databases'
 
 ### 启动服务
 ``` bash
-python ~/sites/jimid/main.py
+# 进入JimID目录
+cd ~/sites/jimid
+# 启动JimID
+gunicorn -c guincore_config.py main:app
 ```
 
 
