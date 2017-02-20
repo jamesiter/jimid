@@ -3,7 +3,6 @@
 
 
 import os
-import sys
 import json
 import multiprocessing
 
@@ -27,8 +26,8 @@ worker_class = 'eventlet'
 worker_connections = 1000
 daemon = True
 
-accesslog = sys.path[0] + '/logs/access.log'
-errorlog = sys.path[0] + '/logs/error.log'
+accesslog = './logs/access.log'
+errorlog = './logs/error.log'
 loglevel = 'info'
 
 pidfile = './jimid.pid'
