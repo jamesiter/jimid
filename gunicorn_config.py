@@ -14,10 +14,10 @@ __copyright__ = '(c) 2017 by James Iter.'
 
 
 with open('./config.json', 'r') as f:
-    config = json.load(f)
+    _config = json.load(f)
 
-if not os.path.isdir(config['log_file_dir']):
-    os.makedirs(config['log_file_dir'], 0755)
+if not os.path.isdir(_config['log_file_dir']):
+    os.makedirs(_config['log_file_dir'], 0755)
 
 
 bind = '127.0.0.1:8001'
