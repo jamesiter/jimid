@@ -160,6 +160,6 @@ except:
 if __name__ == '__main__':
     # noinspection PyBroadException
     try:
-        app.run(host='127.0.0.1', port=8001, use_reloader=False, threaded=True)
+        app.run(host=app.config['jimid_listen'], port=app.config['jimid_port'], use_reloader=False, threaded=True)
     except:
         logger.error(traceback.format_exc())

@@ -32,7 +32,7 @@ source ~/venv/bin/activate
 # 安装JimID所需扩展库
 pip install -r ~/sites/jimid/requirements.txt
 # 安装Python连接MySQL的适配器
-wget https://dev.mysql.com/get/Downloads/Connector-Python/mysql-connector-python-2.1.5.tar.gz -O - | tar -xz; cd ~/mysql-connector-python-2.1.5; python setup.py install; cd ..; rm -rf mysql-connector-python-2.1.5
+git clone https://github.com/mysql/mysql-connector-python.git; cd ~/mysql-connector-python; python setup.py install; cd ..; rm -rf mysql-connector-python
 ```
 
 ### 初始化JimID MySQL数据库

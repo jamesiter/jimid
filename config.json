@@ -1,4 +1,6 @@
 {
+  "jimid_listen": "127.0.0.1",
+  "jimid_port": 8001,
   "db_name": "jimid",
   "db_host": "localhost",
   "db_port": 3306,
