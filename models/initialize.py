@@ -37,7 +37,7 @@ class Init(object):
 
     @staticmethod
     def init_logger():
-        app.config['log_file_base'] = ''.join([sys.path[0], '/logs/log'])
+        app.config['log_file_base'] = '/'.join([sys.path[0], app.config['log_file_dir'], 'log'])
         log_dir = os.path.dirname(app.config['log_file_base'])
         if not os.path.isdir(log_dir):
             os.makedirs(log_dir, 0755)
