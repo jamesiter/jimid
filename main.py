@@ -4,6 +4,7 @@
 
 import traceback
 import thread
+import sys
 import json
 from flask import request, g, make_response
 from flask import session
@@ -37,6 +38,7 @@ __copyright__ = '(c) 2016 by James Iter.'
 
 # 替换为Flask-Session
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(seconds=app.config['PERMANENT_SESSION_LIFETIME'])
+app.config['SESSION_FILE_DIR'] = '/'.join([sys.path[0], app.config['SESSION_FILE_DIR']])
 Session(app)
 
 

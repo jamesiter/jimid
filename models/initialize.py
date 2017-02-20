@@ -30,14 +30,14 @@ app = Flask(__name__)
 class Init(object):
     @staticmethod
     def init_config():
-        with open('config.json', 'r') as f:
+        with open(''.join([sys.path[0], '/config.json']), 'r') as f:
             config = json.load(f)
         app.config = dict(app.config, **config)
         ji.index_state['branch'] = dict(ji.index_state['branch'], **own_state_branch)
 
     @staticmethod
     def init_logger():
-        app.config['log_file_base'] = ''.join([os.getcwd(), '/logs/log'])
+        app.config['log_file_base'] = ''.join([sys.path[0], '/logs/log'])
         log_dir = os.path.dirname(app.config['log_file_base'])
         if not os.path.isdir(log_dir):
             os.makedirs(log_dir, 0755)
