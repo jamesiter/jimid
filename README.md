@@ -85,6 +85,51 @@ gunicorn -c gunicorn_config.py main:app
 ```
 
 
+### Nginx 参考配置
+``` nginx
+    gzip on;
+    gzip_min_length 1100;
+    gzip_buffers 4 8k;
+    gzip_types text/plain application/javascript text/css;
+
+    autoindex off;
+    add_header X-Frame-Options SAMEORIGIN;
+    add_header X-Content-Type-Options: nosniff;
+
+    server {
+        listen 80;
+        server_name jimid.your-domain;
+
+        access_log  /var/log/nginx/jimid.access.log;
+        error_log  /var/log/nginx/jimid.error.log;
+
+        root /home/www/sites/jimid/html;
+
+        # 拒绝访问隐藏文件(如，.git、.svn等目录)
+        location ~ /\..* {
+            return 403;
+        }
+        location ~ .(sql|py|pyc|ini|conf|log|svn|git|cfg)$ {
+            return 403;
+        }
+        location ~ /$ {
+            rewrite http://$host/index.html break;
+        }
+        location / {
+            try_files $uri @inner;
+        }
+
+        location @inner {
+            proxy_pass         http://127.0.0.1:8001;
+            proxy_redirect     off;
+            proxy_set_header   Host             $host;
+            proxy_set_header   X-Real-IP        $remote_addr;
+            proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
+        }
+    }
+```
+
+
 ## API
 > 默认数据交互格式 Content-Type: application/json
 
@@ -96,6 +141,9 @@ gunicorn -c gunicorn_config.py main:app
 ### [角色管理](docs/role.md)
 ### [OpenID](docs/openid.md)
 ### [OpenID管理](docs/openid_mgmt.md)
+
+## Web端
+[Web端项目地址](https://github.com/jamesiter/jimid-web)
 
 ## 项目成员
 <pre>
