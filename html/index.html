@@ -1,505 +1,70 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
-    <title>JimAuth</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <!-- Meta, title, CSS, favicons, etc. -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <base href="/">
+  <title>JimID</title>
+  <!-- Bootstrap -->
+  <link href="vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+  <!-- NProgress -->
+  <link href="vendors/nprogress/nprogress.css" rel="stylesheet">
+  <!-- iCheck -->
+  <link href="vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+  <!-- bootstrap-progressbar -->
+  <link href="vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
+  <!-- JQVMap -->
+  <link href="vendors/jqvmap/dist/jqvmap.min.css" rel="stylesheet"/>
+  <!-- bootstrap-daterangepicker -->
+  <link href="vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
 
-    <!-- Bootstrap -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/main.css" rel="stylesheet">
-
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-    <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-</head>
-<body style="background-color: #eff0f0">
-<div id="dashboard" class="container" style="margin-top: 0px;">
-    <div class="row">
-        <div id="header" class="col-md-12">
-            <nav id="navbar" class="navbar navbar-default" role="navigation">
-                <div class="container-fluid">
-                    <div class="navbar-header">
-                        <a class="navbar-brand" href="#">Brand</a>
-                    </div>
-                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                        <ul class="nav navbar-nav">
-                            <li class="active"><a href="#">Link</a></li>
-                        </ul>
-                        <ul class="nav navbar-nav navbar-right">
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a onclick="sign_out()">注销</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </nav>
-        </div>
-    </div>
-    <div class="row" style="margin-top: 30px; margin-bottom: 10px">
-        <form class="navbar-form">
-            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#create_user_modal">创建用户</button>
-            &nbsp;
-            &nbsp;
-            &nbsp;
-            <div class="btn-group">
-                <button type="button" class="btn btn-default" onclick="batch_enable()">激活</button>
-                <button type="button" class="btn btn-default" onclick="batch_disable()">禁用</button>
-                <button type="button" class="btn btn-default" onclick="batch_delete()">删除</button>
-            </div>
-            <div class="form-group pull-right">
-                <input id="content_search" type="search" class="form-control" size="30" placeholder="快速搜索">
-            </div>
-        </form>
-    </div>
-    <div class="row" style="margin-top: 0px; border-radius: 4px;">
-        <table id="table_users" class="table table-hover">
-            <thead id="t_head">
-            <tr class="active" style="font-size: medium;">
-                <td><input type="checkbox" id="all_selector"></td>
-                <td width="60px">#</td><td width="140px">登录名</td><td width="140px">手机号码</td><td width="140px">经校验手机号码</td>
-                <td width="160px">E-Mail</td><td width="140px">经校验的E-Mail</td><td width="60px">激活</td><td width="180px">创建时间</td>
-                <td width="160px">操作</td>
-            </tr>
-            </thead>
-            <tbody id="t_body" style="font-size: large;">
-            </tbody>
-        </table>
-    </div>
-    <div class="row">
-        <nav style="text-align: center;">
-            <ul class="pagination" style="margin: 0px;" id="pagination">
-            </ul>
-        </nav>
-    </div>
-    <div class="row" style="margin-top: 60px; margin-bottom: 50px;">
-        <div id="footer" class="col-md-12" style="text-align: center;">
-            ©2016 JimID
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="create_user_modal" style="margin-top: 100px;" tabindex="-1" role="dialog" aria-labelledby="create_user_modal_label" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="create_user_modal_label">添加新用户</h4>
-            </div>
-            <div class="modal-body">
-                <form class="form-horizontal" role="form">
-                    <div class="form-group">
-                        <label for="input_login_name" class="col-sm-4 control-label">登录名</label>
-                        <div class="col-sm-7">
-                            <input type="text" class="form-control" id="input_login_name" placeholder="请输入用户登录名称">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="input_password" class="col-sm-4 control-label">登录密码</label>
-                        <div class="col-sm-7">
-                            <input type="password" class="form-control" id="input_password" placeholder="请输入用户登录密码">
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary" onclick="create_user()">创建</button>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
-<!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="js/bootstrap.min.js"></script>
-<script src="js/date_format.js"></script>
-<script src="js/utils.js"></script>
-<script type="text/javascript">
-    var label_length = 12;
-    var suffix = '...';
-    var cur_url = '';
-    
-    function rerender(url) {
-        $.ajax({
-            url : url,
-            type : 'GET',
-            dataType: 'json',
-            async: false,
-            error : function(xhr, status, error) {
-                insert_warning_window($('#header'), '<strong>获取用户列表失败, 请联系管理员! </strong>');
-                // 3秒后自动跳转到
-                // setTimeout(function() {
-                //     window.location.href="/login.html";
-                // }, 3000);
-            },
-            success : function(result, status, xhr) {
-                if (xhr.status == 278) {
-                    window.location.href = xhr.getResponseHeader("Location").replace(/\?.*$/, "?next="+window.location.pathname);
-                    return;
-                }
-                $('#t_body').children().remove();
-                $(result.data).each(function(index, ele) {
-                    var mobile_checkbox = Boolean(ele.mobile_phone_verified) ? '<input type="checkbox" checked disabled>' : '<input type="checkbox" disabled>';
-                    var email_checkbox = Boolean(ele.email_verified) ? '<input type="checkbox" checked disabled>' : '<input type="checkbox" disabled>';
-                    var enabled_checkbox = Boolean(ele.enabled) ? '<input type="checkbox" class="enabled_checkbox" checked>' :
-                            '<input type="checkbox" class="enabled_checkbox">';
-                    var s_login_name = ele.login_name.length > label_length ? ele.login_name.substring(0, label_length - suffix.length) + suffix : ele.login_name;
-                    var s_email = ele.email.length > label_length ? ele.email.substring(0, label_length - suffix.length) + suffix : ele.email;
-                    var trHTML = '<tr edit_mode=false>' +
-                            '<td><input type="checkbox"></td>' +
-                            '<td>' + String(ele.id) + '</td>' +
-                            '<td class="click_edit" real_value="' + ele.login_name + '" title="' + ele.login_name + '">' + s_login_name + '</td>' +
-                            '<td class="click_edit">' + ele.mobile_phone + '</td>' +
-                            '<td class="click_edit">' + mobile_checkbox + '</td>' +
-                            '<td class="click_edit" real_value="' + ele.email + '" title="' + ele.email + '">' + s_email + '</td>' +
-                            '<td class="click_edit">' + email_checkbox + '</td>' +
-                            '<td>' + enabled_checkbox + '</td>' +
-                            '<td>' + new Date(parseInt(ele.create_time) / 1000).format("yyyy-mm-dd HH:MM") + '</td>' +
-                            '<td>' +
-                            '<button type="button" class="btn btn-danger" onclick="user_delete(this)">删除</button>' +
-                            '</td>' +
-                            '</tr>';
-                    $('#t_body').append(trHTML);
-                });
-                rerender_pagination(url, result.paging['page'], result.paging['page_size'], result.paging['total'], 10);
-            }
-        });
-    }
-
-    function append_pagination(ul_component, on_click, label, active) {
-        // 设置active默认值
-        active = active || false;
-        if (!active) {
-            ul_component.append('<li><span style="cursor:pointer" onclick="' + on_click + '">' + label + '</span></li>');
-        } else {
-            ul_component.append('<li class="active"><span style="cursor:pointer" onclick="' + on_click + '">' + label + '</span></li>');
-        }
-    }
-
-    function rerender_pagination(base_url, page, page_size, total, width) {
-        // 设置页宽默认值
-        width = width || 10;
-        var balance_of_power = Math.floor(width / 2) + 1;
-        var last_pagination = Math.ceil(total / page_size);
-        var start_pagination = 1;
-        var end_pagination = last_pagination;
-        var on_click = '';
-        $('#pagination').children().remove();
-        if (page > balance_of_power) {
-            on_click = 'rerender(\'' + base_url.replace(/page=\d+/i, "page=1") + '\')';
-            append_pagination($('#pagination'), on_click, '首页');
-            start_pagination = page - Math.floor(width / 2);
-        }
-        if (page > 1) {
-            on_click = 'rerender(\'' + base_url.replace(/page=\d+/i, "page=" + (page - 1)) + '\')';
-            append_pagination($('#pagination'), on_click, '上一页');
-        }
-        if (page < last_pagination - (width - balance_of_power)) {
-            if (page < balance_of_power) {
-                if (last_pagination > width) {
-                    end_pagination = width;
-                }
-            } else {
-                end_pagination = page + (width - balance_of_power);
-            }
-        } else {
-            if (last_pagination > width && (end_pagination - start_pagination) < width) {
-                start_pagination = last_pagination - (width - 1);
-            }
-        }
-        for (var i = start_pagination; i <= end_pagination; i++) {
-            var pagination = i;
-            if (i == end_pagination && end_pagination != last_pagination) {
-                pagination = '...';
-            }
-            on_click = 'rerender(\'' + base_url.replace(/page=\d+/i, "page=" + i) + '\')';
-            if (i != page) {
-                append_pagination($('#pagination'), on_click, pagination);
-            } else {
-                append_pagination($('#pagination'), on_click, pagination, true);
-            }
-        }
-        if (page < last_pagination) {
-            on_click = 'rerender(\'' + base_url.replace(/page=\d+/i, "page=" + (page + 1)) + '\')';
-            append_pagination($('#pagination'), on_click, '下一页');
-        }
-        if (page < last_pagination - Math.floor(width / 2)) {
-            on_click = 'rerender(\'' + base_url.replace(/page=\d+/i, "page=" + last_pagination) + '\')';
-            append_pagination($('#pagination'), on_click, '尾页');
-        }
-    }
-
-    $(document).ready(function() {
-        var page = 1;
-        var page_size = 10;
-
-        cur_url = '/api/mgmts?page=' + page + '&page_size=' + page_size;
-        rerender(cur_url);
-
-        $("#t_body").on('click', ".click_edit", function() {
-            if ($(this).parent().attr('edit_mode') == 'false') {
-                $(this).parent().attr('edit_mode', true);
-                $(this).parent().attr('j_login_name', $(this).parent().find('td:eq(2)').attr('real_value'));
-                $(this).parent().attr('j_mobile_phone', $(this).parent().find('td:eq(3)').html());
-                $(this).parent().attr('j_email', $(this).parent().find('td:eq(5)').attr('real_value'));
-                $(this).parent().attr('j_mobile_checkbox', $(this).parent().find('input[type="checkbox"]:eq(1)').is(':checked'));
-                $(this).parent().attr('j_email_checkbox', $(this).parent().find('input[type="checkbox"]:eq(2)').is(':checked'));
-                $(this).parent().attr('j_enabled_checkbox', $(this).parent().find('input[type="checkbox"]:eq(3)').is(':checked'));
-
-                $(this).parent().find('td:eq(2)').html('<input type="text" value="' + $(this).parent().find('td:eq(2)').attr('real_value') + '" />');
-                $(this).parent().find('td:eq(3)').html('<input type="text" value="' + $(this).parent().find('td:eq(3)').html() + '" />');
-                $(this).parent().find('td:eq(5)').html('<input type="text" value="' + $(this).parent().find('td:eq(5)').attr('real_value') + '" />');
-                $(this).parent().find('td:eq(9)').html('<button type="button" class="btn btn-info" onclick="user_update(this)">更新</button> | ' +
-                        '<button type="button" class="btn btn-default" onclick="user_cancel(this)">取消</button>');
-                $(this).parent().find('input[type="checkbox"]:eq(1)').removeAttr('disabled');
-                $(this).parent().find('input[type="checkbox"]:eq(2)').removeAttr('disabled');
-            }
-        });
-
-        $("#t_body").on('click', ".enabled_checkbox", function() {
-            var id = $(this).parent().parent().find('td:eq(1)').html();
-            var action_url = '/api/mgmt/_disable/';
-
-            if ($(this)[0].checked) {
-                action_url = '/api/mgmt/_enable/';
-            }
-            $.ajax({
-                url : action_url + id,
-                type : 'PATCH',
-                error : function() {
-                    insert_warning_window($('#header'), '<strong>更改账户状态失败, 请联系管理员! </strong>');
-                },
-                success : function() {
-                    window.location.href="/";
-                }
-            });
-        });
-
-        $("#t_head").on('click', "#all_selector", function() {
-            if ($("#all_selector").is(':checked')) {
-                $("#t_body tr").find('td input[type="checkbox"]:eq(0)').prop('checked', true);
-            } else {
-                $("#t_body tr").find('td input[type="checkbox"]:eq(0)').prop('checked', false);
-            }
-        });
-
-        var last_ready = null;
-        $('#content_search').keydown(function() {
-            if (last_ready != null) {
-                clearTimeout(last_ready);
-            }
-            last_ready = setTimeout(function() {
-                var keyword = $('#content_search').val();
-                cur_url = '/api/mgmts?page=' + page + '&page_size=' + page_size;
-                if (keyword.length > 0) {
-                    cur_url = '/api/mgmts/_search?page=' + page + '&page_size=' + page_size + '&keyword=' + keyword;
-                }
-                rerender(cur_url);
-            }, 500);
-        });
-    });
-
-    function user_update(me) {
-        $(me).parent().parent().attr('edit_mode', false);
-        var id = $(me).parent().parent().find('td:eq(1)').text();
-        var login_name = $(me).parent().parent().find('td:eq(2) input').val();
-        var mobile_phone = $(me).parent().parent().find('td:eq(3) input').val();
-        var email = $(me).parent().parent().find('td:eq(5) input').val();
-        var mobile_phone_verified = $(me).parent().parent().find('input[type="checkbox"]')[1].checked;
-        var email_verified = $(me).parent().parent().find('input[type="checkbox"]')[2].checked;
-
-        $(me).parent().parent().find('td:eq(2)').html($(me).parent().parent().find('td:eq(2) input').val());
-        $(me).parent().parent().find('td:eq(3)').html($(me).parent().parent().find('td:eq(3) input').val());
-        $(me).parent().parent().find('td:eq(5)').html($(me).parent().parent().find('td:eq(5) input').val());
-        $(me).parent().parent().find('input[type="checkbox"]:eq(1)').attr('disabled', true);
-        $(me).parent().parent().find('input[type="checkbox"]:eq(2)').attr('disabled', true);
-        $(me).parent().html('<button type="button" class="btn btn-danger" onclick="user_delete(this)">删除</button>');
-
-        $.ajax({
-            url : '/api/mgmt',
-            type : 'PATCH',
-            contentType: "application/json; charset=utf-8",
-            data : JSON.stringify({
-                id: id,
-                login_name: login_name,
-                mobile_phone: mobile_phone,
-                mobile_phone_verified: mobile_phone_verified,
-                email: email,
-                email_verified: email_verified
-            }),
-            error : function() {
-                insert_warning_window($('#header'), '<strong>更新用户信失败, 请联系管理员! </strong>');
-            },
-            success : function() {
-                window.location.href="/";
-            }
-        });
-    }
-
-    function user_delete(me) {
-        var id = $(me).parent().parent().find('td:eq(1)').text();
-        $.ajax({
-            url : '/api/mgmt/' + id,
-            type : 'DELETE',
-            error : function() {
-                insert_warning_window($('#header'), '<strong>删除用户信失败, 请联系管理员! </strong>');
-            },
-            success : function() {
-                window.location.href="/";
-            }
-        });
-    }
-
-    function user_cancel(me) {
-        $(me).parent().parent().attr('edit_mode', false);
-        var j_login_name = $(me).parent().parent().attr('j_login_name');
-        var j_email = $(me).parent().parent().attr('j_email');
-        var s_login_name = j_login_name.length > label_length ? j_login_name.substring(0, label_length - suffix.length) + suffix : j_login_name;
-        var s_email = j_email.length > label_length ? j_email.substring(0, label_length - suffix.length) + suffix : j_email;
-
-        $(me).parent().parent().find('td:eq(2)').html(s_login_name);
-        $(me).parent().parent().find('td:eq(3)').html($(me).parent().parent().attr('j_mobile_phone'));
-        $(me).parent().parent().find('td:eq(5)').html(s_email);
-
-
-        if ($(me).parent().parent().attr('j_mobile_checkbox') == 'false') {
-            $(me).parent().parent().find('input[type="checkbox"]:eq(1)').prop('checked', false);
-        } else {
-            $(me).parent().parent().find('input[type="checkbox"]:eq(1)').prop('checked', true);
-        }
-
-        if ($(me).parent().parent().attr('j_email_checkbox') == 'false') {
-            $(me).parent().parent().find('input[type="checkbox"]:eq(2)').prop('checked', false);
-        } else {
-            $(me).parent().parent().find('input[type="checkbox"]:eq(2)').prop('checked', true);
-        }
-
-        $(me).parent().parent().find('input[type="checkbox"]:eq(1)').attr('disabled', true);
-        $(me).parent().parent().find('input[type="checkbox"]:eq(2)').attr('disabled', true);
-        $(me).parent().html('<button type="button" class="btn btn-danger" onclick="user_delete(this)">删除</button>');
-    }
-
-    function create_user() {
-        $.ajax({
-            url : '/api/user/_sign_up',
-            type : 'POST',
-            contentType: "application/json; charset=utf-8",
-            data : JSON.stringify({
-                login_name: $('#input_login_name').val(),
-                password: $('#input_password').val()
-            }),
-            error : function() {
-                insert_warning_window($('#header'), '<strong>更新用户信失败, 请联系管理员! </strong>');
-            },
-            success : function() {
-                window.location.href="/";
-            }
-        });
-    }
-
-    function sign_out() {
-        $.ajax({
-            url : '/api/user/_sign_out',
-            type : 'GET',
-            contentType: "application/json; charset=utf-8",
-            error : function() {
-                insert_warning_window($('#header'), '<strong>注销失败, 请联系管理员! </strong>');
-                // 3秒后自动跳转到
-                // setTimeout(function() {
-                //     window.location.href="/login.html";
-                // }, 3000);
-            },
-            success : function() {
-                insert_success_window($('#header'), '<strong>成功注销, 3秒后自动跳转到登陆页面! </strong>');
-                // 3秒后自动跳转到
-                setTimeout(function() {
-                    window.location.href="/login.html";
-                }, 3000);
-            }
-        });
-    }
-
-    function batch_enable() {
-        var ids = new Array();
-        $("#t_body tr").find('td input[type="checkbox"]:eq(0):checked').parent().next().each(function(i, ele) {
-            ids.push($(ele).text());
-        });
-        if (ids.length > 0) {
-            $.ajax({
-                url : '/api/mgmts',
-                type : 'PATCH',
-                contentType: "application/json; charset=utf-8",
-                data : JSON.stringify({
-                    ids: ids.join(','),
-                    enabled: true
-                }),
-                error : function() {
-                    insert_warning_window($('#header'), '<strong>批量激活失败, 请联系管理员! </strong>');
-                },
-                success : function() {
-                    insert_success_window($('#header'), '<strong>批量激活成功! </strong>');
-                    window.location.href="/";
-                }
-            });
-        }
-    }
-
-    function batch_disable() {
-        var ids = new Array();
-        $("#t_body tr").find('td input[type="checkbox"]:eq(0):checked').parent().next().each(function(i, ele) {
-            ids.push($(ele).text());
-        });
-        if (ids.length > 0) {
-            $.ajax({
-                url : '/api/mgmts',
-                type : 'PATCH',
-                contentType: "application/json; charset=utf-8",
-                data : JSON.stringify({
-                    ids: ids.join(','),
-                    enabled: false
-                }),
-                error : function() {
-                    insert_warning_window($('#header'), '<strong>批量禁用失败, 请联系管理员! </strong>');
-                },
-                success : function() {
-                    insert_success_window($('#header'), '<strong>批量禁用成功! </strong>');
-                    window.location.href="/";
-                }
-            });
-        }
-    }
-
-    function batch_delete() {
-        var ids = new Array();
-        $("#t_body tr").find('td input[type="checkbox"]:eq(0):checked').parent().next().each(function(i, ele) {
-            ids.push($(ele).text());
-        });
-        if (ids.length > 0) {
-            $.ajax({
-                url : '/api/mgmts',
-                type : 'DELETE',
-                contentType: "application/json; charset=utf-8",
-                data : JSON.stringify({
-                    ids: ids.join(',')
-                }),
-                error : function() {
-                    insert_warning_window($('#header'), '<strong>批量删除失败, 请联系管理员! </strong>');
-                },
-                success : function() {
-                    insert_success_window($('#header'), '<strong>批量删除成功! </strong>');
-                    window.location.href="/";
-                }
-            });
-        }
-    }
-</script>
-</body>
+  <!-- Custom Theme Style -->
+  <!--<link href="assets/build/css/custom.min.css" rel="stylesheet">-->
+  <!--<link href="assets/src/scss/custom.css" rel="stylesheet">-->
+<link href="styles.23baa2d6c3f25fe3f565ce832d1c3d9f.bundle.css" rel="stylesheet"></head>
+<app-root>加载中，请稍后...</app-root>
+<!-- jQuery -->
+<script src="vendors/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap -->
+<script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+<!-- FastClick -->
+<script src="vendors/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="vendors/nprogress/nprogress.js"></script>
+<!-- Chart.js -->
+<script src="vendors/Chart.js/dist/Chart.min.js"></script>
+<!-- gauge.js -->
+<script src="vendors/gauge.js/dist/gauge.min.js"></script>
+<!-- bootstrap-progressbar -->
+<script src="vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+<!-- iCheck -->
+<script src="vendors/iCheck/icheck.min.js"></script>
+<!-- Skycons -->
+<script src="vendors/skycons/skycons.js"></script>
+<!-- Flot -->
+<script src="vendors/Flot/jquery.flot.js"></script>
+<script src="vendors/Flot/jquery.flot.pie.js"></script>
+<script src="vendors/Flot/jquery.flot.time.js"></script>
+<script src="vendors/Flot/jquery.flot.stack.js"></script>
+<script src="vendors/Flot/jquery.flot.resize.js"></script>
+<!-- Flot plugins -->
+<script src="vendors/flot.orderbars/js/jquery.flot.orderBars.js"></script>
+<script src="vendors/flot-spline/js/jquery.flot.spline.min.js"></script>
+<script src="vendors/flot.curvedlines/curvedLines.js"></script>
+<!-- DateJS -->
+<script src="vendors/DateJS/build/date.js"></script>
+<!-- JQVMap -->
+<script src="vendors/jqvmap/dist/jquery.vmap.js"></script>
+<script src="vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
+<script src="vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
+<!-- bootstrap-daterangepicker -->
+<script src="vendors/moment/min/moment.min.js"></script>
+<script src="vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
 </html>
+<script type="text/javascript" src="inline.d41d8cd98f00b204e980.bundle.js"></script><script type="text/javascript" src="styles.b2328beb0372c051d06d.bundle.js"></script><script type="text/javascript" src="vendor.aa53ef45ead15b99ffe4.bundle.js"></script><script type="text/javascript" src="main.e78de30599079c75a191.bundle.js"></script>

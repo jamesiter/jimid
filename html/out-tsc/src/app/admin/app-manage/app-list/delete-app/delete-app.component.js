@@ -1,0 +1,58 @@
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+import { Component, Output, EventEmitter } from '@angular/core';
+import { App } from "../app";
+import { Http } from "@angular/http";
+import { GlobalService } from "../../../../core/global.service";
+export var DeleteAppComponent = (function () {
+    function DeleteAppComponent(http, gs) {
+        this.http = http;
+        this.gs = gs;
+        this.app = new App();
+        this.completed = new EventEmitter();
+    }
+    DeleteAppComponent.prototype.ngOnInit = function () {
+    };
+    DeleteAppComponent.prototype.show = function (app) {
+        this.app = app;
+        $('#delete_app_modal').modal('show');
+    };
+    DeleteAppComponent.prototype.hide = function () {
+        $('#delete_app_modal').modal('hide');
+    };
+    DeleteAppComponent.prototype.onSubmit = function () {
+        var _this = this;
+        var url = this.gs.deleteAppURL + this.app.id.toString();
+        var sc = this.http.delete(url, this.gs.jsonHeadersWithCredentials).subscribe(function (req) {
+            sc.unsubscribe();
+            _this.completed.emit();
+            _this.gs.showingTopFlashMessageSuccess();
+        }, function (err) {
+            console.log(err);
+            _this.gs.showingTopFlashMessageError();
+        }, function () {
+        });
+        this.hide();
+    };
+    __decorate([
+        Output(), 
+        __metadata('design:type', Object)
+    ], DeleteAppComponent.prototype, "completed", void 0);
+    DeleteAppComponent = __decorate([
+        Component({
+            selector: 'app-delete-app',
+            templateUrl: './delete-app.component.html',
+            styleUrls: ['./delete-app.component.css']
+        }), 
+        __metadata('design:paramtypes', [Http, GlobalService])
+    ], DeleteAppComponent);
+    return DeleteAppComponent;
+}());
+//# sourceMappingURL=/Users/James/PycharmProjects/jimid-web/src/src/app/admin/app-manage/app-list/delete-app/delete-app.component.js.map
