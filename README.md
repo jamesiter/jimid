@@ -6,6 +6,15 @@
 [![Python versions](https://img.shields.io/badge/Python-2.7.10-blue.svg)](https://www.python.org)
 [![API](https://img.shields.io/badge/API-RESTful-blue.svg)](http://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm)
 
+
+## 项目描述
+> JimID，可以把它想象成一个单点登录管理系统。由于传统的单独登陆解决方案过于复杂，所以JimID便由此而生。相比于传统的单点登录方式，JimID有如下特点：
+* 纯 HTTP 的交互方式；
+* 通过 OpenID 机制，平滑融合工作环境中现存的业务系统；
+* 通过对角色的定义，限定用户只能看到自己所属的应用；
+* 用户身份验证方式灵活，既可以通过OpenID的方式，也可以直接通过[验证接口](https://github.com/jamesiter/jimid/blob/master/docs/user.md#验证)`/api/user/_auth`来验证用户。
+
+
 ## 安装
 ### 创建web用户
 ``` bash
@@ -105,7 +114,7 @@ gunicorn -c gunicorn_config.py main:app
 
         root /home/www/sites/jimid/html;
 
-        # 拒绝访问隐藏文件(如，.git、.svn等目录)
+        # 拒绝访问隐藏文件(如：.git、.svn等目录)
         location ~ /\..* {
             return 403;
         }
@@ -142,8 +151,14 @@ gunicorn -c gunicorn_config.py main:app
 ### [OpenID](docs/openid.md)
 ### [OpenID管理](docs/openid_mgmt.md)
 
+
 ## Web端
 [Web端项目地址](https://github.com/jamesiter/jimid-web)
+
+
+## 问题反馈
+[提交Bug](https://github.com/jamesiter/jimid/issues)
+
 
 ## 项目成员
 <pre>
@@ -151,4 +166,9 @@ gunicorn -c gunicorn_config.py main:app
 E-Mail: james.iter.cn@gmail.com
 </pre>
 
-Demo
+
+## 截图
+
+
+## Demo
+[demo.jimid.org](http://demo.jimid.org)
