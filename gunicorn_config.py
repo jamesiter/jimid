@@ -20,7 +20,7 @@ if not os.path.isdir(_config['log_file_dir']):
     os.makedirs(_config['log_file_dir'], 0755)
 
 
-bind = _config['jimid_listen'] + ':' + _config['jimid_port']
+bind = _config['jimid_listen'] + ':' + _config['jimid_port'].__str__()
 workers = multiprocessing.cpu_count() * 2 + 1
 worker_class = 'eventlet'
 worker_connections = 1000
