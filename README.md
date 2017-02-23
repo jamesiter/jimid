@@ -14,6 +14,12 @@
 * 通过对角色的定义，限定用户只能看到自己所属的应用；
 * 用户身份验证方式灵活，既可以通过OpenID的方式，也可以直接通过[验证接口](https://github.com/jamesiter/jimid/blob/master/docs/user.md#验证)`/api/user/_auth`来验证用户。
 
+## 未来计划
+>
+* 弱密码检测；
+* 暴力破解防御；
+* 基于 Google Authenticator 的 两步验证。
+
 
 ## 安装
 ### 创建web用户
