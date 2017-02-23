@@ -112,11 +112,19 @@ gunicorn -c gunicorn_config.py main:app
     add_header X-Content-Type-Options: nosniff;
 
     server {
-        listen 80;
+        listen 443;
         server_name jimid.your-domain;
 
         access_log  /var/log/nginx/jimid.access.log;
         error_log  /var/log/nginx/jimid.error.log;
+
+        ssl on;
+        ssl_certificate /opt/pki/tls/certs/jimid.your.crt;
+        ssl_certificate_key /opt/pki/tls/certs/jimid.your.key;
+        ssl_session_timeout 5m;
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+        ssl_ciphers AESGCM:ALL:!DH:!EXPORT:!RC4:+HIGH:!MEDIUM:!LOW:!aNULL:!eNULL;
+        ssl_prefer_server_ciphers on;
 
         root /home/www/sites/jimid/html;
 
@@ -178,4 +186,4 @@ E-Mail: james.iter.cn@gmail.com
 
 
 ## Demo
-[demo.jimid.org](http://demo.jimid.org)
+[demo.jimid.org](https://demo.jimid.org)
