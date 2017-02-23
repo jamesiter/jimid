@@ -172,6 +172,8 @@ gunicorn -c gunicorn_config.py main:app
 
 ## 问题反馈
 [提交Bug](https://github.com/jamesiter/jimid/issues)
+<br>
+技术交流 QQ 群: 613400104
 
 
 ## 项目成员
@@ -187,3 +189,5 @@ E-Mail: james.iter.cn@gmail.com
 
 ## Demo
 [demo.jimid.org](https://demo.jimid.org)
+<br>
+管理员账密 `admin`:`admin`
