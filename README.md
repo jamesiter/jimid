@@ -166,6 +166,15 @@ gunicorn -c gunicorn_config.py main:app
 ### [OpenID管理](docs/openid_mgmt.md)
 
 
+## 流程图
+* [用户登录](./topology/sign_in.png)
+* [资源服务器注册OpenID](./topology/sign_up_openid.png)
+* [资源服务器绑定OpenID](./topology/bind_openid.png)
+* [资源服务器用户从JimID获取授权](./topology/authorization.png)
+* [资源服务器从JimID处验证请求资源的用户合法性](./topology/authentication.png)
+* [用户登出](./topology/sign_out.png)
+
+
 ## Web端
 [Web端项目地址](https://github.com/jamesiter/jimid-web)
 
