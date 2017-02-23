@@ -1,5 +1,5 @@
 # DROP DATABASE IF EXISTS jimid;
-CREATE DATABASE IF NOT EXISTS jimid;
+CREATE DATABASE IF NOT EXISTS jimid CHARACTER SET utf8;
 USE jimid;
 
 CREATE TABLE IF NOT EXISTS user(
@@ -15,7 +15,8 @@ CREATE TABLE IF NOT EXISTS user(
     enabled BOOLEAN NOT NULL DEFAULT TRUE,
     role_id BIGINT NOT NULL DEFAULT 0,
     PRIMARY KEY (id))
-    ENGINE=InnoDB;
+    ENGINE=InnoDB
+    DEFAULT CHARSET=utf8;
 
 ALTER TABLE user ADD INDEX (login_name);
 ALTER TABLE user ADD INDEX (mobile_phone);
@@ -32,7 +33,8 @@ CREATE TABLE IF NOT EXISTS app(
   home_page VARCHAR(255) NOT NULL DEFAULT '',
   remark VARCHAR(1024) NOT NULL DEFAULT '',
   PRIMARY KEY (id))
-  ENGINE=InnoDB;
+  ENGINE=InnoDB
+  DEFAULT CHARSET=utf8;
 
 ALTER TABLE app ADD INDEX (id);
 ALTER TABLE app ADD INDEX (name);
@@ -44,7 +46,8 @@ CREATE TABLE IF NOT EXISTS uid_openid_mapping(
     openid VARCHAR(255) NOT NULL,
     create_time BIGINT UNSIGNED NOT NULL,
     PRIMARY KEY (uid, appid, openid))
-    ENGINE=InnoDB;
+    ENGINE=InnoDB
+    DEFAULT CHARSET=utf8;
 
 ALTER TABLE uid_openid_mapping ADD INDEX (uid, appid);
 ALTER TABLE uid_openid_mapping ADD INDEX (appid, openid);
@@ -55,7 +58,8 @@ CREATE TABLE IF NOT EXISTS role(
     name VARCHAR(255) NOT NULL DEFAULT '',
     remark VARCHAR(1024) NOT NULL DEFAULT '',
     PRIMARY KEY (id))
-    ENGINE=InnoDB;
+    ENGINE=InnoDB
+    DEFAULT CHARSET=utf8;
 
 ALTER TABLE role ADD INDEX (id);
 ALTER TABLE role ADD INDEX (name);
@@ -65,7 +69,8 @@ CREATE TABLE IF NOT EXISTS role_appid_mapping(
     role_id BIGINT UNSIGNED NOT NULL,
     appid CHAR(30) NOT NULL,
     PRIMARY KEY (role_id, appid))
-    ENGINE=InnoDB;
+    ENGINE=InnoDB
+    DEFAULT CHARSET=utf8;
 
 ALTER TABLE role_appid_mapping ADD INDEX (role_id, appid);
 
