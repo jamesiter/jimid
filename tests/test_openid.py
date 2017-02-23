@@ -18,7 +18,7 @@ __copyright__ = '(c) 2016 by James Iter.'
 
 class TestOpenid(unittest.TestCase):
 
-    base_url = 'http://jimauth.dev.iit.im/api'
+    base_url = 'http://127.0.0.1:8001/api'
 
     app_id = None
     app_secret = None
@@ -107,14 +107,14 @@ class TestOpenid(unittest.TestCase):
         args = {
             'ts': urllib.quote_plus(TestOpenid.now_ts.__str__()),
             'appid': urllib.quote_plus(TestOpenid.app_id),
-            'redirect_url': urllib.quote_plus('http://service.iit.im'),
+            'redirect_url': urllib.quote_plus('http://service.jimid.org'),
             'method': 'GET',
             'base_url': TestOpenid.base_url + '/openid/_sign_up'
         }
         sign = ji.Security.ji_hash_sign(algorithm='sha1', secret=TestOpenid.app_secret,
                                         content=args)
         url = '&'.join(['appid=' + TestOpenid.app_id, 'ts=' + TestOpenid.now_ts.__str__(),
-                        'redirect_url=http://service.iit.im', 'sign=' + sign])
+                        'redirect_url=http://service.jimid.org', 'sign=' + sign])
         url = TestOpenid.base_url + '/openid/_sign_up?' + url
         r = requests.get(url)
         j_r = json.loads(r.content)
@@ -127,14 +127,14 @@ class TestOpenid(unittest.TestCase):
         args = {
             'ts': urllib.quote_plus(TestOpenid.now_ts.__str__()),
             'appid': urllib.quote_plus(TestOpenid.app_id),
-            'redirect_url': urllib.quote_plus('http://service.iit.im'),
+            'redirect_url': urllib.quote_plus('http://service.jimid.org'),
             'method': 'GET',
             'base_url': TestOpenid.base_url + '/openid/_sign_up'
         }
         sign = ji.Security.ji_hash_sign(algorithm='sha1', secret=TestOpenid.app_secret,
                                         content=args)
         url = '&'.join(['appid=' + TestOpenid.app_id, 'ts=' + TestOpenid.now_ts.__str__(),
-                        'redirect_url=http://service.iit.im', 'sign=' + sign])
+                        'redirect_url=http://service.jimid.org', 'sign=' + sign])
         url = TestOpenid.base_url + '/openid/_sign_up?' + url
         r = requests.get(url, cookies=TestOpenid.cookies, allow_redirects=False)
         j_r = json.loads(r.content)
@@ -153,7 +153,7 @@ class TestOpenid(unittest.TestCase):
         args = {
             'ts': urllib.quote_plus(TestOpenid.now_ts.__str__()),
             'appid': urllib.quote_plus(TestOpenid.app_id),
-            'redirect_url': urllib.quote_plus('http://service.iit.im'),
+            'redirect_url': urllib.quote_plus('http://service.jimid.org'),
             'openid': '1'
         }
         TestOpenid.sign_with_bind = ji.Security.ji_hash_sign(algorithm='sha1', secret=TestOpenid.app_secret,
@@ -164,7 +164,7 @@ class TestOpenid(unittest.TestCase):
         args = {
             'ts': urllib.quote_plus(TestOpenid.now_ts.__str__()),
             'appid': urllib.quote_plus(TestOpenid.app_id),
-            'redirect_url': urllib.quote_plus('http://service.iit.im'),
+            'redirect_url': urllib.quote_plus('http://service.jimid.org'),
             'openid': '1',
             'method': 'GET',
             'base_url': TestOpenid.base_url + '/openid/_bind'
@@ -173,7 +173,7 @@ class TestOpenid(unittest.TestCase):
                                         content=args)
 
         url = '&'.join(['appid=' + TestOpenid.app_id, 'ts=' + TestOpenid.now_ts.__str__(), 'openid=1',
-                        'redirect_url=http://service.iit.im', 'sign=' + sign])
+                        'redirect_url=http://service.jimid.org', 'sign=' + sign])
         url = TestOpenid.base_url + '/openid/_bind?' + url
         r = requests.get(url, cookies=TestOpenid.cookies, allow_redirects=False)
         j_r = json.loads(r.content)
@@ -187,7 +187,7 @@ class TestOpenid(unittest.TestCase):
         args = {
             'ts': urllib.quote_plus(TestOpenid.now_ts.__str__()),
             'appid': urllib.quote_plus(TestOpenid.app_id),
-            'redirect_url': urllib.quote_plus('http://service.iit.im'),
+            'redirect_url': urllib.quote_plus('http://service.jimid.org'),
             'method': 'GET',
             'base_url': TestOpenid.base_url + '/openid/_unbind'
         }
@@ -195,7 +195,7 @@ class TestOpenid(unittest.TestCase):
                                         content=args)
 
         url = '&'.join(['appid=' + TestOpenid.app_id, 'ts=' + TestOpenid.now_ts.__str__(),
-                        'redirect_url=http://service.iit.im', 'sign=' + sign])
+                        'redirect_url=http://service.jimid.org', 'sign=' + sign])
         url = TestOpenid.base_url + '/openid/_unbind?' + url
         r = requests.get(url, cookies=TestOpenid.cookies, allow_redirects=False)
         j_r = json.loads(r.content)
@@ -208,7 +208,7 @@ class TestOpenid(unittest.TestCase):
         args = {
             'ts': urllib.quote_plus(TestOpenid.now_ts.__str__()),
             'appid': urllib.quote_plus(TestOpenid.app_id),
-            'redirect_url': urllib.quote_plus('http://service.iit.im'),
+            'redirect_url': urllib.quote_plus('http://service.jimid.org'),
             'openid': '1',
             'method': 'GET',
             'base_url': TestOpenid.base_url + '/openid/_bind'
@@ -217,7 +217,7 @@ class TestOpenid(unittest.TestCase):
                                         content=args)
 
         url = '&'.join(['appid=' + TestOpenid.app_id, 'ts=' + TestOpenid.now_ts.__str__(), 'openid=1',
-                        'redirect_url=http://service.iit.im', 'sign=' + sign])
+                        'redirect_url=http://service.jimid.org', 'sign=' + sign])
         url = TestOpenid.base_url + '/openid/_bind?' + url
         r = requests.get(url, cookies=TestOpenid.cookies, allow_redirects=False)
         j_r = json.loads(r.content)
@@ -229,7 +229,7 @@ class TestOpenid(unittest.TestCase):
         args = {
             'ts': urllib.quote_plus(TestOpenid.now_ts.__str__()),
             'appid': urllib.quote_plus(TestOpenid.app_id),
-            'redirect_url': urllib.quote_plus('http://service.iit.im'),
+            'redirect_url': urllib.quote_plus('http://service.jimid.org'),
             'method': 'GET',
             'base_url': TestOpenid.base_url + '/openid/_auth'
         }
@@ -237,7 +237,7 @@ class TestOpenid(unittest.TestCase):
                                         content=args)
 
         url = '&'.join(['appid=' + TestOpenid.app_id, 'ts=' + TestOpenid.now_ts.__str__(),
-                        'redirect_url=http://service.iit.im', 'sign=' + sign])
+                        'redirect_url=http://service.jimid.org', 'sign=' + sign])
         url = TestOpenid.base_url + '/openid/_auth?' + url
         r = requests.get(url, cookies=TestOpenid.cookies, allow_redirects=False)
         j_r = json.loads(r.content)

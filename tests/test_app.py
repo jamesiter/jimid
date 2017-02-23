@@ -15,7 +15,7 @@ __copyright__ = '(c) 2016 by James Iter.'
 
 class TestApp(unittest.TestCase):
 
-    base_url = 'http://jimauth.dev.iit.im/api'
+    base_url = 'http://127.0.0.1:8001/api'
 
     app_id = None
 
@@ -53,8 +53,8 @@ class TestApp(unittest.TestCase):
     def test_12_create_app(self):
         payload = {
             "name": "OA",
-            "home_page": "http://oa.iit.im",
-            "remark": "公司办公自动化系统",
+            "home_page": "http://oa.jimid.org",
+            "remark": "办公自动化系统",
         }
         url = TestApp.base_url + '/app'
         headers = {'content-type': 'application/json'}
@@ -77,7 +77,7 @@ class TestApp(unittest.TestCase):
         payload = {
             "secret": True,
             "name": "新应用",
-            "home_page": "http://new.iit.im",
+            "home_page": "http://new.jimid.org",
         }
 
         url = TestApp.base_url + '/app/' + TestApp.app_id

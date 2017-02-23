@@ -18,7 +18,7 @@ __copyright__ = '(c) 2017 by James Iter.'
 
 class TestOpenidMgmt(unittest.TestCase):
 
-    base_url = 'http://jimauth.dev.iit.im/api'
+    base_url = 'http://127.0.0.1:8001/api'
     now_ts = ji.Common.ts()
 
     cookies = None
@@ -104,7 +104,7 @@ class TestOpenidMgmt(unittest.TestCase):
         args = {
             'ts': urllib.quote_plus(TestOpenidMgmt.now_ts.__str__()),
             'appid': urllib.quote_plus(TestOpenidMgmt.app_id),
-            'redirect_url': urllib.quote_plus('http://service.iit.im'),
+            'redirect_url': urllib.quote_plus('http://service.jimid.org'),
             'openid': '1'
         }
         TestOpenidMgmt.sign_with_bind = ji.Security.ji_hash_sign(algorithm='sha1', secret=TestOpenidMgmt.app_secret,
@@ -115,7 +115,7 @@ class TestOpenidMgmt(unittest.TestCase):
         args = {
             'ts': urllib.quote_plus(TestOpenidMgmt.now_ts.__str__()),
             'appid': urllib.quote_plus(TestOpenidMgmt.app_id),
-            'redirect_url': urllib.quote_plus('http://service.iit.im'),
+            'redirect_url': urllib.quote_plus('http://service.jimid.org'),
             'openid': '1',
             'method': 'GET',
             'base_url': TestOpenidMgmt.base_url + '/openid/_bind'
@@ -124,7 +124,7 @@ class TestOpenidMgmt(unittest.TestCase):
                                         content=args)
 
         url = '&'.join(['appid=' + TestOpenidMgmt.app_id, 'ts=' + TestOpenidMgmt.now_ts.__str__(), 'openid=1',
-                        'redirect_url=http://service.iit.im', 'sign=' + sign])
+                        'redirect_url=http://service.jimid.org', 'sign=' + sign])
         url = TestOpenidMgmt.base_url + '/openid/_bind?' + url
         r = requests.get(url, cookies=TestOpenidMgmt.cookies, allow_redirects=False)
         j_r = json.loads(r.content)

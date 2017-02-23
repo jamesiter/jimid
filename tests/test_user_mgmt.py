@@ -15,7 +15,7 @@ __copyright__ = '(c) 2016 by James Iter.'
 
 class TestUserMgmt(unittest.TestCase):
 
-    base_url = 'http://jimauth.dev.iit.im/api'
+    base_url = 'http://127.0.0.1:8001/api'
 
     cookies = None
     batch_login_name_prefix = 'james'

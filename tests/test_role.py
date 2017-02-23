@@ -17,7 +17,7 @@ __copyright__ = '(c) 2017 by James Iter.'
 
 class TestRole(unittest.TestCase):
 
-    base_url = 'http://jimauth.dev.iit.im/api'
+    base_url = 'http://127.0.0.1:8001/api'
     cookies = None
 
     superuser_cookies = None
